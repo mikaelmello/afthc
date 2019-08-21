@@ -245,97 +245,12 @@ Brasília, DF, Brasil.
 % ----------------------------------------------------------
 \section{Introdução}
 
-Ao considerar as diversas possibilidades acerca da linguagem para qual será
-implementado o tradutor, algumas das principais questões levantadas são:
-
-\begin{itemize}
-	\item Qual o nível de dificuldade esperado para concluir os objetivos definidos?
-	\item O resultado final do projeto possui potencial para ser relevante no futuro?
-\end{itemize}
-
-Deste modo, se decide que a linguagem escolhida será uma que possui casos de uso reais
-e relevantes na comunidade, tenha sua especificação precisamente definida de modo
-a evitar ambiguidades e acelerar o desenvolvimento do projeto, e que um subconjunto
-de suas funcionalidades ainda possua utilidade significativa.
-
-Por isso, evita-se a escolha de linguagens inventadas, com especificações ambíguas e
- grande potencial de má interpretação ou que não seja factível que o projeto final,
- dentro das limitações de tempo impostas pelo semestre letivo, tenha implementado
- funcionalidades ditas essenciais para a linguagem.
-
-Assim, Haskell, em sua revisão 98, é escolhida. Uma linguagem puramente funcional,
-criada com objetivos que incluem: ser adequada a, além do desenvolvimento de aplicações,
-o ensino e a pesquisa; ser completamente descrita por uma publicação de uma sintaxe
-formal e sua semântica; ser disponível livremente para todos; reduzir diversidade
-desnecessária entre linguagens de programação funcionais. \cite[Prefácio]{Haskell98}.
-
 % ----------------------------------------------------------
 % Seção de explicações
 % ----------------------------------------------------------
-\section{Descrição da linguagem}
-
-De forma abstrata, pode-se descrever a estrutura sintática e semântica
-de Haskell da seguinte forma:
-
-No nível mais externo, um programa Haskell é um conjunto de
-\textit{módulos}. Módulos fornecem um modo de controlar \textit{namespaces}
-e reutilizar \textit{software} em grandes programas.
-
-Um módulo é composto por uma coleção de \textit{declarações}, que podem
-ser de vários tipos. Declarações definem coisas como valores comuns,
-tipos de dados, tipos de classes e informações sobre invariabilidade.
-
-Logo após, existem \textit{expressões}. Expressões denotam um \textit{valor}
-e possuem um \textit{tipo estático}, elas são o coração de um programa.
-
-No mais baixo nível, está a estrutura léxica de Haskell. Ela captura a 
-representação concreta de programas Haskell em arquivos de texto.
-
-A notação usada para apresentar sua estrutura léxica é:
-
-
-\begin{center}
-\begin{tabular}{ c l } 
-	[ $ pattern $ ]     & opcional \\ 
-	\{ $ pattern $ \} & zero ou mais repetições \\ 
-	( $ pattern $ )     & agrupamento \\ 
-	$pat_1$ | $pat_2$  & escolha \\ 
-	$ pat_{<pat'>} $   & diferença - elementos gerados por $pat$ \\
-					   & exceto aqueles gerados por $pat'$ \\ 
-	\texttt{fibonacci} & sintaxe terminal em fonte monoespaçada \\ 
-\end{tabular}
-\end{center}
-	
-Assim, a gramática, modificada para apenas aceietar caracteres
-ASCII, é definida pelas regras:
-
-\begin{tabular}{ l l l } 
-	$ program $   & $ \rightarrow $ & \{ $lexeme$ | $whitespace$ \} \\
-	$ lexeme $    & $ \rightarrow $ & $qvarid$ | $qconid$ | $qvarsym$ | $qconsym$ \\
-				  & |				  & $literal$ | $special$ | $servedop$ | $reservedid$ \\
-	$ literal $   & $ \rightarrow $ & $integer$ | $float$ | $char$ | $string$ \\
-	$ special $   & $ \rightarrow $ & ( | ) | , | ; | [ | ] | ` | \{ | \} \\
-	$ comment $   & $ \rightarrow $ & $dashes$ [ $any_{<symbol>}$ \{ $any$ \}] $newline$ \\
-	$ dashes $    & $ \rightarrow $ & - - \{ - \} \\
-	$ opencom $   & $ \rightarrow $ & \{ - \\
-	$ closecom $  & $ \rightarrow $ & - \} \\
-	$ ncomment $  & $ \rightarrow $ & $opencom$ $ANYseq$ \{ $ncomment$ $ANYseq$ \} $closecom$ \\
-	$ ANYseq$     & $ \rightarrow $ & $\{ANY\}_{<\{ANY\} ( opencom | closecom ) \{ANY\}>}$ \\
-	$ ANY $       & $ \rightarrow $ & $graphic$ | $whitechar$ \\
-	$ any $       & $ \rightarrow $ & $graphic$ | $space$ | $tab$ \\
-	$ graphic $   & $ \rightarrow $ & $small$ | $large$ | $symbol$ | $digit$ | $special$ | : | " | ' \\
-	$ small $	  & $ \rightarrow $ & $ascSmall$ | $\_$ \\
-	$ ascSmall $  & $ \rightarrow $ & \texttt{a} | \texttt{b} | \texttt{...} | \texttt{z} \\
-	$ large $     & $ \rightarrow $ & $ascLarge$ \\
-	$ ascLarge $  & $ \rightarrow $ & \texttt{A} | \texttt{B} | \texttt{...} | \texttt{Z} \\
-	$ symbol $    & $ \rightarrow $ & $ascSymbol$ \\
-	$ ascSymbol $ & $ \rightarrow $ & ! | \# | \$ | \% | \& | * | + | . | / | < | = | > | ? | @ \\
-				  & |				& \textbackslash | \^ | \\
-\end{tabular}
-
-
 \section{Motivação para a escolha}
 
+\section{Descrição da linguagem}
 
 % ---
 % Finaliza a parte no bookmark do PDF, para que se inicie o bookmark na raiz
