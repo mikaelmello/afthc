@@ -60,6 +60,7 @@
 \usepackage{color}				% Controle das cores
 \usepackage{graphicx}			% Inclusão de gráficos
 \usepackage{microtype} 			% para melhorias de justificação
+\usepackage{syntax}				% BNF Grammar definition
 % ---
 		
 % ---
@@ -193,46 +194,46 @@ Brasília, DF, Brasil.
 
 % resumo em português
 \begin{resumoumacoluna}
-   O projeto da disciplina Tradutores envolve o desenvolvimento de
-   um tradutor para uma linguagem mínima que possua funcionalidades
-   básicas, porém que também suporte alguma funcionalidade complexa
-   não presente em C. Neste relatório é definida a estrutura da
-   linguagem a ser implementada, além da motivação da escolha de
-   conjuntos como a funcionalidade complexa.
-
- \vspace{\onelineskip}
- 
- \noindent
- \textbf{Palavras-chave}: tradutores. relatório. 
- 						  escolha do tema. linguagens. conjuntos.
+	O projeto da disciplina Tradutores envolve o desenvolvimento de
+	um tradutor para uma linguagem mínima que possua funcionalidades
+	básicas, porém que também suporte alguma funcionalidade complexa
+	não presente em C. Neste relatório é definida a estrutura da
+	linguagem a ser implementada, além da motivação da escolha de
+	conjuntos como a funcionalidade complexa.
+	
+	\vspace{\onelineskip}
+	 
+	\noindent
+	\textbf{Palavras-chave}: tradutores. relatório. 
+	escolha do tema. linguagens. conjuntos.
 \end{resumoumacoluna}
 
 
 % resumo em inglês
 \renewcommand{\resumoname}{Abstract}
 \begin{resumoumacoluna}
- \begin{otherlanguage*}{english}
-   The project of the Translators class involves developing a
-   translator for a minimal language that supports basic operations,
-   but that also implements a complex feature that is not present
-   in C. The structure of the language to be implemented along with
-   the motivation behind choosing sets as the complex feature is
-   defined in this report.	
-   \vspace{\onelineskip}
- 
-   \noindent
-   \textbf{Keywords}: translators. report. theme selection.
-   					  languages. sets.
- \end{otherlanguage*}  
+	\begin{otherlanguage*}{english}
+		The project of the Translators class involves developing a
+		translator for a minimal language that supports basic operations,
+		but that also implements a complex feature that is not present
+		in C. The structure of the language to be implemented along with
+		the motivation behind choosing sets as the complex feature is
+		defined in this report.	
+		\vspace{\onelineskip}
+		 
+		\noindent
+		\textbf{Keywords}: translators. report. theme selection.
+		languages. sets.
+	\end{otherlanguage*}  
 \end{resumoumacoluna}
 
 % ]  				% FIM DE ARTIGO EM DUAS COLUNAS
 % ---
 
 \begin{center}\smaller
-
-%   \textbf{Data de submissão e aprovação}: 26 de agosto de 2019.
-
+	
+	%   \textbf{Data de submissão e aprovação}: 26 de agosto de 2019.
+	
 \end{center}
 
 % ----------------------------------------------------------
@@ -251,28 +252,21 @@ para o aluno é a implementação de um tradutor de uma linguagem simples, simil
 porém com alguma funcionalidade complexa que não esteja presente em C,
 a ser definida pelo aluno.
 
-A linguagem simplificada deve, obrigatoriamente, possuir as seguintes estruturas:
-
-\begin{itemize}
-	\item Comandos de leitura e escrita
-	\item Comando condicional
-	\item Comando de repetição
-	\item Tratamento de expressões aritméticas
-	\item Chamada a subrotinas
-\end{itemize}
+A linguagem simplificada deve, obrigatoriamente, possuir as estruturas básicas de uma
+linguagem de programação: comandos de leitura e escrita, comando condicional,
+comando de repetição, tratamento de expressões aritméticas e booleanas e chamada a
+subrotinas.
 
 Estas, e mais algumas, serão implementadas, juntamente com o suporte embutido de conjunto
 como o tipo de uma variável. Um conjunto é uma coleção de elementos distinguíveis, chamados
-elementos, não pode possuir o mesmo objeto mais de uma vez e seus elementos não são ordenados.
-\cite[Apêndice B.1]{Cormen:2009:IAT:1614191}
+elementos, não pode possuir o mesmo objeto mais de uma vez e seus elementos não são ordenados
+\cite[Apêndice B.1]{Cormen:2009:IAT:1614191}. Neste artigo, e em outros que detalhem a implementação da linguagem e do tradutor, a linguagem
+será chamada de Afth, originado de \textit{August 5th}.
 
 Conjuntos são amplamente usados no campo da Ciência da Computação
 como um todo. Um banco de dados relacional pode ser descrito como estruturar um banco de dados
 como uma relação entre conjuntos, na área linguagens formais, uma linguagem é um conjunto de
 cadeias, assim como o seu alfabeto é um conjunto de símbolos, dentre várias outras aplicações.
-
-Neste artigo, e em outros que detalhem a implementação da linguagem e do tradutor, a linguagem
-será chamada de Afth, originado de \textit{August 5th}.
 
 % ----------------------------------------------------------
 % Seção de explicações
@@ -281,6 +275,170 @@ será chamada de Afth, originado de \textit{August 5th}.
 
 \section{Descrição da linguagem}
 
+Afth é uma linguagem de programação compilada de propósito geral, estruturada, imperativa,
+procedural e possui tipagem fraca e estática.
+
+Os tipos primitivos de uma variável são:
+
+\begin{itemize}
+	\item \texttt{byte}, \texttt{bool}, \texttt{char}: Inteiros sinalizados em
+	      complemento de 2, possuindo 8 bits de tamanho
+	\item \texttt{short}, \texttt{int}, \texttt{long}: Inteiros sinalizados em
+	      complemento de 2, possuindo 16, 32 e 64 bits de tamanho, respectivamente.
+	\item \texttt{float}, \texttt{double}: Números reais no formato de ponto
+	      flutuante IEEE 754 de precisão simples e dupla, respectivamente.
+\end{itemize}
+
+Um programa Afth é composto por declarações de variáveis ou funções, sendo necessário
+que haja a declaração de uma função chamada \texttt{main} que retorne uma variável do tipo
+\texttt{int}. Dentro de funções, estão conjuntos de expressões que podem ser de repetição,
+condicionais, atribuições, aritméticas, lógicas, leitura e escrita, retorno de função,
+declarações de variáveis, entre outras definidas na gramática.
+
+Cada variável possui um tipo primitivo, se em sua declaração houver um par de chaves
+\texttt{\{\}} logo após seu identificador, isto significa que a variável é um conjunto
+de elementos do tipo primitivo definido, se possuir um par de colchetes \texttt{[]} 
+com um número dentro, é um vetor de tamanho fixo cujos elementos são do tipo definido.
+
+A linguagem implementa comandos condicionais \texttt{if-else if-else}, laços de repetição
+no formato \texttt{for} e \texttt{while}, tratamento de expressões aritméticas com operadores
+\texttt{+}, \texttt{-}, \texttt{*}, \texttt{/}, \texttt{\%}, operadores bit a bit \texttt{\&},
+\texttt{|}, \texttt{\^}, \texttt{\~}, \texttt{<<}, \texttt{>>}, operadores lógicos \texttt{||},
+\texttt{\&\&}, \texttt{!}, operadores relacionais \texttt{==}, \texttt{>}, \texttt{<}, \texttt{!=},
+\texttt{>=}, \texttt{<=}, operadores de atribuição \texttt{=}, \texttt{+=}, \texttt{-=}, \texttt{*=},
+\texttt{/=}, \texttt{\%=}, comandos de escrita \texttt{print}, \texttt{printc}, \texttt{printx} e
+de leitura \texttt{scan}, \texttt{scanc} e \texttt{scanf}.
+
+Para verificar se um elemento \texttt{x} está no conjunto \texttt{A}, há o operador \texttt{in}
+(\texttt{x in A}), para inserir um elemento no conjunto, \texttt{x >> A} ou \texttt{A << x}. Para
+remover, \texttt{A rm x}.
+
+\subsection{Gramática}
+
+A gramática da linguagem Afth é inspirada na gramática de C
+\cite[Seção A13]{Kernighan:1988:CPL:576122} e C-Minus \cite{BNFCM}.
+
+
+\setlength{\grammarparsep}{0pt plus 1pt minus 1pt} % increase separation between rules
+\setlength{\grammarindent}{12em} % increase separation between LHS/RHS 
+
+\begin{grammar}
+	
+	<program> ::= <declaration-list>
+		
+	<declaration-list> ::= <declaration> `;' <declaration-list> | <declaration>
+	
+	<declaration> ::= <var-declaration> | <fun-declaration>
+	
+	<var-declaration> ::= <type> <identifier> `;'
+	\alt <type> <identifier> `[' <integer> `]' `;'
+	\alt <type> <identifier> `\{' `\}' `;'
+	
+	<fun-declaration> ::= <type> <identifier> `(' <params> `)' <scope>
+		
+	<params> ::= <params> `,' <param> | <param> | $\varepsilon$
+	
+	<param> ::= <type> <identifier>
+	\alt <type> <identifier> `[' `]'
+	\alt <type> <identifier> `\{' `\}'
+	
+	<scope> ::= `\{' <statement-list> `\}'
+	
+	<statement-list> ::= <statement-list> <statement> | $\varepsilon$
+	
+	<statement> ::= <scope> | <expression> | <condition> | <iteration> | <return>
+	
+	<condition> ::= `if' `(' <expression> `)' <statement> <condition-mid>
+		
+	<condition-mid> ::= `else if `(' <expression> `)' <statement> <condition-mid>
+	\alt <condition-end>
+	
+	<condition-end> ::= `else' <statement> | $\varepsilon$
+	
+	<iteration> ::= `while' `(' <expression> `)' <statement>
+	\alt `for' `(' <expression>? `;' <expression>? `;' <expression>? `)' <statement>
+	
+	<return> ::= `return' <expression>? `;'
+	
+	<assignment> ::= <identifier> <assignment-op> <expression> `;'
+	
+	<expression> ::= <var-declaration> | <assignment> | <and-expression>
+	
+	<and-expression> ::= <or-expression>
+	\alt <and-expression> `&&' <or-expression>
+	
+	<or-expression> ::= <bw-or-expression>
+	\alt <or-expression> `||' <bw-or-expression>
+	
+	<bw-or-expression> ::= <bw-xor-expression>
+	\alt <bw-or-expression> `|' <bw-xor-expression>
+	
+	<bw-xor-expression> ::= <bw-and-expression>
+	\alt <bw-xor-expression> `^' <bw-and-expression>
+	
+	<bw-and-expression> ::= <eq-expression>
+	\alt <bw-and-expression> `&' <eq-expression>
+	
+	<eq-expression> ::= <relational-expression>
+	\alt <eq-expression> `==' <rel-expression>
+	\alt <eq-expression> `!=' <rel-expression>
+	
+	<rel-expression> ::= <shift-expression>
+	\alt <rel-expression> <rel-op> <shift-expression>
+	
+	<shift-expression> ::= <add-expression>
+	\alt <shift-expression> `<<' <add-expression>
+	\alt <shift-expression> `>>' <add-expression>
+	\alt <shift-expression> `rm' <add-expression>
+	
+	<add-expression> ::= <mult-expression>
+	\alt <add-expression> `+' <mult-expression>
+	\alt <add-expression> `-' <mult-expression>
+	
+	<mult-expression> ::= <cast-expression>
+	\alt <mult-expression> <mul-op> <cast-expression>
+	
+	<cast-expression> ::= <unary-expression>
+	\alt `(' <type> `)' <cast-expression>
+	
+	<unary-expression> ::= <postfix-expression>
+	\alt <unary-op> <cast-expression>
+	\alt sizeof <cast-expression>
+	
+	<postfix-expression> ::= <primary-expression>
+	\alt <postfix-expression> [ <expression> ]
+	\alt <postfix-expression> ( <param-values> )
+		
+	<param-values> ::= <param-values> `,' <expression> | <expression> | $\varepsilon$
+	
+	<primary-expression> ::= <identifier>
+	\alt <constant>
+	\alt <string>
+	\alt `(' <expression> `)'
+	
+	<constant> ::= <integer>
+	\alt `'' <letter> `''
+	\alt <integer> `.' <integer>
+	
+	<integer> ::= <digit>+
+	
+	<identifier> ::= <letter> \{ <letter> | <digit> | `_' \}*
+	
+	<type> ::= `bool' | `byte' | `char' | `short' | `int' | `long' | `float' | `double'
+	
+	<letter> ::= `a' | `b' | ... | `z' | `A' | ... | `Z'
+	
+	<digit> ::= `0' | `1' | `2' | ... | `9'
+	
+	<assignment-op> ::= `=' | `+=' | `-=' | `*=' | `/=' | `\%='
+	
+	<unary-op> ::= `+' | `-' | `~' | `!'
+	
+	<rel-op> ::= `<' | `>' | `<=' | `>=' | `in'
+	
+	<mul-op> ::= `*' | `/' | `\%'
+	
+\end{grammar}
 
 % ---
 % Finaliza a parte no bookmark do PDF, para que se inicie o bookmark na raiz
@@ -292,6 +450,8 @@ será chamada de Afth, originado de \textit{August 5th}.
 % Conclusão
 % ---
 \section{Considerações finais}
+
+
 
 % ----------------------------------------------------------
 % ELEMENTOS PÓS-TEXTUAIS
