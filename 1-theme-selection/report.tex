@@ -263,15 +263,30 @@ elementos, não pode possuir o mesmo objeto mais de uma vez e seus elementos nã
 \cite[Apêndice B.1]{Cormen:2009:IAT:1614191}. Neste artigo, e em outros que detalhem a implementação da linguagem e do tradutor, a linguagem
 será chamada de Afth, originado de \textit{August 5th}.
 
-Conjuntos são amplamente usados no campo da Ciência da Computação
-como um todo. Um banco de dados relacional pode ser descrito como estruturar um banco de dados
-como uma relação entre conjuntos, na área linguagens formais, uma linguagem é um conjunto de
-cadeias, assim como o seu alfabeto é um conjunto de símbolos, dentre várias outras aplicações.
-
 % ----------------------------------------------------------
 % Seção de explicações
 % ----------------------------------------------------------
 \section{Motivação para a escolha}
+
+Conjuntos são amplamente usados no campo da Ciência da Computação
+como um todo. Se trata de um conceito matemático extremamente importante
+com várias aplicações em computação.
+
+Um banco de dados relacional pode ser descrito como estruturar um banco de dados
+como uma relação entre conjuntos, onde operações como união, interseção, diferença,
+junção e várias outras são fundamentais, todas estudadas na área da Álgebra Relacional
+e aproveitadas na implementação de bancos de dados.
+
+Na área linguagens formais, uma linguagem é um conjunto de cadeias, assim como o
+seu alfabeto é um conjunto de símbolos, dentre várias outras aplicações. Esta área
+da Ciência da Computação é importante tanto para aspectos teóricos, como decidibilidade,
+computabilidade, complexidade, entre outros conceitos, como em aplicações, tendo exemplos
+de processamento de linguagens, reconhecimento de padrões, entre outros.
+
+Por estas e outras aplicações, uma implementação embutida de conjuntos em uma linguagem
+é de interesse do programador, que não precisa se preocupar em implementar o código
+que realize estas operações de forma eficiente, uma vez que a linguagem possui
+suporte nativo e seu tradutor tratará de otimizá-las.
 
 \section{Descrição da linguagem}
 
@@ -311,7 +326,8 @@ de leitura \texttt{scan}, \texttt{scanc} e \texttt{scanf}.
 
 Para verificar se um elemento \texttt{x} está no conjunto \texttt{A}, há o operador \texttt{in}
 (\texttt{x in A}), para inserir um elemento no conjunto, \texttt{x >> A} ou \texttt{A << x}. Para
-remover, \texttt{A rm x}.
+remover, \texttt{A rm x}. Além disso, serão implementadas as operações de união
+(\texttt{A | B}), interseção (\texttt{A \& B}) e diferença de conjuntos (\texttt{A - B}).
 
 \subsection{Gramática}
 
@@ -417,15 +433,17 @@ A gramática da linguagem Afth é inspirada na gramática de C
 	\alt `(' <expression> `)'
 	
 	<constant> ::= <integer>
-	\alt `'' <letter> `''
+	\alt `'' <symbol> `''
 	\alt <integer> `.' <integer>
 	
 	<integer> ::= <digit>+
 	
 	<identifier> ::= <letter> \{ <letter> | <digit> | `_' \}*
-	
+	t
 	<type> ::= `bool' | `byte' | `char' | `short' | `int' | `long' | `float' | `double'
 	
+	<symbol> ::= any printable ascii character
+
 	<letter> ::= `a' | `b' | ... | `z' | `A' | ... | `Z'
 	
 	<digit> ::= `0' | `1' | `2' | ... | `9'
@@ -451,7 +469,18 @@ A gramática da linguagem Afth é inspirada na gramática de C
 % ---
 \section{Considerações finais}
 
+Definir a linguagem-alvo do tradutor a ser implementado é fundamental para o 
+desenvolvimento do projeto, pois nesta fase de planejamento são observadas de antemão
+possíveis dificuldades futuras durante a implementação.
 
+Foi especificada a gramática de Afth, implementando estruturas básicas de uma
+linguagem de programação procedural, juntamente com uma sintaxe que permite
+a implementação da funcionalidade de conjuntos como um tipo de dados embutido.
+
+É possível observar que a implementação de conjuntos trará dificuldades
+ao conciliar versatilidade e implementação de funcionalidades juntamente
+com eficiência, de modo que a escolha do uso de conjuntos em algum programa
+não o tornará mais lento.
 
 % ----------------------------------------------------------
 % ELEMENTOS PÓS-TEXTUAIS
