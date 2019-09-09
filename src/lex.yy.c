@@ -1,5 +1,6 @@
+#line 1 "src/lex.yy.c"
 
-#line 2 "lex.yy.c"
+#line 3 "src/lex.yy.c"
 
 #define  YY_INT_ALIGNED short int
 
@@ -436,11 +437,11 @@ int yy_flex_debug = 0;
 #define YY_MORE_ADJ 0
 #define YY_RESTORE_YY_MORE_OFFSET
 char *yytext;
-#line 1 "tokenizer.lex"
+#line 1 "src/tokenizer.lex"
 /* Scanner for Afth */
-#line 4 "tokenizer.lex"
-#line 442 "lex.yy.c"
-#line 443 "lex.yy.c"
+#line 4 "src/tokenizer.lex"
+#line 443 "src/lex.yy.c"
+#line 444 "src/lex.yy.c"
 
 #define INITIAL 0
 
@@ -657,10 +658,10 @@ YY_DECL
 		}
 
 	{
-#line 70 "tokenizer.lex"
+#line 70 "src/tokenizer.lex"
 
 
-#line 663 "lex.yy.c"
+#line 664 "src/lex.yy.c"
 
 	while ( /*CONSTCOND*/1 )		/* loops until end-of-file is reached */
 		{
@@ -719,10 +720,10 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 72 "tokenizer.lex"
+#line 72 "src/tokenizer.lex"
 ECHO;
 	YY_BREAK
-#line 725 "lex.yy.c"
+#line 726 "src/lex.yy.c"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -1727,7 +1728,7 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 72 "tokenizer.lex"
+#line 72 "src/tokenizer.lex"
 
 
 int main(int argc, char* argv[]) {

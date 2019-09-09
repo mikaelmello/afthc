@@ -276,4 +276,4 @@ TSWLatexianTemp*
 # PDF
 *.pdf
 
-src/tokenizer
+*tokenizer
