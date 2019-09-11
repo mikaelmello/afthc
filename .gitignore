@@ -278,3 +278,4 @@ TSWLatexianTemp*
 
 *tokenizer
 *.o
+*.yy.c
