@@ -20,15 +20,14 @@ typedef struct lexical_error_list {
 /*
  * Creates an empty error list
  */
-t_lexical_error_list* create_lexical_error_list();
+t_lexical_error_list* lex_error_list_create();
 
 /*
  * Adds an error to the end of a list
  * <list> List struct
  * <error> The error to be a dded
  */
-void add_lexical_error_to_list(t_lexical_error_list* list,
-                               t_lexical_error* error);
+void lex_error_list_add(t_lexical_error_list* list, t_lexical_error* error);
 
 /*
  * Creates an error struct
@@ -36,21 +35,21 @@ void add_lexical_error_to_list(t_lexical_error_list* list,
  * <line> Line number of the first character of the token
  * <column> Column number of the first character of the token
  */
-t_lexical_error* create_lexical_error(t_string* token, uint32_t line,
-                                      uint32_t column);
+t_lexical_error* lex_error_create(t_string* token, uint32_t line,
+                                  uint32_t column);
 
 /*
  * Frees all memory allocated for the list, all of its error elements
  * and their strings
  * <list> The list to be freed
  */
-void free_lexical_error_list(t_lexical_error_list* list);
+void lex_error_list_free(t_lexical_error_list* list);
 
 /*
  * Frees the memory allocated for this error struct and the underlying
  * string
  * <error> The error to be freed
  */
-void free_lexical_error(t_lexical_error* error);
+void lex_error_free(t_lexical_error* error);
 
 #endif
