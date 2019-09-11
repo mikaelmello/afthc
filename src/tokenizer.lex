@@ -146,8 +146,8 @@ IDENTIFIER      {LETTER}({DIGIT}|{LETTER}|{UNDERSCORE})*
 {REAL}              { return T_REAL; }
 {IDENTIFIER}        { return T_IDENTIFIER; }
 {STRING}            { return T_STRING; }
-{WHITESPACE}        { }
-{NEWLINE}           { column = 1; line++; }
+{WHITESPACE}        { return T_WHITESPACE; }
+{NEWLINE}           { column = 1; line++; return T_WHITESPACE; }
 .                   { return T_ERROR; }
 
 %%

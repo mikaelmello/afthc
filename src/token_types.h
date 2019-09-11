@@ -6,6 +6,7 @@
 typedef enum TOKEN {
   T_ERROR = 1,
   T_INTEGER,
+  T_WHITESPACE,
   T_REAL,
   T_IDENTIFIER,
   T_STRING,
@@ -65,6 +66,9 @@ typedef enum TOKEN {
 } TOKEN;
 
 inline void print_token_name(TOKEN token, char* match) {
+void print_token_name(TOKEN token, char* match) {
+  int print = 1;
+
   switch (token) {
     case T_INTEGER:
       printf("<T_INTEGER>");
@@ -231,9 +235,14 @@ inline void print_token_name(TOKEN token, char* match) {
     case T_RETURN_RW:
       printf("<T_RETURN_RW>");
       break;
+    default:
+      print = 0;
+      break;
   }
 
-  printf(" Match: %s\n", match);
+  if (print != 0) {
+    printf(" Match: %s\n", match);
+  }
 }
 
 #endif
