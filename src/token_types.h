@@ -64,7 +64,7 @@ typedef enum TOKEN {
   T_RETURN_RW,
 } TOKEN;
 
-void print_token_name(TOKEN token, char* match) {
+inline void print_token_name(TOKEN token, char* match) {
   switch (token) {
     case T_INTEGER:
       printf("<T_INTEGER>");
