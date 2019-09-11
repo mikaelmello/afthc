@@ -2,6 +2,7 @@
 #define TOKEN_TYPES_H
 
 #include <stdio.h>
+#include "lexical_error_handler.h"
 
 typedef enum TOKEN {
   T_ERROR = 1,
@@ -65,7 +66,11 @@ typedef enum TOKEN {
   T_RETURN_RW,
 } TOKEN;
 
-inline void print_token_name(TOKEN token, char* match) {
+void print_lexical_error(t_lexical_error* error) {
+  printf("<ERROR WHEN PARSING> Match: %s - Location %d:%d\n",
+         error->token->characters, error->line, error->column);
+}
+
 void print_token_name(TOKEN token, char* match) {
   int print = 1;
 
