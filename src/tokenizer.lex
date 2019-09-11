@@ -75,6 +75,7 @@ REAL            {DIGIT}+"."{DIGIT}+
 IDENTIFIER      {LETTER}({DIGIT}|{LETTER}|{UNDERSCORE})*
 
 %x COMMENT
+%x LINE_COMMENT
 
 %%
 
@@ -82,6 +83,10 @@ IDENTIFIER      {LETTER}({DIGIT}|{LETTER}|{UNDERSCORE})*
 <COMMENT>"*/"       { column += yyleng; BEGIN(INITIAL); }
 <COMMENT>{NEWLINE}  { column = 1; line++; }
 <COMMENT>.          { column += yyleng; }
+
+"//"                { column += yyleng; BEGIN(LINE_COMMENT); }
+<LINE_COMMENT>{NEWLINE}  { column = 1; line++; BEGIN(INITIAL); }
+<LINE_COMMENT>.          { column += yyleng; }
 
 {LEFT_BRACE}        { return T_LEFT_BRACE; }
 {RIGHT_BRACE}       { return T_RIGHT_BRACE; }
