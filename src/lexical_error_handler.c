@@ -7,6 +7,7 @@ t_lexical_error_list* lex_error_list_create() {
   list->head = NULL;
   list->tail = NULL;
   list->size = 0;
+  return list;
 }
 
 void lex_error_list_add(t_lexical_error_list* list, t_lexical_error* error) {
