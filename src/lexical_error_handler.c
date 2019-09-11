@@ -45,6 +45,6 @@ void lex_error_list_free(t_lexical_error_list* list) {
 }
 
 void lex_error_free(t_lexical_error* error) {
-  free_string(error->token);
+  m_string_free(error->token);
   free(error);
 }

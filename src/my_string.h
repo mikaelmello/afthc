@@ -1,5 +1,5 @@
-#ifndef CUSTOMSTRING_H
-#define CUSTOMSTRING_H
+#ifndef M_STRING_H
+#define M_STRING_H
 
 #include <stdint.h>
 
@@ -13,21 +13,25 @@ typedef struct string {
 /*
  * Creates a string struct
  */
-t_string* create_string();
+t_string* m_string_create();
 
 /*
  * Adds a character to the string
+ * <string> String where the character will be added
+ * <character> Character to be added
  */
-void add_char(t_string* s, char c);
+void m_string_add_char(t_string* string, char character);
 
 /*
  * Clears all characters from the string
+ * <string> String to be cleared
  */
-void clear_string(t_string* s);
+void m_string_clear(t_string* string);
 
 /*
  * Frees all memory allocated for this string
+ * <string> String to be freed
  */
-void free_string(t_string* s);
+void m_string_free(t_string* string);
 
 #endif

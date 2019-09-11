@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-t_string* create_string() {
+t_string* m_string_create() {
   t_string* s = (t_string*)calloc(1, sizeof(t_string));
 
   // empty string, only a null terminator
@@ -15,7 +15,7 @@ t_string* create_string() {
   return s;
 }
 
-void add_char(t_string* s, char c) {
+void m_string_add_char(t_string* s, char c) {
   uint32_t available = s->capacity - s->size_with_null;
   if (available <= 0) {
     uint32_t new_capacity = s->capacity * 2;
@@ -28,7 +28,7 @@ void add_char(t_string* s, char c) {
   s->size_with_null += 1;
 }
 
-void clear_string(t_string* s) {
+void m_string_clear(t_string* s) {
   free(s->characters);
   // empty string, only a null terminator
   s->characters = (char*)calloc(1, sizeof(char));
@@ -39,7 +39,7 @@ void clear_string(t_string* s) {
   s->capacity = 1;
 }
 
-void free_string(t_string* s) {
+void m_string_free(t_string* s) {
   // assuming nothing is NULL
   free(s->characters);
   free(s);
