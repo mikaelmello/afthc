@@ -1,0 +1,18 @@
+int main() {
+
+    // this is not an identifier, but rather a lot of identifiers
+    // separated by - signs
+    bool this-is-my-set;
+
+    // same thing
+    bool this/is/not/my/set/also;
+
+
+    // invalid char
+    byte uáu;
+
+    /*
+     * everything here should
+     * be ignored
+     */
+}

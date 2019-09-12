@@ -236,17 +236,323 @@ Brasília, DF, Brasil.
 
 \section{Introdução}
 
+O analisador léxico é responsável por ler um texto de entrada,
+normalmente de um arquivo, caractere por caractere de modo que
+os agrupe em sequências chamadas lexemas. Estes lexemas têm
+então um valor atribuído a eles e são convertidos em tokens. 
+Estes tokens são a saída do programa, sendo normalmente lidos
+pelo analisador sintático na próxima fase do processo de tradução.
+
+Também é comum que o analisador léxico interaja com a tabela de
+símbolos. Ao descobrir um lexema do tipo identificador, pode inserir
+este lexema na tabela de símbolos.
+
+O analisador léxico descrito neste relatório é limitado a apenas
+escanear a entrada, identificar os tokens válidos e mostrá-los ao
+usuário. Também é responsável por mostrar ao usuário todas as 
+sequências de caracteres que não puderam ser agrupadas em lexemas. 
+
 \section{Funcionamento do analisador}
+
+O analisador léxico foi gerado pela ferramenta Flex
+\cite{westes:flex}, uma ferramenta que gera programas que
+reconhecem padrões léxicos em um texto. O arquivo
+\texttt{src/tokenizer.lex} \cite{unb-translator-mikael} contém
+todas as diretivas necessárias para que o Flex gere o \textit{scanner}
+completo, sem modificações posteriores. 
+
+Primeiramente, foram definidas as expressões regulares dos lexemas
+que deveriam ser identificados pelo \textit{scanner}. São estes palavras
+reservadas como \texttt{if}, \texttt{for}, \texttt{while},
+\texttt{print}, entre outras, símbolos como parênteses
+\texttt{'(', ')'}, colchetes \texttt{[ ]}, vírgula e ponto e
+vírgula \texttt{',', ';'}, constantes como números, números com
+casas decimais, cadeias de caracteres envolvidas por aspas duplas,
+um caractere envolvido por aspas simples, entre outros. A lista
+completa pode ser vista no código-fonte do arquivo
+\texttt{src/tokenizer.lex}.
+
+Após ter escrito todas as expressões regulares, bastou colocar
+cada uma delas como um padrão a ser casado pelo \textit{scanner}.
+Também foi adicionado ao código um enumerador com um número único
+para cada tipo de lexema a ser identificado, de modo que ao chamar
+a função \texttt{yylex()}, o \textit{scanner} trata de casar a maior
+quantidade possível de caracteres em uma expressão regular de um
+lexema e quando o consegue, retorna o identificador numérico deste
+lexema para o invocador da função.
+
+Assim, basta chamar continuamente \texttt{yylex()} até que não
+haja mais caracteres a serem lidos, caso em que a função retornará
+o valor 0. Deste modo, para cada chamada de função em que um lexema
+é corretamente identificado, é impresso na tela o tipo do lexema
+e a cadeia de caracteres que casaram com seu padrão.
+
+O \textit{scanner} também implementa comentários, isto é, seções do código
+que não devem ser escaneadas como sendo parte do programa, tendo
+como único fim servir como anotações. Por isso, sempre que o
+\textit{scanner} identifica a expressão regular \texttt{/*}, ignora todos
+os caracteres até que encontre o padrão \texttt{*/}, sendo isto
+definido como comentários em bloco. Também é implementado o comentário
+em linha, onde quando se encontra a expressão \texttt{//}, todos
+os caracteres são ignorados até que se encontre um caractere
+de quebra de linha.
 
 \subsection{Tratamento de erros}
 
-\subsection{Alterações feitas}
+O analisador léxico, ao identificar um lexema, o imprime e
+continua a ler os próximos caracteres buscando casar com algum
+padrão definido. Se não é possível casar o resto da entrada com
+algum dos padrões dos lexemas, o analisador retorna o caractere
+atual como um erro e tenta novamente a partir do próximo caractere.
+
+Baseado nisso, quando vários caracteres contínuos não casam com
+nenhum padrão, eles serão agrupados em apenas um erro, de modo 
+a não poluir a saída para o usuário, mostrando um erro por caractere
+inválido.
+
+Para isto, foi criado um tipo de dados chamado \texttt{t_lexical_error},
+erro léxico, que armazena a cadeia de caracteres contínuos de um erro,
+além da linha e coluna do primeiro caractere pertencente à cadeia.
+
+No início da análise léxica, mantém-se uma referência nula a um
+objeto de erro, indicando que ainda não houveram caracteres sem
+casamento de padrão.
+
+Quando um caractere não é reconhecido e o lexema indicando erro é retornado
+pelo \textit{scanner} e o objeto de erro é nulo, deve-se criar um novo
+objeto de erro e apontar esta referência para ele. Este objeto tem como
+elementos a cadeia de caracteres não reconhecida, que no momento
+contém apenas o caractere atual, e sua posição, a do caractere atual. 
+
+Se o objeto não for nulo, isto é, um erro já estiver sido iniciado,
+este caractere é adicionado à cadeia do erro atual.
+
+Se um padrão for reconhecido e um lexema válido for retornado
+ou a leitura da entrada for finalizada, deve-se verificar se o objeto
+de erro é nulo. Se não for nulo, isto significa que a sequência
+de caracteres não reconhecidos foi terminada e então o objeto de
+erro deve ser finalizado.
+
+Para imprimir os erros apenas depois que todos os lexemas válidos
+forem reconhecidos, os objetos de erro são armzenados em uma lista.
+Após toda a entrada ser lida, realiza-se uma iteração sobre todos
+os elementos da lista, de modo que cada erro dentro dela é mostrado
+ao usuário, indicando a cadeia de caracteres não reconhecida e a
+posição de seu início.
+
+\subsection{Alterações feitas na gramática}
+
+Nesta estapa do desenvolvimento do tradutor, foram adicionados
+à gramática as regras relacionadas à entrada e saída, sendo criadas
+as regras \textit{scan-words} e \textit{print-words}, definindo
+as palavras reservadas para leitura e escrita de dados, assim como
+as regras \textit{scan} e \textit{print}, que definem a sintaxe
+de tais operações.
+
+Além disso, \textit{var-declaration} e \textit{assignment} deixam
+de ser produtos da regra \textit{expression} e são agora produtos
+diretos da regra \textit{statement}. Isto deve-se ao fato de que
+uma \textit{expression} poderia ser encerrada sem um ponto e vírgula
+no final até quando fosse filha direta da regra \textit{statement}.
+Deste modo foi necessário colocar um ponto e vírgula após \textit{expression}
+como produto de \textit{statement}. Como ambas \textit{var-declaration}
+e \textit{assignment} já terminam com ponto e vírgula, a gramática
+exigiria dois, por isso foi necessário movê-las.
+
+Também foi adicionada a palavra \texttt{void} como um dos tipos
+de dados disponíveis, onde só deve ser usada como tipos de retorno
+de funções.
 
 \subsection{Testes}
 
+Para testar a identificação correta de tokens foram escritos quatro
+arquivos, de extensão \texttt{.afth}, dois deles apenas com tokens
+válidos e dois com alguns erros.
+
+O primeiro, \texttt{samples/correct.lexical.afth}, contém apenas
+algumas declarações de variáveis e expressões aritméticas e condicionais
+simples, juntamente com uma expressão de saída \texttt{print}.
+Todos os tokens são corretamente identificados, as variáveis são
+interpretadas como lexemas do tipo identificador, as palavras reservadas
+são identificadas de forma apropriada assim como diversos símbolos.
+
+O segundo, \texttt{samples/correct2.lexical.afth}, possui a declaração
+de uma variável do tipo conjunto de inteiros, onde todos os tokens são
+devidamente agrupados em lexemas apropriados, assim como nas operações
+de inserção e remoção dos elementos neste conjunto. Os símbolos de
+maior e menor duplos são devidamente agrupados como um só lexema, assim
+como as palavras reservadas \texttt{in} e \texttt{rm}.
+
+O terceiro, \texttt{samples/strange-chars.lexical.afth}, possui
+cadeias de caracteres não presentes na gramática da linguagem. As três
+são devidamente informadas como inválidas pelo analisador léxico,
+indicando corretamente a linha e a coluna onde são iniciadas.
+
+O quarto, \texttt{samples/identifier-invalid-char.lexica.afth}, possui
+testes para verificar a análise correta de identificadores. Várias letras
+contínuas, separadas por símbolos como \texttt{-} ou \texttt{/}, são
+devidamente interpretados como diferentes identificadores, uma vez que
+o erro presente é sintático, não são reportados erros pelo analisador léxico.
+Além disso, um dos identificadores possui um caractere inválido no
+meio da cadeia, o analisador interpreta corretamente cada metade da cadeia
+como sendo um identificador diferente e o caractere inválido é identificado
+como um erro e impresso no final da execução do analisador.
+
 \section{Gramática da linguagem}
 
+
+\setlength{\grammarparsep}{0pt plus 1pt minus 1pt} % increase separation between rules
+\setlength{\grammarindent}{12em} % increase separation between LHS/RHS 
+
+\begin{grammar}
+	
+	<program> ::= <declaration-list>
+		
+	<declaration-list> ::= <declaration-list> <declaration> | <declaration>
+	
+	<declaration> ::= <var-declaration> | <fun-declaration>
+	
+	<var-declaration> ::= <type> <identifier> `;'
+	\alt <type> <identifier> `[' <integer> `]' `;'
+	\alt <type> <identifier> `\{' `\}' `;'
+	
+	<fun-declaration> ::= <type> <identifier> `(' <params> `)' <scope>
+		
+	<params> ::= <params> `,' <param> | <param> | $\varepsilon$
+	
+	<param> ::= <type> <identifier>
+	\alt <type> <identifier> `[' `]'
+	\alt <type> <identifier> `\{' `\}'
+	
+	<scope> ::= `\{' <statement-list> `\}'
+	
+	<statement-list> ::= <statement-list> <statement> | $\varepsilon$
+	
+	<statement> ::= <scope>
+	\alt <var-declaration>
+	\alt <assignment>
+	\alt <print>
+	\alt <scan>
+	\alt <expression> `;'
+	\alt <condition>
+	\alt <iteration>
+	\alt <return>
+	
+	<print> ::= <print-words> <expression> `;'
+
+	<scan> ::= <scan-words> <identifier> `;'
+
+	<print-words> ::= `print' | `printc' | `printx'
+
+	<scan-words> ::= `scan' | `scanc' | `scanf'	
+
+	<condition> ::= `if' `(' <expression> `)' <statement> <condition-mid>
+		
+	<condition-mid> ::= `else if `(' <expression> `)' <statement> <condition-mid>
+	\alt <condition-end>
+	
+	<condition-end> ::= `else' <statement> | $\varepsilon$
+	
+	<iteration> ::= `while' `(' <expression> `)' <statement>
+	\alt `for' `(' <expression>? `;' <expression>? `;' <expression>? `)' <statement>
+	
+	<return> ::= `return' <expression>? `;'
+	
+	<assignment> ::= <identifier> <assignment-op> <expression> `;'
+	
+	<expression> ::= <and-expression>
+	
+	<and-expression> ::= <or-expression>
+	\alt <and-expression> `&&' <or-expression>
+	
+	<or-expression> ::= <bw-or-expression>
+	\alt <or-expression> `||' <bw-or-expression>
+	
+	<bw-or-expression> ::= <bw-xor-expression>
+	\alt <bw-or-expression> `|' <bw-xor-expression>
+	
+	<bw-xor-expression> ::= <bw-and-expression>
+	\alt <bw-xor-expression> `^' <bw-and-expression>
+	
+	<bw-and-expression> ::= <eq-expression>
+	\alt <bw-and-expression> `&' <eq-expression>
+	
+	<eq-expression> ::= <relational-expression>
+	\alt <eq-expression> `==' <rel-expression>
+	\alt <eq-expression> `!=' <rel-expression>
+	
+	<rel-expression> ::= <shift-expression>
+	\alt <rel-expression> <rel-op> <shift-expression>
+	
+	<shift-expression> ::= <add-expression>
+	\alt <shift-expression> `<<' <add-expression>
+	\alt <shift-expression> `>>' <add-expression>
+	\alt <shift-expression> `rm' <add-expression>
+	
+	<add-expression> ::= <mult-expression>
+	\alt <add-expression> `+' <mult-expression>
+	\alt <add-expression> `-' <mult-expression>
+	
+	<mult-expression> ::= <cast-expression>
+	\alt <mult-expression> <mul-op> <cast-expression>
+	
+	<cast-expression> ::= <unary-expression>
+	\alt `(' <type> `)' <cast-expression>
+	
+	<unary-expression> ::= <postfix-expression>
+	\alt <unary-op> <cast-expression>
+	\alt sizeof <cast-expression>
+	
+	<postfix-expression> ::= <primary-expression>
+	\alt <postfix-expression> [ <expression> ]
+	\alt <postfix-expression> ( <param-values> )
+		
+	<param-values> ::= <param-values> `,' <expression> | <expression> | $\varepsilon$
+	
+	<primary-expression> ::= <identifier>
+	\alt <constant>
+	\alt <string>
+	\alt `(' <expression> `)'
+	
+	<constant> ::= <integer>
+	\alt `'' <symbol> `''
+	\alt <integer> `.' <integer>
+	
+	<integer> ::= <digit>+
+	
+	<identifier> ::= <letter> \{ <letter> | <digit> | `_' \}*
+
+	<type> ::= `void' | `bool' | `byte' | `char' | `short' | `int' | `long' | `float' | `double'
+	
+	<symbol> ::= any printable ascii character
+
+	<letter> ::= `a' | `b' | ... | `z' | `A' | ... | `Z'
+	
+	<digit> ::= `0' | `1' | `2' | ... | `9'
+	
+	<assignment-op> ::= `=' | `+=' | `-=' | `*=' | `/=' | `\%='
+	
+	<unary-op> ::= `+' | `-' | `~' | `!'
+	
+	<rel-op> ::= `<' | `>' | `<=' | `>=' | `in'
+	
+	<mul-op> ::= `*' | `/' | `\%'
+	
+\end{grammar}
+
 \section{Considerações finais}
+
+A construção do analisador léxico torna-se extremamente simples com
+o auxílio da ferramente Flex, uma vez que basta especificar os padrões
+a serem casados, sem ser necessário se preocupar com a corretude
+das funções que leem a entrada e são responsáveis por identificar
+os lexemas.
+
+Nesta fase, foi necessário desenvolver estruturas personalizadas
+para facilitar o gerenciamento de erros, porém são estruturas simples,
+assim a maior complexidade de desenvolver um analisador léxico
+continua a ser o casamento de entrada com padrões pré-definidos, o que
+é majoritariamente feito pelo Flex.
 
 \bookmarksetup{startatroot}% 
 

@@ -3,7 +3,7 @@ void test() {
 }
 
 int main() {
-    long myset{};
+    int myset{};
     int iterator;
 
     3 >> myset;
