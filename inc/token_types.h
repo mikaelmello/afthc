@@ -11,6 +11,7 @@ typedef enum TOKEN {
   T_REAL,
   T_IDENTIFIER,
   T_STRING,
+  T_CHAR,
   T_LEFT_BRACE,
   T_RIGHT_BRACE,
   T_LEFT_BRACKET,
@@ -59,6 +60,12 @@ typedef enum TOKEN {
   T_LONG_RW,
   T_FLOAT_RW,
   T_DOUBLE_RW,
+  T_PRINT_RW,
+  T_PRINTC_RW,
+  T_PRINTX_RW,
+  T_SCAN_RW,
+  T_SCANC_RW,
+  T_SCANF_RW,
   T_IF_RW,
   T_ELSE_RW,
   T_WHILE_RW,
@@ -86,6 +93,9 @@ void print_token_name(TOKEN token, char* match) {
       break;
     case T_STRING:
       printf("<T_STRING>");
+      break;
+    case T_CHAR:
+      printf("<T_CHAR>");
       break;
     case T_LEFT_BRACE:
       printf("<T_LEFT_BRACE>");
@@ -224,6 +234,24 @@ void print_token_name(TOKEN token, char* match) {
       break;
     case T_DOUBLE_RW:
       printf("<T_DOUBLE_RW>");
+      break;
+    case T_PRINT_RW:
+      printf("<T_PRINT_RW>");
+      break;
+    case T_PRINTC_RW:
+      printf("<T_PRINTC_RW>");
+      break;
+    case T_PRINTX_RW:
+      printf("<T_PRINTX_RW>");
+      break;
+    case T_SCAN_RW:
+      printf("<T_SCAN_RW>");
+      break;
+    case T_SCANC_RW:
+      printf("<T_SCANC_RW>");
+      break;
+    case T_SCANF_RW:
+      printf("<T_SCANF_RW>");
       break;
     case T_IF_RW:
       printf("<T_IF_RW>");

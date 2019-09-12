@@ -7,7 +7,7 @@
 #include "lexical_error_handler.h"
 
 uint32_t line = 1;
-uint32_t column = 1;
+uint32_t column = 0;
 %}
 
 LEFT_BRACE      "{"
@@ -58,6 +58,12 @@ INT_RW          "int"
 LONG_RW         "long"
 FLOAT_RW        "float"
 DOUBLE_RW       "double"
+PRINT_RW        "print"
+PRINTC_RW       "printc"
+PRINTX_RW       "printf"
+SCAN_RW         "scan"
+SCANC_RW        "scanc"
+SCANF_RW        "scanf"
 IF_RW           "if"
 ELSE_RW         "else"
 WHILE_RW        "while"
@@ -72,6 +78,7 @@ WHITESPACE      [\t ]+
 DIGIT           [0-9]
 STRING          \"[^"\\]*(\\.[^"\\]*)*\"
 LETTER          [a-zA-Z]
+CHAR            \'.\'
 INTEGER         {DIGIT}+
 REAL            {DIGIT}+"."{DIGIT}+
 IDENTIFIER      {LETTER}({DIGIT}|{LETTER}|{UNDERSCORE})*
@@ -83,7 +90,7 @@ IDENTIFIER      {LETTER}({DIGIT}|{LETTER}|{UNDERSCORE})*
 
 "/*"                { column += yyleng; BEGIN(COMMENT); }
 <COMMENT>"*/"       { column += yyleng; BEGIN(INITIAL); }
-<COMMENT>{NEWLINE}  { column = 1; line++; }
+<COMMENT>{NEWLINE}  { column = 0; line++; }
 <COMMENT>.          { column += yyleng; }
 
 "//"                { column += yyleng; BEGIN(LINE_COMMENT); }
@@ -138,6 +145,12 @@ IDENTIFIER      {LETTER}({DIGIT}|{LETTER}|{UNDERSCORE})*
 {LONG_RW}           { return T_LONG_RW; }
 {FLOAT_RW}          { return T_FLOAT_RW; }
 {DOUBLE_RW}         { return T_DOUBLE_RW; }
+{PRINT_RW}          { return T_PRINT_RW; }
+{PRINTC_RW}         { return T_PRINTC_RW; }
+{PRINTX_RW}         { return T_PRINTX_RW; }
+{SCAN_RW}           { return T_SCAN_RW; }
+{SCANC_RW}          { return T_SCANC_RW; }
+{SCANF_RW}          { return T_SCANF_RW; }
 {IF_RW}             { return T_IF_RW; }
 {ELSE_RW}           { return T_ELSE_RW; }
 {WHILE_RW}          { return T_WHILE_RW; }
@@ -148,8 +161,9 @@ IDENTIFIER      {LETTER}({DIGIT}|{LETTER}|{UNDERSCORE})*
 {REAL}              { return T_REAL; }
 {IDENTIFIER}        { return T_IDENTIFIER; }
 {STRING}            { return T_STRING; }
+{CHAR}              { return T_CHAR; }
 {WHITESPACE}        { return T_WHITESPACE; }
-{NEWLINE}           { column = 1; line++; return T_WHITESPACE; }
+{NEWLINE}           { column = 0; line++; return T_WHITESPACE; }
 .                   { return T_ERROR; }
 
 %%
