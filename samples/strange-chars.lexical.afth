@@ -1,0 +1,23 @@
+int first_global_variable;
+
+int main() {
+    int loopCounter;
+    int answer;
+    char my_char;
+
+    my_char = 'b';
+
+    first_global_variable = 3;
+    answer = 2;
+
+    // that is a comment ?? everything here should pass 'X áááá
+
+    ? // this one is weird
+    ???????????????? // this one should be grouped together!!!
+        ??'áéééé // this one starts a bit later
+    for (loopCounter = 0; loopCounter < first_global_variable; loopCounter += 1) {
+        answer *= (loopCounter + 1);
+    }
+
+    print answer;
+}

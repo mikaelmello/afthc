@@ -50,6 +50,7 @@ PERCENT         "%"
 IN_RW           "in"
 RM_RW           "rm"
 SIZEOF_RW       "sizeof"
+VOID_RW         "void"
 BOOL_RW         "bool"
 BYTE_RW         "byte"
 CHAR_RW         "char"
@@ -137,6 +138,7 @@ IDENTIFIER      {LETTER}({DIGIT}|{LETTER}|{UNDERSCORE})*
 {IN_RW}             { return T_IN_RW; }
 {RM_RW}             { return T_RM_RW; }
 {SIZEOF_RW}         { return T_SIZEOF_RW; }
+{VOID_RW}           { return T_VOID_RW; }
 {BOOL_RW}           { return T_BOOL_RW; }
 {BYTE_RW}           { return T_BYTE_RW; }
 {CHAR_RW}           { return T_CHAR_RW; }

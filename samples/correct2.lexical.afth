@@ -1,0 +1,29 @@
+void test() {
+    return;
+}
+
+int main() {
+    long myset{};
+    int iterator;
+
+    3 >> myset;
+    4 >> myset;
+    3 >> myset;
+    7 >> myset;
+
+    for (iterator = 0; i <= 10; i += 1) {
+        if (iterator in myset) {
+            print iterator;
+        }
+    }
+
+    myset rm 5;
+    myset rm 3;
+    myset rm 4;
+
+    for (iterator = 0; i <= 10; i += 1) {
+        if (iterator in myset) {
+            print iterator;
+        }
+    }
+}

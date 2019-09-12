@@ -52,6 +52,7 @@ typedef enum TOKEN {
   T_IN_RW,
   T_RM_RW,
   T_SIZEOF_RW,
+  T_VOID_RW,
   T_BOOL_RW,
   T_BYTE_RW,
   T_CHAR_RW,
@@ -210,6 +211,9 @@ void print_token_name(TOKEN token, char* match) {
       break;
     case T_SIZEOF_RW:
       printf("<T_SIZEOF_RW>");
+      break;
+    case T_VOID_RW:
+      printf("<T_VOID_RW>");
       break;
     case T_BOOL_RW:
       printf("<T_BOOL_RW>");
