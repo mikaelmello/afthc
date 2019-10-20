@@ -13,7 +13,7 @@ int main() {
     // that is a comment ?? everything here should pass 'X áááá
 
     ? // this one is weird
-    ???????????????? // this one should be grouped together!!!
+    ????????????????? // well ok
         ??'áéééé // this one starts a bit later
     for (loopCounter = 0; loopCounter < first_global_variable; loopCounter += 1) {
         answer *= (loopCounter + 1);

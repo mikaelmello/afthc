@@ -24,6 +24,7 @@ void m_string_add_char(t_string* s, char c) {
   }
 
   s->characters[s->size] = c;
+  s->characters[s->size + 1] = 0;
   s->size += 1;
   s->size_with_null += 1;
 }

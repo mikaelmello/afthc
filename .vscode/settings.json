@@ -2,5 +2,6 @@
     "files.associations": {
         "*.lex": "lex",
         "*.h": "c",
+        "*.afth": "plaintext",
     }
 }
