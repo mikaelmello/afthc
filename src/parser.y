@@ -1,3 +1,17 @@
+%{
+
+#include "my_string.h"
+#include "lexical_error_handler.h"
+#include <stdio.h>
+
+extern FILE* yyin;
+
+int yyerror() {
+    
+}
+
+%}
+
 %token LEFT_BRACE RIGHT_BRACE LEFT_BRACKET RIGHT_BRACKET
 %token LEFT_PAREN RIGHT_PAREN LEFT_ANGLE RIGHT_ANGLE EQUAL
 %token PLUS_EQUAL MINUS_EQUAL ASTERISK_EQUAL SLASH_EQUAL
@@ -182,3 +196,5 @@ mul-op:
     ASTERISK | SLASH | PERCENT
 
 type: VOID_RW | BOOL_RW | BYTE_RW | CHAR_RW | SHORT_RW | INT_RW | LONG_RW | FLOAT_RW | DOUBLE_RW
+
+%%

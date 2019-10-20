@@ -17,10 +17,13 @@ debug: all
 clean: clean-custom
 	${RM} $(OBJ) $(BIN)
 
-$(LEXICAL): flex compile
+$(LEXICAL): flex bison compile
 
 flex:
 	flex -o src/lex.yy.c src/tokenizer.lex
+
+bison:
+	bison -o src/parser.c src/parser.y
 
 compile: $(OBJ)
 	$(C) $(OBJ) -o $(BIN) $(CFLAGS)
