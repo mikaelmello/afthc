@@ -1,7 +1,7 @@
 C		= gcc
 CINCS  	= -I"inc/" -I"src/"
 CFLAGS 	= $(CINCS) -std=c11 -O2 -lfl
-SRCS	= $(shell find src -name '*.c')
+SRCS	= $(shell find src -name '[^lex\.yy|parser]*.c') src/lex.yy.c src/parser.c
 OBJ		= $(addprefix obj/,$(notdir $(SRCS:%.c=%.o))) 
 LEXICAL = lexical-analyzer
 BIN     = tokenizer
@@ -19,7 +19,7 @@ clean: clean-custom
 
 $(LEXICAL): bison flex compile
 
-flex:
+flex: 
 	flex -o src/lex.yy.c src/tokenizer.lex
 
 bison:

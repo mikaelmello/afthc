@@ -13,6 +13,9 @@ uint32_t line = 1;
 uint32_t column = 0;
 %}
 
+%option nounput
+%option noinput
+
 LEFT_BRACE      "{"
 RIGHT_BRACE     "}"
 LEFT_BRACKET    "["

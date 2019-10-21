@@ -800,7 +800,7 @@ assignment-op:
 unary-op:
     PLUS { $$ = UNARY_PLUS; }
 |   MINUS { $$ = UNARY_MINUS; }
-|   EXCL { $$ + UNARY_EXCL; }
+|   EXCL { $$ = UNARY_EXCL; }
 ;
 
 rel-op:
@@ -894,7 +894,7 @@ void print_ast(node root, node_type type, int cur_level) {
                 printf("/\n");
                 break;
                 case PERCENT_OPERATOR:
-                printf("\%\n");
+                printf("%%\n");
                 break;
             }
         break;
@@ -920,7 +920,7 @@ void print_ast(node root, node_type type, int cur_level) {
                 printf("/=\n");
                 break;
                 case PERCENT_EQUAL_OPERATOR:
-                printf("\%=\n");
+                printf("%%=\n");
                 break;
             }
         break;
@@ -1001,6 +1001,7 @@ void print_ast(node root, node_type type, int cur_level) {
             switch(root.c_variable->structure) {
                 case ARRAY_TYPE: printf(" (array)"); break;
                 case SET_TYPE: printf(" (set)"); break;
+                case PRIMITIVE_TYPE: printf(" (primitive)"); break;
             }
             printf("\n");
             child[0].c_primitive_type = root.c_variable->type;
@@ -1029,6 +1030,7 @@ void print_ast(node root, node_type type, int cur_level) {
             switch(root.c_function_param->structure) {
                 case ARRAY_TYPE: printf(" (array)"); break;
                 case SET_TYPE: printf(" (set)"); break;
+                case PRIMITIVE_TYPE: printf(" (primitive)"); break;
             }
             printf("\n");
             child[0].c_primitive_type = root.c_function_param->type;
@@ -1523,6 +1525,11 @@ void print_ast(node root, node_type type, int cur_level) {
         case NT_IDENTIFIER:
             spaces(cur_level);
             printf("Identifier %s\n", root.string_val);
+        break;
+
+        default:
+            printf("SHOULD NOT HAPPEN!\n");
+            exit(1);
 
     }
 }
