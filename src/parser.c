@@ -84,9 +84,10 @@ void yyerror (char const *s)
 }
 
 void print_ast(node root, node_type type, int cur_level);
+void free_ast(node root, node_type type);
 
 
-#line 90 "src/parser.c" /* yacc.c:339  */
+#line 91 "src/parser.c" /* yacc.c:339  */
 
 # ifndef YY_NULLPTR
 #  if defined __cplusplus && 201103L <= __cplusplus
@@ -197,7 +198,7 @@ extern int yydebug;
 
 union YYSTYPE
 {
-#line 48 "src/parser.y" /* yacc.c:355  */
+#line 49 "src/parser.y" /* yacc.c:355  */
 
     t_primary_expression_type c_primary_expression_type;
     t_constant_type c_constant_type;
@@ -254,7 +255,7 @@ union YYSTYPE
     double float_val;
     char char_val;
 
-#line 258 "src/parser.c" /* yacc.c:355  */
+#line 259 "src/parser.c" /* yacc.c:355  */
 };
 
 typedef union YYSTYPE YYSTYPE;
@@ -271,7 +272,7 @@ int yyparse (void);
 
 /* Copy the second part of user declarations.  */
 
-#line 275 "src/parser.c" /* yacc.c:358  */
+#line 276 "src/parser.c" /* yacc.c:358  */
 
 #ifdef short
 # undef short
@@ -575,18 +576,18 @@ static const yytype_uint8 yytranslate[] =
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_uint16 yyrline[] =
 {
-       0,   155,   155,   167,   173,   179,   185,   194,   201,   208,
-     215,   225,   237,   243,   249,   255,   262,   269,   276,   286,
-     294,   300,   306,   312,   318,   324,   330,   336,   342,   348,
-     357,   366,   375,   378,   381,   387,   390,   393,   399,   406,
-     416,   422,   431,   440,   451,   459,   462,   468,   476,   483,
-     491,   497,   505,   511,   519,   525,   533,   539,   547,   553,
-     561,   568,   575,   583,   590,   598,   605,   612,   620,   626,
-     634,   641,   648,   656,   663,   671,   677,   685,   691,   697,
-     705,   712,   719,   727,   733,   738,   744,   750,   756,   762,
-     771,   777,   783,   792,   793,   794,   795,   796,   797,   801,
-     802,   803,   807,   808,   809,   810,   811,   815,   816,   817,
-     821,   824,   827,   830,   833,   836,   839,   842,   845
+       0,   156,   156,   169,   175,   181,   187,   196,   203,   210,
+     217,   227,   239,   245,   251,   257,   264,   271,   278,   288,
+     296,   302,   308,   314,   320,   326,   332,   338,   344,   350,
+     359,   368,   377,   380,   383,   389,   392,   395,   401,   408,
+     418,   424,   433,   442,   453,   461,   464,   470,   478,   485,
+     493,   499,   507,   513,   521,   527,   535,   541,   549,   555,
+     563,   570,   577,   585,   592,   600,   607,   614,   622,   628,
+     636,   643,   650,   658,   665,   673,   679,   687,   693,   699,
+     707,   714,   721,   729,   735,   740,   746,   752,   758,   764,
+     773,   779,   785,   794,   795,   796,   797,   798,   799,   803,
+     804,   805,   809,   810,   811,   812,   813,   817,   818,   819,
+     823,   826,   829,   832,   835,   838,   841,   844,   847
 };
 #endif
 
@@ -1515,7 +1516,7 @@ yyreduce:
   switch (yyn)
     {
         case 2:
-#line 155 "src/parser.y" /* yacc.c:1646  */
+#line 156 "src/parser.y" /* yacc.c:1646  */
     {
         printf("OK!\n");
         t_program* program = zero_allocate(t_program);
@@ -1524,53 +1525,54 @@ yyreduce:
         root.c_program = program;
         print_ast(root, NT_PROGRAM, 0);
         (yyval.c_program) = program;
+        free_ast(root, NT_PROGRAM);
     }
-#line 1529 "src/parser.c" /* yacc.c:1646  */
+#line 1531 "src/parser.c" /* yacc.c:1646  */
     break;
 
   case 3:
-#line 167 "src/parser.y" /* yacc.c:1646  */
+#line 169 "src/parser.y" /* yacc.c:1646  */
     {
         t_declaration_list* declaration_list = zero_allocate(t_declaration_list);
         declaration_list->prev = (yyvsp[-1].c_declaration_list);
         declaration_list->cur = (yyvsp[0].c_declaration);
         (yyval.c_declaration_list) = declaration_list;
     }
-#line 1540 "src/parser.c" /* yacc.c:1646  */
+#line 1542 "src/parser.c" /* yacc.c:1646  */
     break;
 
   case 4:
-#line 173 "src/parser.y" /* yacc.c:1646  */
+#line 175 "src/parser.y" /* yacc.c:1646  */
     {
         (yyval.c_declaration_list) = NULL;
     }
-#line 1548 "src/parser.c" /* yacc.c:1646  */
+#line 1550 "src/parser.c" /* yacc.c:1646  */
     break;
 
   case 5:
-#line 179 "src/parser.y" /* yacc.c:1646  */
+#line 181 "src/parser.y" /* yacc.c:1646  */
     {
         t_declaration* dec = zero_allocate(t_declaration);
         dec->type = VAR_DECLARATION;
         dec->member.variable = (yyvsp[0].c_variable);
         (yyval.c_declaration) = dec;
     }
-#line 1559 "src/parser.c" /* yacc.c:1646  */
+#line 1561 "src/parser.c" /* yacc.c:1646  */
     break;
 
   case 6:
-#line 185 "src/parser.y" /* yacc.c:1646  */
+#line 187 "src/parser.y" /* yacc.c:1646  */
     {
         t_declaration* dec = zero_allocate(t_declaration);
         dec->type = FUN_DECLARATION;
         dec->member.function = (yyvsp[0].c_function);   
         (yyval.c_declaration) = dec;  
     }
-#line 1570 "src/parser.c" /* yacc.c:1646  */
+#line 1572 "src/parser.c" /* yacc.c:1646  */
     break;
 
   case 7:
-#line 194 "src/parser.y" /* yacc.c:1646  */
+#line 196 "src/parser.y" /* yacc.c:1646  */
     {
         t_variable* var = zero_allocate(t_variable);
         var->type = (yyvsp[-2].c_primitive_type);
@@ -1578,11 +1580,11 @@ yyreduce:
         var->identifier = (yyvsp[-1].string_val);
         (yyval.c_variable) = var;
     }
-#line 1582 "src/parser.c" /* yacc.c:1646  */
+#line 1584 "src/parser.c" /* yacc.c:1646  */
     break;
 
   case 8:
-#line 201 "src/parser.y" /* yacc.c:1646  */
+#line 203 "src/parser.y" /* yacc.c:1646  */
     {
         t_variable* var = zero_allocate(t_variable);
         var->type = (yyvsp[-5].c_primitive_type);
@@ -1590,11 +1592,11 @@ yyreduce:
         var->identifier = (yyvsp[-4].string_val);
         (yyval.c_variable) = var;
     }
-#line 1594 "src/parser.c" /* yacc.c:1646  */
+#line 1596 "src/parser.c" /* yacc.c:1646  */
     break;
 
   case 9:
-#line 208 "src/parser.y" /* yacc.c:1646  */
+#line 210 "src/parser.y" /* yacc.c:1646  */
     {
         t_variable* var = zero_allocate(t_variable);
         var->type = (yyvsp[-4].c_primitive_type);
@@ -1602,11 +1604,11 @@ yyreduce:
         var->identifier = (yyvsp[-3].string_val);
         (yyval.c_variable) = var;
     }
-#line 1606 "src/parser.c" /* yacc.c:1646  */
+#line 1608 "src/parser.c" /* yacc.c:1646  */
     break;
 
   case 10:
-#line 215 "src/parser.y" /* yacc.c:1646  */
+#line 217 "src/parser.y" /* yacc.c:1646  */
     {
         t_variable* var = zero_allocate(t_variable);
         var->type = (yyvsp[-4].c_primitive_type);
@@ -1614,11 +1616,11 @@ yyreduce:
         var->identifier = (yyvsp[-3].string_val);
         (yyval.c_variable) = var;
     }
-#line 1618 "src/parser.c" /* yacc.c:1646  */
+#line 1620 "src/parser.c" /* yacc.c:1646  */
     break;
 
   case 11:
-#line 225 "src/parser.y" /* yacc.c:1646  */
+#line 227 "src/parser.y" /* yacc.c:1646  */
     {
         t_function* fun = zero_allocate(t_function);
         fun->return_type = (yyvsp[-5].c_primitive_type);
@@ -1628,41 +1630,41 @@ yyreduce:
         fun->body = (yyvsp[0].c_scope);
         (yyval.c_function) = fun;
     }
-#line 1632 "src/parser.c" /* yacc.c:1646  */
+#line 1634 "src/parser.c" /* yacc.c:1646  */
     break;
 
   case 12:
-#line 237 "src/parser.y" /* yacc.c:1646  */
+#line 239 "src/parser.y" /* yacc.c:1646  */
     {
         t_function_params* fp = zero_allocate(t_function_params);
         fp->cur = (yyvsp[0].c_function_param);
         fp->prev = (yyvsp[-2].c_function_params);
         (yyval.c_function_params) = fp; 
     }
-#line 1643 "src/parser.c" /* yacc.c:1646  */
+#line 1645 "src/parser.c" /* yacc.c:1646  */
     break;
 
   case 13:
-#line 243 "src/parser.y" /* yacc.c:1646  */
+#line 245 "src/parser.y" /* yacc.c:1646  */
     {
         t_function_params* fp = zero_allocate(t_function_params);
         fp->cur = (yyvsp[0].c_function_param);
         fp->prev = NULL;
         (yyval.c_function_params) = fp; 
     }
-#line 1654 "src/parser.c" /* yacc.c:1646  */
+#line 1656 "src/parser.c" /* yacc.c:1646  */
     break;
 
   case 14:
-#line 249 "src/parser.y" /* yacc.c:1646  */
+#line 251 "src/parser.y" /* yacc.c:1646  */
     {
         (yyval.c_function_params) = NULL;
     }
-#line 1662 "src/parser.c" /* yacc.c:1646  */
+#line 1664 "src/parser.c" /* yacc.c:1646  */
     break;
 
   case 15:
-#line 255 "src/parser.y" /* yacc.c:1646  */
+#line 257 "src/parser.y" /* yacc.c:1646  */
     {
         t_function_param* var = zero_allocate(t_function_param);
         var->type = (yyvsp[-1].c_primitive_type);
@@ -1670,11 +1672,11 @@ yyreduce:
         var->identifier = (yyvsp[0].string_val);
         (yyval.c_function_param) = var;
     }
-#line 1674 "src/parser.c" /* yacc.c:1646  */
+#line 1676 "src/parser.c" /* yacc.c:1646  */
     break;
 
   case 16:
-#line 262 "src/parser.y" /* yacc.c:1646  */
+#line 264 "src/parser.y" /* yacc.c:1646  */
     {
         t_function_param* var = zero_allocate(t_function_param);
         var->type = (yyvsp[-4].c_primitive_type);
@@ -1682,11 +1684,11 @@ yyreduce:
         var->identifier = (yyvsp[-3].string_val);
         (yyval.c_function_param) = var;
     }
-#line 1686 "src/parser.c" /* yacc.c:1646  */
+#line 1688 "src/parser.c" /* yacc.c:1646  */
     break;
 
   case 17:
-#line 269 "src/parser.y" /* yacc.c:1646  */
+#line 271 "src/parser.y" /* yacc.c:1646  */
     {
         t_function_param* var = zero_allocate(t_function_param);
         var->type = (yyvsp[-3].c_primitive_type);
@@ -1694,11 +1696,11 @@ yyreduce:
         var->identifier = (yyvsp[-2].string_val);
         (yyval.c_function_param) = var;
     }
-#line 1698 "src/parser.c" /* yacc.c:1646  */
+#line 1700 "src/parser.c" /* yacc.c:1646  */
     break;
 
   case 18:
-#line 276 "src/parser.y" /* yacc.c:1646  */
+#line 278 "src/parser.y" /* yacc.c:1646  */
     {
         t_function_param* var = zero_allocate(t_function_param);
         var->type = (yyvsp[-3].c_primitive_type);
@@ -1706,198 +1708,198 @@ yyreduce:
         var->identifier = (yyvsp[-2].string_val);
         (yyval.c_function_param) = var;
     }
-#line 1710 "src/parser.c" /* yacc.c:1646  */
+#line 1712 "src/parser.c" /* yacc.c:1646  */
     break;
 
   case 19:
-#line 286 "src/parser.y" /* yacc.c:1646  */
+#line 288 "src/parser.y" /* yacc.c:1646  */
     {
         t_scope* scope = zero_allocate(t_scope);
         scope->statements = (yyvsp[-1].c_statement_list);
         (yyval.c_scope) = scope;
     }
-#line 1720 "src/parser.c" /* yacc.c:1646  */
+#line 1722 "src/parser.c" /* yacc.c:1646  */
     break;
 
   case 20:
-#line 294 "src/parser.y" /* yacc.c:1646  */
+#line 296 "src/parser.y" /* yacc.c:1646  */
     {
         t_statement_list* fp = zero_allocate(t_statement_list);
         fp->cur = (yyvsp[0].c_statement);
         fp->prev = (yyvsp[-1].c_statement_list);
         (yyval.c_statement_list) = fp; 
     }
-#line 1731 "src/parser.c" /* yacc.c:1646  */
+#line 1733 "src/parser.c" /* yacc.c:1646  */
     break;
 
   case 21:
-#line 300 "src/parser.y" /* yacc.c:1646  */
+#line 302 "src/parser.y" /* yacc.c:1646  */
     {
     (yyval.c_statement_list) = NULL;
 }
-#line 1739 "src/parser.c" /* yacc.c:1646  */
+#line 1741 "src/parser.c" /* yacc.c:1646  */
     break;
 
   case 22:
-#line 306 "src/parser.y" /* yacc.c:1646  */
+#line 308 "src/parser.y" /* yacc.c:1646  */
     {
         t_statement* stmt = zero_allocate(t_statement);
         stmt->type = SCOPE_STATEMENT;
         stmt->member.scope = (yyvsp[0].c_scope);
         (yyval.c_statement) = stmt;
     }
-#line 1750 "src/parser.c" /* yacc.c:1646  */
+#line 1752 "src/parser.c" /* yacc.c:1646  */
     break;
 
   case 23:
-#line 312 "src/parser.y" /* yacc.c:1646  */
+#line 314 "src/parser.y" /* yacc.c:1646  */
     {
         t_statement* stmt = zero_allocate(t_statement);
         stmt->type = VAR_DECLARATION_STATEMENT;
         stmt->member.variable = (yyvsp[0].c_variable);
         (yyval.c_statement) = stmt;
     }
-#line 1761 "src/parser.c" /* yacc.c:1646  */
+#line 1763 "src/parser.c" /* yacc.c:1646  */
     break;
 
   case 24:
-#line 318 "src/parser.y" /* yacc.c:1646  */
+#line 320 "src/parser.y" /* yacc.c:1646  */
     {
         t_statement* stmt = zero_allocate(t_statement);
         stmt->type = PRINT_STATEMENT;
         stmt->member.print = (yyvsp[0].c_print);
         (yyval.c_statement) = stmt;
     }
-#line 1772 "src/parser.c" /* yacc.c:1646  */
+#line 1774 "src/parser.c" /* yacc.c:1646  */
     break;
 
   case 25:
-#line 324 "src/parser.y" /* yacc.c:1646  */
+#line 326 "src/parser.y" /* yacc.c:1646  */
     {
         t_statement* stmt = zero_allocate(t_statement);
         stmt->type = SCAN_STATEMENT;
         stmt->member.scan = (yyvsp[0].c_scan);
         (yyval.c_statement) = stmt;
     }
-#line 1783 "src/parser.c" /* yacc.c:1646  */
+#line 1785 "src/parser.c" /* yacc.c:1646  */
     break;
 
   case 26:
-#line 330 "src/parser.y" /* yacc.c:1646  */
+#line 332 "src/parser.y" /* yacc.c:1646  */
     {
         t_statement* stmt = zero_allocate(t_statement);
         stmt->type = EXPRESSION_STATEMENT;
         stmt->member.expression = (yyvsp[-1].c_expression);
         (yyval.c_statement) = stmt;
     }
-#line 1794 "src/parser.c" /* yacc.c:1646  */
+#line 1796 "src/parser.c" /* yacc.c:1646  */
     break;
 
   case 27:
-#line 336 "src/parser.y" /* yacc.c:1646  */
+#line 338 "src/parser.y" /* yacc.c:1646  */
     {
         t_statement* stmt = zero_allocate(t_statement);
         stmt->type = CONDITION_STATEMENT;
         stmt->member.condition = (yyvsp[0].c_condition);
         (yyval.c_statement) = stmt;
     }
-#line 1805 "src/parser.c" /* yacc.c:1646  */
+#line 1807 "src/parser.c" /* yacc.c:1646  */
     break;
 
   case 28:
-#line 342 "src/parser.y" /* yacc.c:1646  */
+#line 344 "src/parser.y" /* yacc.c:1646  */
     {
         t_statement* stmt = zero_allocate(t_statement);
         stmt->type = ITERATION_STATEMENT;
         stmt->member.iteration = (yyvsp[0].c_iteration);
         (yyval.c_statement) = stmt;
     }
-#line 1816 "src/parser.c" /* yacc.c:1646  */
+#line 1818 "src/parser.c" /* yacc.c:1646  */
     break;
 
   case 29:
-#line 348 "src/parser.y" /* yacc.c:1646  */
+#line 350 "src/parser.y" /* yacc.c:1646  */
     {
         t_statement* stmt = zero_allocate(t_statement);
         stmt->type = RETURN_STATEMENT;
         stmt->member._return = (yyvsp[0].c_return);
         (yyval.c_statement) = stmt;
     }
-#line 1827 "src/parser.c" /* yacc.c:1646  */
+#line 1829 "src/parser.c" /* yacc.c:1646  */
     break;
 
   case 30:
-#line 357 "src/parser.y" /* yacc.c:1646  */
+#line 359 "src/parser.y" /* yacc.c:1646  */
     {
         t_print* print = zero_allocate(t_print);
         print->type = (yyvsp[-2].c_print_type);
         print->expression = (yyvsp[-1].c_expression);
         (yyval.c_print) = print;
     }
-#line 1838 "src/parser.c" /* yacc.c:1646  */
+#line 1840 "src/parser.c" /* yacc.c:1646  */
     break;
 
   case 31:
-#line 366 "src/parser.y" /* yacc.c:1646  */
+#line 368 "src/parser.y" /* yacc.c:1646  */
     {
         t_scan* scan = zero_allocate(t_scan);
         scan->type = (yyvsp[-2].c_scan_type);
         scan->destiny = (yyvsp[-1].string_val);
         (yyval.c_scan) = scan;
     }
-#line 1849 "src/parser.c" /* yacc.c:1646  */
+#line 1851 "src/parser.c" /* yacc.c:1646  */
     break;
 
   case 32:
-#line 375 "src/parser.y" /* yacc.c:1646  */
+#line 377 "src/parser.y" /* yacc.c:1646  */
     {
         (yyval.c_print_type) = PRINT_DEC_TYPE;
     }
-#line 1857 "src/parser.c" /* yacc.c:1646  */
+#line 1859 "src/parser.c" /* yacc.c:1646  */
     break;
 
   case 33:
-#line 378 "src/parser.y" /* yacc.c:1646  */
+#line 380 "src/parser.y" /* yacc.c:1646  */
     {
         (yyval.c_print_type) = PRINT_CHAR_TYPE;
     }
-#line 1865 "src/parser.c" /* yacc.c:1646  */
+#line 1867 "src/parser.c" /* yacc.c:1646  */
     break;
 
   case 34:
-#line 381 "src/parser.y" /* yacc.c:1646  */
+#line 383 "src/parser.y" /* yacc.c:1646  */
     {
         (yyval.c_print_type) = PRINT_HEX_TYPE;
     }
-#line 1873 "src/parser.c" /* yacc.c:1646  */
+#line 1875 "src/parser.c" /* yacc.c:1646  */
     break;
 
   case 35:
-#line 387 "src/parser.y" /* yacc.c:1646  */
+#line 389 "src/parser.y" /* yacc.c:1646  */
     {
         (yyval.c_scan_type) = SCAN_DEC_TYPE;
     }
-#line 1881 "src/parser.c" /* yacc.c:1646  */
+#line 1883 "src/parser.c" /* yacc.c:1646  */
     break;
 
   case 36:
-#line 390 "src/parser.y" /* yacc.c:1646  */
+#line 392 "src/parser.y" /* yacc.c:1646  */
     {
         (yyval.c_scan_type) = SCAN_CHAR_TYPE;
     }
-#line 1889 "src/parser.c" /* yacc.c:1646  */
+#line 1891 "src/parser.c" /* yacc.c:1646  */
     break;
 
   case 37:
-#line 393 "src/parser.y" /* yacc.c:1646  */
+#line 395 "src/parser.y" /* yacc.c:1646  */
     {
         (yyval.c_scan_type) = SCAN_FLOAT_TYPE;
     }
-#line 1897 "src/parser.c" /* yacc.c:1646  */
+#line 1899 "src/parser.c" /* yacc.c:1646  */
     break;
 
   case 38:
-#line 399 "src/parser.y" /* yacc.c:1646  */
+#line 401 "src/parser.y" /* yacc.c:1646  */
     {
         t_condition* cond = zero_allocate(t_condition);
         cond->condition = (yyvsp[-2].c_expression);
@@ -1905,11 +1907,11 @@ yyreduce:
         cond->else_body = NULL;  
         (yyval.c_condition) = cond;  
     }
-#line 1909 "src/parser.c" /* yacc.c:1646  */
+#line 1911 "src/parser.c" /* yacc.c:1646  */
     break;
 
   case 39:
-#line 406 "src/parser.y" /* yacc.c:1646  */
+#line 408 "src/parser.y" /* yacc.c:1646  */
     {   
         t_condition* cond = zero_allocate(t_condition);
         cond->condition = (yyvsp[-4].c_expression);
@@ -1917,44 +1919,44 @@ yyreduce:
         cond->else_body = (yyvsp[0].c_statement);
         (yyval.c_condition) = cond;
     }
-#line 1921 "src/parser.c" /* yacc.c:1646  */
+#line 1923 "src/parser.c" /* yacc.c:1646  */
     break;
 
   case 40:
-#line 416 "src/parser.y" /* yacc.c:1646  */
+#line 418 "src/parser.y" /* yacc.c:1646  */
     {
         t_iteration* it = zero_allocate(t_iteration);
         it->type = WHILE_ITERATION;
         it->member._while = (yyvsp[0].c_while);
         (yyval.c_iteration) = it;
     }
-#line 1932 "src/parser.c" /* yacc.c:1646  */
+#line 1934 "src/parser.c" /* yacc.c:1646  */
     break;
 
   case 41:
-#line 422 "src/parser.y" /* yacc.c:1646  */
+#line 424 "src/parser.y" /* yacc.c:1646  */
     {
         t_iteration* it = zero_allocate(t_iteration);
         it->type = FOR_ITERATION;
         it->member._for = (yyvsp[0].c_for);
         (yyval.c_iteration) = it;
     }
-#line 1943 "src/parser.c" /* yacc.c:1646  */
+#line 1945 "src/parser.c" /* yacc.c:1646  */
     break;
 
   case 42:
-#line 431 "src/parser.y" /* yacc.c:1646  */
+#line 433 "src/parser.y" /* yacc.c:1646  */
     {
         t_while* w = zero_allocate(t_while);
         w->condition = (yyvsp[-2].c_expression);
         w->body = (yyvsp[0].c_statement);
         (yyval.c_while) = w;
     }
-#line 1954 "src/parser.c" /* yacc.c:1646  */
+#line 1956 "src/parser.c" /* yacc.c:1646  */
     break;
 
   case 43:
-#line 440 "src/parser.y" /* yacc.c:1646  */
+#line 442 "src/parser.y" /* yacc.c:1646  */
     {
         t_for* f = zero_allocate(t_for);
         f->initialization = (yyvsp[-6].c_expression);
@@ -1963,47 +1965,47 @@ yyreduce:
         f->body = (yyvsp[0].c_statement);
         (yyval.c_for) = f;
     }
-#line 1967 "src/parser.c" /* yacc.c:1646  */
+#line 1969 "src/parser.c" /* yacc.c:1646  */
     break;
 
   case 44:
-#line 451 "src/parser.y" /* yacc.c:1646  */
+#line 453 "src/parser.y" /* yacc.c:1646  */
     {
         t_return* ret = zero_allocate(t_return);
         ret->expression = (yyvsp[-1].c_expression);
         (yyval.c_return) = ret;
     }
-#line 1977 "src/parser.c" /* yacc.c:1646  */
+#line 1979 "src/parser.c" /* yacc.c:1646  */
     break;
 
   case 45:
-#line 459 "src/parser.y" /* yacc.c:1646  */
+#line 461 "src/parser.y" /* yacc.c:1646  */
     {
         (yyval.c_expression) = (yyvsp[0].c_expression);
     }
-#line 1985 "src/parser.c" /* yacc.c:1646  */
+#line 1987 "src/parser.c" /* yacc.c:1646  */
     break;
 
   case 46:
-#line 462 "src/parser.y" /* yacc.c:1646  */
+#line 464 "src/parser.y" /* yacc.c:1646  */
     {
         (yyval.c_expression) = NULL;
     }
-#line 1993 "src/parser.c" /* yacc.c:1646  */
+#line 1995 "src/parser.c" /* yacc.c:1646  */
     break;
 
   case 47:
-#line 468 "src/parser.y" /* yacc.c:1646  */
+#line 470 "src/parser.y" /* yacc.c:1646  */
     {
         t_expression* exp = zero_allocate(t_expression);
         exp->assignment = (yyvsp[0].c_assignment);
         (yyval.c_expression) = exp;
     }
-#line 2003 "src/parser.c" /* yacc.c:1646  */
+#line 2005 "src/parser.c" /* yacc.c:1646  */
     break;
 
   case 48:
-#line 476 "src/parser.y" /* yacc.c:1646  */
+#line 478 "src/parser.y" /* yacc.c:1646  */
     {
         t_assignment* exp = zero_allocate(t_assignment);
         exp->identifier = (yyvsp[-2].string_val);
@@ -2011,126 +2013,126 @@ yyreduce:
         exp->and_expression = (yyvsp[0].c_and_expression);
         (yyval.c_assignment) = exp;
     }
-#line 2015 "src/parser.c" /* yacc.c:1646  */
+#line 2017 "src/parser.c" /* yacc.c:1646  */
     break;
 
   case 49:
-#line 483 "src/parser.y" /* yacc.c:1646  */
+#line 485 "src/parser.y" /* yacc.c:1646  */
     {
         t_assignment* exp = zero_allocate(t_assignment);
         exp->and_expression = (yyvsp[0].c_and_expression);
         (yyval.c_assignment) = exp;
     }
-#line 2025 "src/parser.c" /* yacc.c:1646  */
+#line 2027 "src/parser.c" /* yacc.c:1646  */
     break;
 
   case 50:
-#line 491 "src/parser.y" /* yacc.c:1646  */
+#line 493 "src/parser.y" /* yacc.c:1646  */
     {
         t_and_expression* exp = zero_allocate(t_and_expression);
         exp->left = (yyvsp[-2].c_and_expression);
         exp->right = (yyvsp[0].c_or_expression);
         (yyval.c_and_expression) = exp;
     }
-#line 2036 "src/parser.c" /* yacc.c:1646  */
+#line 2038 "src/parser.c" /* yacc.c:1646  */
     break;
 
   case 51:
-#line 497 "src/parser.y" /* yacc.c:1646  */
+#line 499 "src/parser.y" /* yacc.c:1646  */
     {
         t_and_expression* exp = zero_allocate(t_and_expression);
         exp->right = (yyvsp[0].c_or_expression);
         (yyval.c_and_expression) = exp;
     }
-#line 2046 "src/parser.c" /* yacc.c:1646  */
+#line 2048 "src/parser.c" /* yacc.c:1646  */
     break;
 
   case 52:
-#line 505 "src/parser.y" /* yacc.c:1646  */
+#line 507 "src/parser.y" /* yacc.c:1646  */
     {
         t_or_expression* exp = zero_allocate(t_or_expression);
         exp->left = (yyvsp[-2].c_or_expression);
         exp->right = (yyvsp[0].c_bw_and_expression);
         (yyval.c_or_expression) = exp;
     }
-#line 2057 "src/parser.c" /* yacc.c:1646  */
+#line 2059 "src/parser.c" /* yacc.c:1646  */
     break;
 
   case 53:
-#line 511 "src/parser.y" /* yacc.c:1646  */
+#line 513 "src/parser.y" /* yacc.c:1646  */
     {
         t_or_expression* exp = zero_allocate(t_or_expression);
         exp->right = (yyvsp[0].c_bw_and_expression);
         (yyval.c_or_expression) = exp;
     }
-#line 2067 "src/parser.c" /* yacc.c:1646  */
+#line 2069 "src/parser.c" /* yacc.c:1646  */
     break;
 
   case 54:
-#line 519 "src/parser.y" /* yacc.c:1646  */
+#line 521 "src/parser.y" /* yacc.c:1646  */
     {
         t_bw_and_expression* exp = zero_allocate(t_bw_and_expression);
         exp->left = (yyvsp[-2].c_bw_and_expression);
         exp->right = (yyvsp[0].c_bw_or_expression);
         (yyval.c_bw_and_expression) = exp;
     }
-#line 2078 "src/parser.c" /* yacc.c:1646  */
+#line 2080 "src/parser.c" /* yacc.c:1646  */
     break;
 
   case 55:
-#line 525 "src/parser.y" /* yacc.c:1646  */
+#line 527 "src/parser.y" /* yacc.c:1646  */
     {
         t_bw_and_expression* exp = zero_allocate(t_bw_and_expression);
         exp->right = (yyvsp[0].c_bw_or_expression);
         (yyval.c_bw_and_expression) = exp;
     }
-#line 2088 "src/parser.c" /* yacc.c:1646  */
+#line 2090 "src/parser.c" /* yacc.c:1646  */
     break;
 
   case 56:
-#line 533 "src/parser.y" /* yacc.c:1646  */
+#line 535 "src/parser.y" /* yacc.c:1646  */
     {
         t_bw_or_expression* exp = zero_allocate(t_bw_or_expression);
         exp->left = (yyvsp[-2].c_bw_or_expression);
         exp->right = (yyvsp[0].c_bw_xor_expression);
         (yyval.c_bw_or_expression) = exp;
     }
-#line 2099 "src/parser.c" /* yacc.c:1646  */
+#line 2101 "src/parser.c" /* yacc.c:1646  */
     break;
 
   case 57:
-#line 539 "src/parser.y" /* yacc.c:1646  */
+#line 541 "src/parser.y" /* yacc.c:1646  */
     {
         t_bw_or_expression* exp = zero_allocate(t_bw_or_expression);
         exp->right = (yyvsp[0].c_bw_xor_expression);
         (yyval.c_bw_or_expression) = exp;
     }
-#line 2109 "src/parser.c" /* yacc.c:1646  */
+#line 2111 "src/parser.c" /* yacc.c:1646  */
     break;
 
   case 58:
-#line 547 "src/parser.y" /* yacc.c:1646  */
+#line 549 "src/parser.y" /* yacc.c:1646  */
     {
         t_bw_xor_expression* exp = zero_allocate(t_bw_xor_expression);
         exp->left = (yyvsp[-2].c_bw_xor_expression);
         exp->right = (yyvsp[0].c_eq_expression);
         (yyval.c_bw_xor_expression) = exp;
     }
-#line 2120 "src/parser.c" /* yacc.c:1646  */
+#line 2122 "src/parser.c" /* yacc.c:1646  */
     break;
 
   case 59:
-#line 553 "src/parser.y" /* yacc.c:1646  */
+#line 555 "src/parser.y" /* yacc.c:1646  */
     {
         t_bw_xor_expression* exp = zero_allocate(t_bw_xor_expression);
         exp->right = (yyvsp[0].c_eq_expression);
         (yyval.c_bw_xor_expression) = exp;
     }
-#line 2130 "src/parser.c" /* yacc.c:1646  */
+#line 2132 "src/parser.c" /* yacc.c:1646  */
     break;
 
   case 60:
-#line 561 "src/parser.y" /* yacc.c:1646  */
+#line 563 "src/parser.y" /* yacc.c:1646  */
     {
         t_eq_expression* exp = zero_allocate(t_eq_expression);
         exp->type = EQ_EQ_EXPRESSION;
@@ -2138,11 +2140,11 @@ yyreduce:
         exp->right = (yyvsp[0].c_rel_expression);
         (yyval.c_eq_expression) = exp;
     }
-#line 2142 "src/parser.c" /* yacc.c:1646  */
+#line 2144 "src/parser.c" /* yacc.c:1646  */
     break;
 
   case 61:
-#line 568 "src/parser.y" /* yacc.c:1646  */
+#line 570 "src/parser.y" /* yacc.c:1646  */
     {
         t_eq_expression* exp = zero_allocate(t_eq_expression);
         exp->type = NOT_EQ_EXPRESSION;
@@ -2150,21 +2152,21 @@ yyreduce:
         exp->right = (yyvsp[0].c_rel_expression);
         (yyval.c_eq_expression) = exp;
     }
-#line 2154 "src/parser.c" /* yacc.c:1646  */
+#line 2156 "src/parser.c" /* yacc.c:1646  */
     break;
 
   case 62:
-#line 575 "src/parser.y" /* yacc.c:1646  */
+#line 577 "src/parser.y" /* yacc.c:1646  */
     {
         t_eq_expression* exp = zero_allocate(t_eq_expression);
         exp->right = (yyvsp[0].c_rel_expression);
         (yyval.c_eq_expression) = exp;
     }
-#line 2164 "src/parser.c" /* yacc.c:1646  */
+#line 2166 "src/parser.c" /* yacc.c:1646  */
     break;
 
   case 63:
-#line 583 "src/parser.y" /* yacc.c:1646  */
+#line 585 "src/parser.y" /* yacc.c:1646  */
     {
         t_rel_expression* exp = zero_allocate(t_rel_expression);
         exp->left = (yyvsp[-2].c_rel_expression);
@@ -2172,21 +2174,21 @@ yyreduce:
         exp->right = (yyvsp[0].c_shift_expression);
         (yyval.c_rel_expression) = exp;
     }
-#line 2176 "src/parser.c" /* yacc.c:1646  */
+#line 2178 "src/parser.c" /* yacc.c:1646  */
     break;
 
   case 64:
-#line 590 "src/parser.y" /* yacc.c:1646  */
+#line 592 "src/parser.y" /* yacc.c:1646  */
     {
         t_rel_expression* exp = zero_allocate(t_rel_expression);
         exp->right = (yyvsp[0].c_shift_expression);
         (yyval.c_rel_expression) = exp;
     }
-#line 2186 "src/parser.c" /* yacc.c:1646  */
+#line 2188 "src/parser.c" /* yacc.c:1646  */
     break;
 
   case 65:
-#line 598 "src/parser.y" /* yacc.c:1646  */
+#line 600 "src/parser.y" /* yacc.c:1646  */
     {
         t_shift_expression* exp = zero_allocate(t_shift_expression);
         exp->left = (yyvsp[-2].c_shift_expression);
@@ -2194,11 +2196,11 @@ yyreduce:
         exp->right = (yyvsp[0].c_set_rm_expression);
         (yyval.c_shift_expression) = exp;
     }
-#line 2198 "src/parser.c" /* yacc.c:1646  */
+#line 2200 "src/parser.c" /* yacc.c:1646  */
     break;
 
   case 66:
-#line 605 "src/parser.y" /* yacc.c:1646  */
+#line 607 "src/parser.y" /* yacc.c:1646  */
     {
         t_shift_expression* exp = zero_allocate(t_shift_expression);
         exp->left = (yyvsp[-2].c_shift_expression);
@@ -2206,42 +2208,42 @@ yyreduce:
         exp->right = (yyvsp[0].c_set_rm_expression);
         (yyval.c_shift_expression) = exp;
     }
-#line 2210 "src/parser.c" /* yacc.c:1646  */
+#line 2212 "src/parser.c" /* yacc.c:1646  */
     break;
 
   case 67:
-#line 612 "src/parser.y" /* yacc.c:1646  */
+#line 614 "src/parser.y" /* yacc.c:1646  */
     {
         t_shift_expression* exp = zero_allocate(t_shift_expression);
         exp->right = (yyvsp[0].c_set_rm_expression);
         (yyval.c_shift_expression) = exp;
     }
-#line 2220 "src/parser.c" /* yacc.c:1646  */
+#line 2222 "src/parser.c" /* yacc.c:1646  */
     break;
 
   case 68:
-#line 620 "src/parser.y" /* yacc.c:1646  */
+#line 622 "src/parser.y" /* yacc.c:1646  */
     {
         t_set_rm_expression* exp = zero_allocate(t_set_rm_expression);
         exp->left = (yyvsp[-2].c_set_rm_expression);
         exp->right = (yyvsp[0].c_add_expression);
         (yyval.c_set_rm_expression) = exp;
     }
-#line 2231 "src/parser.c" /* yacc.c:1646  */
+#line 2233 "src/parser.c" /* yacc.c:1646  */
     break;
 
   case 69:
-#line 626 "src/parser.y" /* yacc.c:1646  */
+#line 628 "src/parser.y" /* yacc.c:1646  */
     {
         t_set_rm_expression* exp = zero_allocate(t_set_rm_expression);
         exp->right = (yyvsp[0].c_add_expression);
         (yyval.c_set_rm_expression) = exp;
     }
-#line 2241 "src/parser.c" /* yacc.c:1646  */
+#line 2243 "src/parser.c" /* yacc.c:1646  */
     break;
 
   case 70:
-#line 634 "src/parser.y" /* yacc.c:1646  */
+#line 636 "src/parser.y" /* yacc.c:1646  */
     {
         t_add_expression* exp = zero_allocate(t_add_expression);
         exp->left = (yyvsp[-2].c_add_expression);
@@ -2249,11 +2251,11 @@ yyreduce:
         exp->right = (yyvsp[0].c_mult_expression);
         (yyval.c_add_expression) = exp;
     }
-#line 2253 "src/parser.c" /* yacc.c:1646  */
+#line 2255 "src/parser.c" /* yacc.c:1646  */
     break;
 
   case 71:
-#line 641 "src/parser.y" /* yacc.c:1646  */
+#line 643 "src/parser.y" /* yacc.c:1646  */
     {
         t_add_expression* exp = zero_allocate(t_add_expression);
         exp->left = (yyvsp[-2].c_add_expression);
@@ -2261,21 +2263,21 @@ yyreduce:
         exp->right = (yyvsp[0].c_mult_expression);
         (yyval.c_add_expression) = exp;
     }
-#line 2265 "src/parser.c" /* yacc.c:1646  */
+#line 2267 "src/parser.c" /* yacc.c:1646  */
     break;
 
   case 72:
-#line 648 "src/parser.y" /* yacc.c:1646  */
+#line 650 "src/parser.y" /* yacc.c:1646  */
     {
         t_add_expression* exp = zero_allocate(t_add_expression);
         exp->right = (yyvsp[0].c_mult_expression);
         (yyval.c_add_expression) = exp;
     }
-#line 2275 "src/parser.c" /* yacc.c:1646  */
+#line 2277 "src/parser.c" /* yacc.c:1646  */
     break;
 
   case 73:
-#line 656 "src/parser.y" /* yacc.c:1646  */
+#line 658 "src/parser.y" /* yacc.c:1646  */
     {
         t_mult_expression* exp = zero_allocate(t_mult_expression);
         exp->left = (yyvsp[-2].c_mult_expression);
@@ -2283,74 +2285,74 @@ yyreduce:
         exp->right = (yyvsp[0].c_cast_expression);
         (yyval.c_mult_expression) = exp;
     }
-#line 2287 "src/parser.c" /* yacc.c:1646  */
+#line 2289 "src/parser.c" /* yacc.c:1646  */
     break;
 
   case 74:
-#line 663 "src/parser.y" /* yacc.c:1646  */
+#line 665 "src/parser.y" /* yacc.c:1646  */
     {
         t_mult_expression* exp = zero_allocate(t_mult_expression);
         exp->right = (yyvsp[0].c_cast_expression);
         (yyval.c_mult_expression) = exp;
     }
-#line 2297 "src/parser.c" /* yacc.c:1646  */
+#line 2299 "src/parser.c" /* yacc.c:1646  */
     break;
 
   case 75:
-#line 671 "src/parser.y" /* yacc.c:1646  */
+#line 673 "src/parser.y" /* yacc.c:1646  */
     {
         t_cast_expression* exp = zero_allocate(t_cast_expression);
         exp->type = (yyvsp[-2].c_primitive_type);
         exp->left = (yyvsp[0].c_cast_expression);
         (yyval.c_cast_expression) = exp;
     }
-#line 2308 "src/parser.c" /* yacc.c:1646  */
+#line 2310 "src/parser.c" /* yacc.c:1646  */
     break;
 
   case 76:
-#line 677 "src/parser.y" /* yacc.c:1646  */
+#line 679 "src/parser.y" /* yacc.c:1646  */
     {
         t_cast_expression* exp = zero_allocate(t_cast_expression);
         exp->right = (yyvsp[0].c_unary_expression);
         (yyval.c_cast_expression) = exp;
     }
-#line 2318 "src/parser.c" /* yacc.c:1646  */
+#line 2320 "src/parser.c" /* yacc.c:1646  */
     break;
 
   case 77:
-#line 685 "src/parser.y" /* yacc.c:1646  */
+#line 687 "src/parser.y" /* yacc.c:1646  */
     {
         t_unary_expression* exp = zero_allocate(t_unary_expression);
         exp->type = (yyvsp[-1].c_unary_expression_type);
         exp->left = (yyvsp[0].c_unary_expression);
         (yyval.c_unary_expression) = exp;
     }
-#line 2329 "src/parser.c" /* yacc.c:1646  */
+#line 2331 "src/parser.c" /* yacc.c:1646  */
     break;
 
   case 78:
-#line 691 "src/parser.y" /* yacc.c:1646  */
+#line 693 "src/parser.y" /* yacc.c:1646  */
     {
         t_unary_expression* exp = zero_allocate(t_unary_expression);
         exp->type = UNARY_SIZEOF;
         exp->left = (yyvsp[0].c_unary_expression);
         (yyval.c_unary_expression) = exp;
     }
-#line 2340 "src/parser.c" /* yacc.c:1646  */
+#line 2342 "src/parser.c" /* yacc.c:1646  */
     break;
 
   case 79:
-#line 697 "src/parser.y" /* yacc.c:1646  */
+#line 699 "src/parser.y" /* yacc.c:1646  */
     {
         t_unary_expression* exp = zero_allocate(t_unary_expression);
         exp->right = (yyvsp[0].c_postfix_expression);
         (yyval.c_unary_expression) = exp;
     }
-#line 2350 "src/parser.c" /* yacc.c:1646  */
+#line 2352 "src/parser.c" /* yacc.c:1646  */
     break;
 
   case 80:
-#line 705 "src/parser.y" /* yacc.c:1646  */
+#line 707 "src/parser.y" /* yacc.c:1646  */
     {
         t_postfix_expression* exp = zero_allocate(t_postfix_expression);
         exp->type = ARRAY_ACCESS;
@@ -2358,11 +2360,11 @@ yyreduce:
         exp->member.array_index = (yyvsp[-1].c_expression);
         (yyval.c_postfix_expression) = exp;
     }
-#line 2362 "src/parser.c" /* yacc.c:1646  */
+#line 2364 "src/parser.c" /* yacc.c:1646  */
     break;
 
   case 81:
-#line 712 "src/parser.y" /* yacc.c:1646  */
+#line 714 "src/parser.y" /* yacc.c:1646  */
     {
         t_postfix_expression* exp = zero_allocate(t_postfix_expression);
         exp->type = FUNCTION_CALL;
@@ -2370,301 +2372,301 @@ yyreduce:
         exp->member.function_params = (yyvsp[-1].c_param_vals);
         (yyval.c_postfix_expression) = exp;
     }
-#line 2374 "src/parser.c" /* yacc.c:1646  */
+#line 2376 "src/parser.c" /* yacc.c:1646  */
     break;
 
   case 82:
-#line 719 "src/parser.y" /* yacc.c:1646  */
+#line 721 "src/parser.y" /* yacc.c:1646  */
     {
         t_postfix_expression* exp = zero_allocate(t_postfix_expression);
         exp->primary = (yyvsp[0].c_primary_expression);
         (yyval.c_postfix_expression) = exp;
     }
-#line 2384 "src/parser.c" /* yacc.c:1646  */
+#line 2386 "src/parser.c" /* yacc.c:1646  */
     break;
 
   case 83:
-#line 727 "src/parser.y" /* yacc.c:1646  */
+#line 729 "src/parser.y" /* yacc.c:1646  */
     {
         t_param_vals* pv = zero_allocate(t_param_vals);
         pv->prev = (yyvsp[-2].c_param_vals);
         pv->cur = (yyvsp[0].c_expression);
         (yyval.c_param_vals) = pv;
     }
-#line 2395 "src/parser.c" /* yacc.c:1646  */
+#line 2397 "src/parser.c" /* yacc.c:1646  */
     break;
 
   case 84:
-#line 733 "src/parser.y" /* yacc.c:1646  */
+#line 735 "src/parser.y" /* yacc.c:1646  */
     {
         t_param_vals* pv = zero_allocate(t_param_vals);
         pv->cur = (yyvsp[0].c_expression);
         (yyval.c_param_vals) = pv;
     }
-#line 2405 "src/parser.c" /* yacc.c:1646  */
+#line 2407 "src/parser.c" /* yacc.c:1646  */
     break;
 
   case 85:
-#line 738 "src/parser.y" /* yacc.c:1646  */
+#line 740 "src/parser.y" /* yacc.c:1646  */
     {
         (yyval.c_param_vals) = NULL;
     }
-#line 2413 "src/parser.c" /* yacc.c:1646  */
+#line 2415 "src/parser.c" /* yacc.c:1646  */
     break;
 
   case 86:
-#line 744 "src/parser.y" /* yacc.c:1646  */
+#line 746 "src/parser.y" /* yacc.c:1646  */
     {
         t_primary_expression* exp = zero_allocate(t_primary_expression);
         exp->type = IDENTIFIER_PRIMARY_EXPRESSION;
         exp->member.identifier = (yyvsp[0].string_val);
         (yyval.c_primary_expression) = exp;
     }
-#line 2424 "src/parser.c" /* yacc.c:1646  */
+#line 2426 "src/parser.c" /* yacc.c:1646  */
     break;
 
   case 87:
-#line 750 "src/parser.y" /* yacc.c:1646  */
+#line 752 "src/parser.y" /* yacc.c:1646  */
     {
         t_primary_expression* exp = zero_allocate(t_primary_expression);
         exp->type = CONSTANT_PRIMARY_EXPRESSION;
         exp->member.constant = (yyvsp[0].c_constant);
         (yyval.c_primary_expression) = exp;
     }
-#line 2435 "src/parser.c" /* yacc.c:1646  */
+#line 2437 "src/parser.c" /* yacc.c:1646  */
     break;
 
   case 88:
-#line 756 "src/parser.y" /* yacc.c:1646  */
+#line 758 "src/parser.y" /* yacc.c:1646  */
     {
         t_primary_expression* exp = zero_allocate(t_primary_expression);
         exp->type = STRING_PRIMARY_EXPRESSION;
         exp->member.string = (yyvsp[0].string_val);
         (yyval.c_primary_expression) = exp;
     }
-#line 2446 "src/parser.c" /* yacc.c:1646  */
+#line 2448 "src/parser.c" /* yacc.c:1646  */
     break;
 
   case 89:
-#line 762 "src/parser.y" /* yacc.c:1646  */
+#line 764 "src/parser.y" /* yacc.c:1646  */
     {
         t_primary_expression* exp = zero_allocate(t_primary_expression);
         exp->type = NESTED_PRIMARY_EXPRESSION;
         exp->member.expression = (yyvsp[-1].c_expression);
         (yyval.c_primary_expression) = exp;
     }
-#line 2457 "src/parser.c" /* yacc.c:1646  */
+#line 2459 "src/parser.c" /* yacc.c:1646  */
     break;
 
   case 90:
-#line 771 "src/parser.y" /* yacc.c:1646  */
+#line 773 "src/parser.y" /* yacc.c:1646  */
     {
         t_constant* c = zero_allocate(t_constant);
         c->type = INTEGER_CONSTANT;
         c->member.integer_val = (yyvsp[0].integer_val);
         (yyval.c_constant) = c;
     }
-#line 2468 "src/parser.c" /* yacc.c:1646  */
+#line 2470 "src/parser.c" /* yacc.c:1646  */
     break;
 
   case 91:
-#line 777 "src/parser.y" /* yacc.c:1646  */
+#line 779 "src/parser.y" /* yacc.c:1646  */
     {
         t_constant* c = zero_allocate(t_constant);
         c->type = CHAR_CONSTANT;
         c->member.char_val = (yyvsp[0].char_val);
         (yyval.c_constant) = c;
     }
-#line 2479 "src/parser.c" /* yacc.c:1646  */
+#line 2481 "src/parser.c" /* yacc.c:1646  */
     break;
 
   case 92:
-#line 783 "src/parser.y" /* yacc.c:1646  */
+#line 785 "src/parser.y" /* yacc.c:1646  */
     {
         t_constant* c = zero_allocate(t_constant);
         c->type = REAL_CONSTANT;
         c->member.float_val = (yyvsp[0].float_val);
         (yyval.c_constant) = c;
     }
-#line 2490 "src/parser.c" /* yacc.c:1646  */
+#line 2492 "src/parser.c" /* yacc.c:1646  */
     break;
 
   case 93:
-#line 792 "src/parser.y" /* yacc.c:1646  */
+#line 794 "src/parser.y" /* yacc.c:1646  */
     { (yyval.c_assignment_operator) = EQUAL_OPERATOR; }
-#line 2496 "src/parser.c" /* yacc.c:1646  */
+#line 2498 "src/parser.c" /* yacc.c:1646  */
     break;
 
   case 94:
-#line 793 "src/parser.y" /* yacc.c:1646  */
+#line 795 "src/parser.y" /* yacc.c:1646  */
     { (yyval.c_assignment_operator) = PLUS_EQUAL_OPERATOR; }
-#line 2502 "src/parser.c" /* yacc.c:1646  */
+#line 2504 "src/parser.c" /* yacc.c:1646  */
     break;
 
   case 95:
-#line 794 "src/parser.y" /* yacc.c:1646  */
+#line 796 "src/parser.y" /* yacc.c:1646  */
     { (yyval.c_assignment_operator) = MINUS_EQUAL_OPERATOR; }
-#line 2508 "src/parser.c" /* yacc.c:1646  */
+#line 2510 "src/parser.c" /* yacc.c:1646  */
     break;
 
   case 96:
-#line 795 "src/parser.y" /* yacc.c:1646  */
+#line 797 "src/parser.y" /* yacc.c:1646  */
     { (yyval.c_assignment_operator) = ASTERISK_EQUAL_OPERATOR; }
-#line 2514 "src/parser.c" /* yacc.c:1646  */
+#line 2516 "src/parser.c" /* yacc.c:1646  */
     break;
 
   case 97:
-#line 796 "src/parser.y" /* yacc.c:1646  */
+#line 798 "src/parser.y" /* yacc.c:1646  */
     { (yyval.c_assignment_operator) = SLASH_EQUAL_OPERATOR; }
-#line 2520 "src/parser.c" /* yacc.c:1646  */
+#line 2522 "src/parser.c" /* yacc.c:1646  */
     break;
 
   case 98:
-#line 797 "src/parser.y" /* yacc.c:1646  */
+#line 799 "src/parser.y" /* yacc.c:1646  */
     { (yyval.c_assignment_operator) = PERCENT_EQUAL_OPERATOR; }
-#line 2526 "src/parser.c" /* yacc.c:1646  */
+#line 2528 "src/parser.c" /* yacc.c:1646  */
     break;
 
   case 99:
-#line 801 "src/parser.y" /* yacc.c:1646  */
+#line 803 "src/parser.y" /* yacc.c:1646  */
     { (yyval.c_unary_expression_type) = UNARY_PLUS; }
-#line 2532 "src/parser.c" /* yacc.c:1646  */
+#line 2534 "src/parser.c" /* yacc.c:1646  */
     break;
 
   case 100:
-#line 802 "src/parser.y" /* yacc.c:1646  */
+#line 804 "src/parser.y" /* yacc.c:1646  */
     { (yyval.c_unary_expression_type) = UNARY_MINUS; }
-#line 2538 "src/parser.c" /* yacc.c:1646  */
+#line 2540 "src/parser.c" /* yacc.c:1646  */
     break;
 
   case 101:
-#line 803 "src/parser.y" /* yacc.c:1646  */
+#line 805 "src/parser.y" /* yacc.c:1646  */
     { (yyval.c_unary_expression_type) = UNARY_EXCL; }
-#line 2544 "src/parser.c" /* yacc.c:1646  */
+#line 2546 "src/parser.c" /* yacc.c:1646  */
     break;
 
   case 102:
-#line 807 "src/parser.y" /* yacc.c:1646  */
+#line 809 "src/parser.y" /* yacc.c:1646  */
     { (yyval.c_rel_expression_type) = LESS_THAN; }
-#line 2550 "src/parser.c" /* yacc.c:1646  */
+#line 2552 "src/parser.c" /* yacc.c:1646  */
     break;
 
   case 103:
-#line 808 "src/parser.y" /* yacc.c:1646  */
+#line 810 "src/parser.y" /* yacc.c:1646  */
     { (yyval.c_rel_expression_type) = GREATER_THAN; }
-#line 2556 "src/parser.c" /* yacc.c:1646  */
+#line 2558 "src/parser.c" /* yacc.c:1646  */
     break;
 
   case 104:
-#line 809 "src/parser.y" /* yacc.c:1646  */
+#line 811 "src/parser.y" /* yacc.c:1646  */
     { (yyval.c_rel_expression_type) = LESS_THAN_OR_EQUAL; }
-#line 2562 "src/parser.c" /* yacc.c:1646  */
+#line 2564 "src/parser.c" /* yacc.c:1646  */
     break;
 
   case 105:
-#line 810 "src/parser.y" /* yacc.c:1646  */
+#line 812 "src/parser.y" /* yacc.c:1646  */
     { (yyval.c_rel_expression_type) = GREATER_THAN_OR_EQUAL; }
-#line 2568 "src/parser.c" /* yacc.c:1646  */
+#line 2570 "src/parser.c" /* yacc.c:1646  */
     break;
 
   case 106:
-#line 811 "src/parser.y" /* yacc.c:1646  */
+#line 813 "src/parser.y" /* yacc.c:1646  */
     { (yyval.c_rel_expression_type) = IS_IN; }
-#line 2574 "src/parser.c" /* yacc.c:1646  */
+#line 2576 "src/parser.c" /* yacc.c:1646  */
     break;
 
   case 107:
-#line 815 "src/parser.y" /* yacc.c:1646  */
+#line 817 "src/parser.y" /* yacc.c:1646  */
     { (yyval.c_mult_operator) = ASTERISK_OPERATOR; }
-#line 2580 "src/parser.c" /* yacc.c:1646  */
+#line 2582 "src/parser.c" /* yacc.c:1646  */
     break;
 
   case 108:
-#line 816 "src/parser.y" /* yacc.c:1646  */
+#line 818 "src/parser.y" /* yacc.c:1646  */
     { (yyval.c_mult_operator) = SLASH_OPERATOR; }
-#line 2586 "src/parser.c" /* yacc.c:1646  */
+#line 2588 "src/parser.c" /* yacc.c:1646  */
     break;
 
   case 109:
-#line 817 "src/parser.y" /* yacc.c:1646  */
+#line 819 "src/parser.y" /* yacc.c:1646  */
     { (yyval.c_mult_operator) = PERCENT_OPERATOR; }
-#line 2592 "src/parser.c" /* yacc.c:1646  */
+#line 2594 "src/parser.c" /* yacc.c:1646  */
     break;
 
   case 110:
-#line 821 "src/parser.y" /* yacc.c:1646  */
+#line 823 "src/parser.y" /* yacc.c:1646  */
     {
         (yyval.c_primitive_type) = VOID_TYPE;
     }
-#line 2600 "src/parser.c" /* yacc.c:1646  */
+#line 2602 "src/parser.c" /* yacc.c:1646  */
     break;
 
   case 111:
-#line 824 "src/parser.y" /* yacc.c:1646  */
+#line 826 "src/parser.y" /* yacc.c:1646  */
     {
         (yyval.c_primitive_type) = BYTE_TYPE;
     }
-#line 2608 "src/parser.c" /* yacc.c:1646  */
+#line 2610 "src/parser.c" /* yacc.c:1646  */
     break;
 
   case 112:
-#line 827 "src/parser.y" /* yacc.c:1646  */
+#line 829 "src/parser.y" /* yacc.c:1646  */
     {
         (yyval.c_primitive_type) = BYTE_TYPE;
     }
-#line 2616 "src/parser.c" /* yacc.c:1646  */
+#line 2618 "src/parser.c" /* yacc.c:1646  */
     break;
 
   case 113:
-#line 830 "src/parser.y" /* yacc.c:1646  */
+#line 832 "src/parser.y" /* yacc.c:1646  */
     {
         (yyval.c_primitive_type) = BYTE_TYPE;
     }
-#line 2624 "src/parser.c" /* yacc.c:1646  */
+#line 2626 "src/parser.c" /* yacc.c:1646  */
     break;
 
   case 114:
-#line 833 "src/parser.y" /* yacc.c:1646  */
+#line 835 "src/parser.y" /* yacc.c:1646  */
     {
         (yyval.c_primitive_type) = SHORT_TYPE;
     }
-#line 2632 "src/parser.c" /* yacc.c:1646  */
+#line 2634 "src/parser.c" /* yacc.c:1646  */
     break;
 
   case 115:
-#line 836 "src/parser.y" /* yacc.c:1646  */
+#line 838 "src/parser.y" /* yacc.c:1646  */
     {
         (yyval.c_primitive_type) = INT_TYPE;
     }
-#line 2640 "src/parser.c" /* yacc.c:1646  */
+#line 2642 "src/parser.c" /* yacc.c:1646  */
     break;
 
   case 116:
-#line 839 "src/parser.y" /* yacc.c:1646  */
+#line 841 "src/parser.y" /* yacc.c:1646  */
     {
         (yyval.c_primitive_type) = LONG_TYPE;
     }
-#line 2648 "src/parser.c" /* yacc.c:1646  */
+#line 2650 "src/parser.c" /* yacc.c:1646  */
     break;
 
   case 117:
-#line 842 "src/parser.y" /* yacc.c:1646  */
+#line 844 "src/parser.y" /* yacc.c:1646  */
     {
         (yyval.c_primitive_type) = FLOAT_TYPE;
     }
-#line 2656 "src/parser.c" /* yacc.c:1646  */
+#line 2658 "src/parser.c" /* yacc.c:1646  */
     break;
 
   case 118:
-#line 845 "src/parser.y" /* yacc.c:1646  */
+#line 847 "src/parser.y" /* yacc.c:1646  */
     {
         (yyval.c_primitive_type) = DOUBLE_TYPE;
     }
-#line 2664 "src/parser.c" /* yacc.c:1646  */
+#line 2666 "src/parser.c" /* yacc.c:1646  */
     break;
 
 
-#line 2668 "src/parser.c" /* yacc.c:1646  */
+#line 2670 "src/parser.c" /* yacc.c:1646  */
       default: break;
     }
   /* User semantic actions sometimes alter yychar, and that requires
@@ -2892,7 +2894,7 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 849 "src/parser.y" /* yacc.c:1906  */
+#line 851 "src/parser.y" /* yacc.c:1906  */
 
 
 void spaces(int n) {
@@ -3572,6 +3574,488 @@ void print_ast(node root, node_type type, int cur_level) {
         case NT_IDENTIFIER:
             spaces(cur_level);
             printf("Identifier %s\n", root.string_val);
+        break;
+
+        default:
+            printf("SHOULD NOT HAPPEN!\n");
+            exit(1);
+
+    }
+}
+
+void free_ast(node root, node_type type) {
+    node child[10];
+    memset(child, 0, sizeof child);
+
+    switch(type) {
+         case NT_PROGRAM:
+            child[0].c_declaration_list = root.c_program->declarations;
+            free_ast(child[0], NT_DECLARATION_LIST);
+            free(root.c_program);
+        break;
+
+        case NT_DECLARATION_LIST:
+            if (root.c_declaration_list->cur) {
+                child[1].c_declaration = root.c_declaration_list->cur;
+                free_ast(child[1], NT_DECLARATION);
+            }
+
+            if (root.c_declaration_list->prev) {
+                child[0].c_declaration_list = root.c_declaration_list->prev;
+                free_ast(child[0], NT_DECLARATION_LIST);
+            }
+
+            free(root.c_declaration_list);
+        break;
+
+        case NT_DECLARATION:
+            if (root.c_declaration->type == VAR_DECLARATION) {
+                child[0].c_variable = root.c_declaration->member.variable;
+                free_ast(child[0], NT_VARIABLE);
+            } else if (root.c_declaration->type == FUN_DECLARATION) {
+                child[0].c_function = root.c_declaration->member.function;
+                free_ast(child[0], NT_FUNCTION);
+            }
+
+            free(root.c_declaration);
+        break;
+
+        case NT_VARIABLE:
+            child[1].string_val = root.c_variable->identifier;
+            free_ast(child[1], NT_IDENTIFIER);
+
+            free(root.c_variable);
+        break;
+
+        case NT_FUNCTION:
+            child[1].string_val = root.c_function->identifier;
+            free_ast(child[1], NT_IDENTIFIER);   
+
+            child[2].c_function_params = root.c_function->params;
+            free_ast(child[2], NT_FUNCTION_PARAMS);
+
+            child[3].c_scope = root.c_function->body;
+            free_ast(child[3], NT_SCOPE);
+            
+            free(root.c_function);
+        break;
+
+        case NT_FUNCTION_PARAM:
+            child[1].string_val = root.c_function_param->identifier;
+            free_ast(child[1], NT_IDENTIFIER); 
+
+            free(root.c_function_param);
+        break;
+
+        case NT_FUNCTION_PARAMS:
+            if (root.c_function_params == NULL) return;
+
+            if (root.c_function_params->cur) {
+                child[1].c_function_param = root.c_function_params->cur;
+                free_ast(child[1], NT_FUNCTION_PARAM);
+            }
+            
+            if (root.c_function_params->prev) {
+                child[0].c_function_params = root.c_function_params->prev;
+                free_ast(child[0], NT_FUNCTION_PARAMS);
+            }
+            
+            free(root.c_function_params);
+        break;
+
+        case NT_SCOPE:
+            child[0].c_statement_list = root.c_scope->statements;
+            free_ast(child[0], NT_STATEMENT_LIST);
+
+            free(root.c_scope);
+        break;
+
+        case NT_STATEMENT_LIST:
+            if (root.c_statement_list == NULL) return;
+
+            if (root.c_statement_list->cur) {
+                child[1].c_statement = root.c_statement_list->cur;
+                free_ast(child[1], NT_STATEMENT);
+            }
+            
+            if (root.c_statement_list->prev) {
+                child[0].c_statement_list = root.c_statement_list->prev;
+                free_ast(child[0], NT_STATEMENT_LIST);
+            }
+
+            free(root.c_statement_list);
+        break;
+
+        case NT_STATEMENT:
+            switch (root.c_statement->type) {
+                case SCOPE_STATEMENT:
+                    child[0].c_scope = root.c_statement->member.scope;
+                    free_ast(child[0], NT_SCOPE);
+                break;
+
+                case VAR_DECLARATION_STATEMENT:
+                    child[0].c_variable = root.c_statement->member.variable;
+                    free_ast(child[0], NT_VARIABLE);
+                break;
+
+                case PRINT_STATEMENT:
+                    child[0].c_print = root.c_statement->member.print;
+                    free_ast(child[0], NT_PRINT);
+                break;
+
+                case SCAN_STATEMENT:
+                    child[0].c_scan = root.c_statement->member.scan;
+                    free_ast(child[0], NT_SCAN);
+                break;
+
+                case EXPRESSION_STATEMENT:
+                    child[0].c_expression = root.c_statement->member.expression;
+                    free_ast(child[0], NT_EXPRESSION);
+                break;
+
+                case CONDITION_STATEMENT:
+                    child[0].c_condition = root.c_statement->member.condition;
+                    free_ast(child[0], NT_CONDITION);
+                break;
+
+                case ITERATION_STATEMENT:
+                    child[0].c_iteration = root.c_statement->member.iteration;
+                    free_ast(child[0], NT_ITERATION);
+                break;
+
+                case RETURN_STATEMENT:
+                    child[0].c_return = root.c_statement->member._return;
+                    free_ast(child[0], NT_RETURN);
+                break;
+            }
+
+            free(root.c_statement);
+        break;
+
+        case NT_PRINT:
+            child[1].c_expression = root.c_print->expression;
+            free_ast(child[1], NT_EXPRESSION);
+
+            free(root.c_print);
+        break;
+
+        case NT_SCAN:
+            child[1].string_val = root.c_scan->destiny;
+            free_ast(child[1], NT_IDENTIFIER);
+
+            free(root.c_scan);
+        break;
+
+        case NT_RETURN:
+            if (root.c_return->expression) {
+                child[0].c_expression = root.c_return->expression;
+                free_ast(child[0], NT_EXPRESSION);
+            }
+
+            free(root.c_return);
+        break;
+
+        case NT_EXPRESSION:
+            if (root.c_expression == NULL) return;
+
+            child[0].c_assignment = root.c_expression->assignment;
+            free_ast(child[0], NT_ASSIGNMENT);
+
+            free(root.c_expression);
+        break;
+
+        case NT_CONDITION:
+            child[0].c_expression = root.c_condition->condition;
+            free_ast(child[0], NT_EXPRESSION);
+
+            child[1].c_statement = root.c_condition->body;
+            free_ast(child[1], NT_STATEMENT);
+
+            if (root.c_condition->else_body) {
+                child[2].c_statement = root.c_condition->else_body;
+                free_ast(child[2], NT_STATEMENT);
+            }
+
+            free(root.c_condition);
+        break;
+
+        case NT_ITERATION:
+            if (root.c_iteration->type == WHILE_ITERATION) {
+                child[0].c_while = root.c_iteration->member._while;
+                free_ast(child[0], NT_WHILE);
+            } else if (root.c_iteration->type == FOR_ITERATION) {
+                child[0].c_for = root.c_iteration->member._for;
+                free_ast(child[0], NT_FOR);
+            }
+
+            free(root.c_iteration);
+        break;
+
+        case NT_WHILE:
+            child[0].c_expression = root.c_while->condition;
+            free_ast(child[0], NT_EXPRESSION);
+            child[1].c_statement = root.c_while->body;
+            free_ast(child[1], NT_STATEMENT);
+
+            free(root.c_while);
+        break;
+
+        case NT_FOR:
+            if (root.c_for->initialization) {
+                child[0].c_expression = root.c_for->initialization;
+                free_ast(child[0], NT_EXPRESSION);
+            }
+            if (root.c_for->condition) {
+                child[1].c_expression = root.c_for->condition;
+                free_ast(child[1], NT_EXPRESSION);
+            }
+            if (root.c_for->step) {
+                child[2].c_expression = root.c_for->step;
+                free_ast(child[2], NT_EXPRESSION);
+            }
+            child[3].c_statement = root.c_for->body;
+            free_ast(child[3], NT_STATEMENT);
+
+            free(root.c_for);
+        break;
+
+        case NT_ASSIGNMENT:
+            if (root.c_assignment->identifier) {
+                child[0].string_val = root.c_assignment->identifier;
+                free_ast(child[0], NT_IDENTIFIER);
+            }
+
+            child[2].c_and_expression = root.c_assignment->and_expression;
+            free_ast(child[2], NT_AND_EXPRESSION);
+
+            free(root.c_assignment);
+        break;
+
+        case NT_AND_EXPRESSION:
+            if (root.c_and_expression->left) {
+                child[0].c_and_expression = root.c_and_expression->left;
+                free_ast(child[0], NT_AND_EXPRESSION);
+            }
+            child[1].c_or_expression = root.c_and_expression->right;
+            free_ast(child[1], NT_OR_EXPRESSION);
+
+            free(root.c_and_expression);
+        break;
+
+        case NT_OR_EXPRESSION:
+
+            if (root.c_or_expression->left) {
+                child[0].c_or_expression = root.c_or_expression->left;
+                free_ast(child[0], NT_OR_EXPRESSION);
+            }
+            child[1].c_bw_and_expression = root.c_or_expression->right;
+            free_ast(child[1], NT_BW_AND_EXPRESSION);
+            
+            free(root.c_or_expression);
+        break;
+
+        case NT_BW_AND_EXPRESSION:
+
+            if (root.c_bw_and_expression->left) {
+                child[0].c_bw_and_expression = root.c_bw_and_expression->left;
+                free_ast(child[0], NT_BW_AND_EXPRESSION);
+            }
+            child[1].c_bw_or_expression = root.c_bw_and_expression->right;
+            free_ast(child[1], NT_BW_OR_EXPRESSION);
+            
+            free(root.c_bw_and_expression);
+        break;
+
+        case NT_BW_OR_EXPRESSION:
+
+            if (root.c_bw_or_expression->left) {
+                child[0].c_bw_or_expression = root.c_bw_or_expression->left;
+                free_ast(child[0], NT_BW_OR_EXPRESSION);
+            }
+            child[1].c_bw_xor_expression = root.c_bw_or_expression->right;
+            free_ast(child[1], NT_BW_XOR_EXPRESSION);
+            
+            free(root.c_bw_or_expression);
+        break;
+
+        case NT_BW_XOR_EXPRESSION:
+
+            if (root.c_bw_xor_expression->left) {
+                child[0].c_bw_xor_expression = root.c_bw_xor_expression->left;
+                free_ast(child[0], NT_BW_XOR_EXPRESSION);
+            }
+            child[1].c_eq_expression = root.c_bw_xor_expression->right;
+            free_ast(child[1], NT_EQ_EXPRESSION);
+            
+            free(root.c_bw_xor_expression);
+        break;
+
+        case NT_EQ_EXPRESSION:
+
+            if (root.c_eq_expression->left) {
+                child[0].c_eq_expression = root.c_eq_expression->left;
+                free_ast(child[0], NT_EQ_EXPRESSION);
+            }
+            child[1].c_rel_expression = root.c_eq_expression->right;
+            free_ast(child[1], NT_REL_EXPRESSION);
+            
+            free(root.c_eq_expression);
+        break;
+
+        case NT_REL_EXPRESSION:
+
+            if (root.c_rel_expression->left) {
+                child[0].c_rel_expression = root.c_rel_expression->left;
+                free_ast(child[0], NT_REL_EXPRESSION);
+            }
+            child[1].c_shift_expression = root.c_rel_expression->right;
+            free_ast(child[1], NT_SHIFT_EXPRESSION);
+            
+            free(root.c_rel_expression);
+        break;
+
+        case NT_SHIFT_EXPRESSION:
+
+            if (root.c_shift_expression->left) {
+                child[0].c_shift_expression = root.c_shift_expression->left;
+                free_ast(child[0], NT_SHIFT_EXPRESSION);
+            }
+            child[1].c_set_rm_expression = root.c_shift_expression->right;
+            free_ast(child[1], NT_SET_RM_EXPRESSION);
+            
+            free(root.c_shift_expression);
+        break;
+
+        case NT_SET_RM_EXPRESSION:
+
+            if (root.c_set_rm_expression->left) {
+                child[0].c_set_rm_expression = root.c_set_rm_expression->left;
+                free_ast(child[0], NT_SET_RM_EXPRESSION);
+            }
+            child[1].c_add_expression = root.c_set_rm_expression->right;
+            free_ast(child[1], NT_ADD_EXPRESSION);
+            
+            free(root.c_set_rm_expression);
+        break;
+
+        case NT_ADD_EXPRESSION:
+
+            if (root.c_add_expression->left) {
+                child[0].c_add_expression = root.c_add_expression->left;
+                free_ast(child[0], NT_ADD_EXPRESSION);
+            }
+            child[1].c_mult_expression = root.c_add_expression->right;
+            free_ast(child[1], NT_MULT_EXPRESSION);
+            
+            free(root.c_add_expression);
+        break;
+
+        case NT_MULT_EXPRESSION:
+
+            if (root.c_mult_expression->left) {
+                child[0].c_mult_expression = root.c_mult_expression->left;
+                free_ast(child[0], NT_MULT_EXPRESSION);
+            }
+            child[2].c_cast_expression = root.c_mult_expression->right;
+            free_ast(child[2], NT_CAST_EXPRESSION);
+            
+            free(root.c_mult_expression);
+        break;
+
+        case NT_CAST_EXPRESSION:
+
+            if (root.c_cast_expression->left) {
+                child[0].c_cast_expression = root.c_cast_expression->left;
+                free_ast(child[0], NT_CAST_EXPRESSION);
+            }
+            child[2].c_unary_expression = root.c_cast_expression->right;
+            free_ast(child[2], NT_UNARY_EXPRESSION);
+            
+            free(root.c_cast_expression);
+        break;
+
+        case NT_UNARY_EXPRESSION:
+
+            if (root.c_unary_expression->left) {
+                child[0].c_unary_expression = root.c_unary_expression->left;
+                free_ast(child[0], NT_UNARY_EXPRESSION);
+            }
+            child[2].c_postfix_expression = root.c_unary_expression->right;
+            free_ast(child[2], NT_POSTFIX_EXPRESSION);
+            
+            free(root.c_unary_expression);
+        break;
+
+        case NT_POSTFIX_EXPRESSION:
+
+            if (root.c_postfix_expression->left) {
+                child[0].c_postfix_expression = root.c_postfix_expression->left;
+                free_ast(child[0], NT_POSTFIX_EXPRESSION);
+                
+                if (root.c_postfix_expression->type == ARRAY_ACCESS) {
+                    child[1].c_expression = root.c_postfix_expression->member.array_index;
+                    free_ast(child[1], NT_EXPRESSION);
+                } else {
+                    child[1].c_param_vals = root.c_postfix_expression->member.function_params;
+                    free_ast(child[1], NT_PARAM_VALS);
+                }
+            }
+            child[2].c_primary_expression = root.c_postfix_expression->primary;
+            free_ast(child[2], NT_PRIMARY_EXPRESSION);
+            
+            free(root.c_postfix_expression);
+        break;
+
+        case NT_PRIMARY_EXPRESSION:
+
+            switch(root.c_primary_expression->type) {
+                case IDENTIFIER_PRIMARY_EXPRESSION:
+                child[0].string_val = root.c_primary_expression->member.identifier;
+                free_ast(child[0], NT_IDENTIFIER);
+                break;
+                case CONSTANT_PRIMARY_EXPRESSION:
+                child[0].c_constant = root.c_primary_expression->member.constant;
+                free_ast(child[0], NT_CONSTANT);
+                break;
+                case STRING_PRIMARY_EXPRESSION:
+                child[0].string_val = root.c_primary_expression->member.string;
+                free_ast(child[0], NT_STRING);
+                break;
+                case NESTED_PRIMARY_EXPRESSION:
+                child[0].c_expression = root.c_primary_expression->member.expression;
+                free_ast(child[0], NT_EXPRESSION);
+                break;
+            }
+            
+            free(root.c_primary_expression);
+        break;
+
+        case NT_CONSTANT:
+            free(root.c_constant);
+        break;
+
+        case NT_PARAM_VALS:
+            if (root.c_param_vals == NULL) return;
+
+            if (root.c_param_vals->cur) {
+                child[1].c_expression = root.c_param_vals->cur;
+                free_ast(child[1], NT_EXPRESSION);
+            }
+
+            if (root.c_param_vals->prev) {
+                child[0].c_param_vals = root.c_param_vals->prev;
+                free_ast(child[0], NT_PARAM_VALS);
+            }
+            
+            free(root.c_param_vals);
+        break;
+
+        case NT_STRING:
+            free(root.string_val);
+        break;
+
+        case NT_IDENTIFIER:
+            free(root.string_val);
         break;
 
         default:
