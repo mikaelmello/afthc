@@ -8,197 +8,197 @@ void print_lexical_error(t_lexical_error* error) {
          error->token->characters, error->line, error->column);
 }
 
-void print_token_name(TOKEN token, char* match) {
+void print_token_name(int token, char* match) {
   int print = 1;
 
   switch (token) {
-    case T_INTEGER:
+    case INTEGER:
       printf("<T_INTEGER>");
       break;
-    case T_REAL:
+    case REAL:
       printf("<T_REAL>");
       break;
-    case T_IDENTIFIER:
+    case IDENTIFIER:
       printf("<T_IDENTIFIER>");
       break;
-    case T_STRING:
+    case STRING:
       printf("<T_STRING>");
       break;
-    case T_CHAR:
+    case CHAR:
       printf("<T_CHAR>");
       break;
-    case T_LEFT_BRACE:
+    case LEFT_BRACE:
       printf("<T_LEFT_BRACE>");
       break;
-    case T_RIGHT_BRACE:
+    case RIGHT_BRACE:
       printf("<T_RIGHT_BRACE>");
       break;
-    case T_LEFT_BRACKET:
+    case LEFT_BRACKET:
       printf("<T_LEFT_BRACKET>");
       break;
-    case T_RIGHT_BRACKET:
+    case RIGHT_BRACKET:
       printf("<T_RIGHT_BRACKET>");
       break;
-    case T_LEFT_PAREN:
+    case LEFT_PAREN:
       printf("<T_LEFT_PAREN>");
       break;
-    case T_RIGHT_PAREN:
+    case RIGHT_PAREN:
       printf("<T_RIGHT_PAREN>");
       break;
-    case T_LEFT_ANGLE:
+    case LEFT_ANGLE:
       printf("<T_LEFT_ANGLE>");
       break;
-    case T_RIGHT_ANGLE:
+    case RIGHT_ANGLE:
       printf("<T_RIGHT_ANGLE>");
       break;
 
-    case T_EQUAL:
+    case EQUAL:
       printf("<T_EQUAL>");
       break;
-    case T_PLUS_EQUAL:
+    case PLUS_EQUAL:
       printf("<T_PLUS_EQUAL>");
       break;
-    case T_MINUS_EQUAL:
+    case MINUS_EQUAL:
       printf("<T_MINUS_EQUAL>");
       break;
-    case T_ASTERISK_EQUAL:
+    case ASTERISK_EQUAL:
       printf("<T_ASTERISK_EQUAL>");
       break;
-    case T_SLASH_EQUAL:
+    case SLASH_EQUAL:
       printf("<T_SLASH_EQUAL>");
       break;
-    case T_PERCENT_EQUAL:
+    case PERCENT_EQUAL:
       printf("<T_PERCENT_EQUAL>");
       break;
-    case T_LANGLE_EQUAL:
+    case LANGLE_EQUAL:
       printf("<T_LANGLE_EQUAL>");
       break;
-    case T_RANGLE_EQUAL:
+    case RANGLE_EQUAL:
       printf("<T_RANGLE_EQUAL>");
       break;
-    case T_EQUAL_EQUAL:
+    case EQUAL_EQUAL:
       printf("<T_EQUAL_EQUAL>");
       break;
-    case T_EXCL_EQUAL:
+    case EXCL_EQUAL:
       printf("<T_EXCL_EQUAL>");
       break;
-    case T_DOUBLE_LANGLE:
+    case DOUBLE_LANGLE:
       printf("<T_DOUBLE_LANGLE>");
       break;
-    case T_DOUBLE_RANGLE:
+    case DOUBLE_RANGLE:
       printf("<T_DOUBLE_RANGLE>");
       break;
 
-    case T_TILDE:
+    case TILDE:
       printf("<T_TILDE>");
       break;
-    case T_AND:
+    case AND:
       printf("<T_AND>");
       break;
-    case T_BAR:
+    case BAR:
       printf("<T_BAR>");
       break;
-    case T_CARET:
+    case CARET:
       printf("<T_CARET>");
       break;
-    case T_EXCL:
+    case EXCL:
       printf("<T_EXCL>");
       break;
-    case T_BAR_BAR:
+    case BAR_BAR:
       printf("<T_BAR_BAR>");
       break;
-    case T_AND_AND:
+    case AND_AND:
       printf("<T_AND_AND>");
       break;
-    case T_COMMA:
+    case COMMA:
       printf("<T_COMMA>");
       break;
-    case T_SEMICOLON:
+    case SEMICOLON:
       printf("<T_SEMICOLON>");
       break;
-    case T_PLUS:
+    case PLUS:
       printf("<T_PLUS>");
       break;
-    case T_MINUS:
+    case MINUS:
       printf("<T_MINUS>");
       break;
-    case T_ASTERISK:
+    case ASTERISK:
       printf("<T_ASTERISK>");
       break;
-    case T_SLASH:
+    case SLASH:
       printf("<T_SLASH>");
       break;
-    case T_PERCENT:
+    case PERCENT:
       printf("<T_PERCENT>");
       break;
 
-    case T_IN_RW:
+    case IN_RW:
       printf("<T_IN_RW>");
       break;
-    case T_RM_RW:
+    case RM_RW:
       printf("<T_RM_RW>");
       break;
-    case T_SIZEOF_RW:
+    case SIZEOF_RW:
       printf("<T_SIZEOF_RW>");
       break;
-    case T_VOID_RW:
+    case VOID_RW:
       printf("<T_VOID_RW>");
       break;
-    case T_BOOL_RW:
+    case BOOL_RW:
       printf("<T_BOOL_RW>");
       break;
-    case T_BYTE_RW:
+    case BYTE_RW:
       printf("<T_BYTE_RW>");
       break;
-    case T_CHAR_RW:
+    case CHAR_RW:
       printf("<T_CHAR_RW>");
       break;
-    case T_SHORT_RW:
+    case SHORT_RW:
       printf("<T_SHORT_RW>");
       break;
-    case T_INT_RW:
+    case INT_RW:
       printf("<T_INT_RW>");
       break;
-    case T_LONG_RW:
+    case LONG_RW:
       printf("<T_LONG_RW>");
       break;
-    case T_FLOAT_RW:
+    case FLOAT_RW:
       printf("<T_FLOAT_RW>");
       break;
-    case T_DOUBLE_RW:
+    case DOUBLE_RW:
       printf("<T_DOUBLE_RW>");
       break;
-    case T_PRINT_RW:
+    case PRINT_RW:
       printf("<T_PRINT_RW>");
       break;
-    case T_PRINTC_RW:
+    case PRINTC_RW:
       printf("<T_PRINTC_RW>");
       break;
-    case T_PRINTX_RW:
+    case PRINTX_RW:
       printf("<T_PRINTX_RW>");
       break;
-    case T_SCAN_RW:
+    case SCAN_RW:
       printf("<T_SCAN_RW>");
       break;
-    case T_SCANC_RW:
+    case SCANC_RW:
       printf("<T_SCANC_RW>");
       break;
-    case T_SCANF_RW:
+    case SCANF_RW:
       printf("<T_SCANF_RW>");
       break;
-    case T_IF_RW:
+    case IF_RW:
       printf("<T_IF_RW>");
       break;
-    case T_ELSE_RW:
+    case ELSE_RW:
       printf("<T_ELSE_RW>");
       break;
-    case T_WHILE_RW:
+    case WHILE_RW:
       printf("<T_WHILE_RW>");
       break;
-    case T_FOR_RW:
+    case FOR_RW:
       printf("<T_FOR_RW>");
       break;
-    case T_RETURN_RW:
+    case RETURN_RW:
       printf("<T_RETURN_RW>");
       break;
     default:

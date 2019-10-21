@@ -5,7 +5,9 @@
 #include "token_types.h"
 #include "my_string.h"
 #include "lexical_error_handler.h"
+#include "abstract_syntax_tree.h"
 
+int fileno(FILE *stream);
 uint32_t line = 1;
 uint32_t column = 0;
 %}
@@ -98,74 +100,74 @@ IDENTIFIER      {LETTER}({DIGIT}|{LETTER}|{UNDERSCORE})*
 <LINE_COMMENT>{NEWLINE}  { column = 1; line++; BEGIN(INITIAL); }
 <LINE_COMMENT>.          { column += yyleng; }
 
-{LEFT_BRACE}        { return T_LEFT_BRACE; }
-{RIGHT_BRACE}       { return T_RIGHT_BRACE; }
-{LEFT_BRACKET}      { return T_LEFT_BRACKET; }
-{RIGHT_BRACKET}     { return T_RIGHT_BRACKET; }
-{LEFT_PAREN}        { return T_LEFT_PAREN; }
-{RIGHT_PAREN}       { return T_RIGHT_PAREN; }
-{LEFT_ANGLE}        { return T_LEFT_ANGLE; }
-{RIGHT_ANGLE}       { return T_RIGHT_ANGLE; }
+{LEFT_BRACE}        { return LEFT_BRACE; }
+{RIGHT_BRACE}       { return RIGHT_BRACE; }
+{LEFT_BRACKET}      { return LEFT_BRACKET; }
+{RIGHT_BRACKET}     { return RIGHT_BRACKET; }
+{LEFT_PAREN}        { return LEFT_PAREN; }
+{RIGHT_PAREN}       { return RIGHT_PAREN; }
+{LEFT_ANGLE}        { return LEFT_ANGLE; }
+{RIGHT_ANGLE}       { return RIGHT_ANGLE; }
 
-{EQUAL}             { return T_EQUAL; }
-{PLUS_EQUAL}        { return T_PLUS_EQUAL; }
-{MINUS_EQUAL}       { return T_MINUS_EQUAL; }
-{ASTERISK_EQUAL}    { return T_ASTERISK_EQUAL; }
-{SLASH_EQUAL}       { return T_SLASH_EQUAL; }
-{PERCENT_EQUAL}     { return T_PERCENT_EQUAL; }
-{LANGLE_EQUAL}      { return T_LANGLE_EQUAL; }
-{RANGLE_EQUAL}      { return T_RANGLE_EQUAL; }
-{EQUAL_EQUAL}       { return T_EQUAL_EQUAL; }
-{EXCL_EQUAL}        { return T_EXCL_EQUAL; }
-{DOUBLE_LANGLE}     { return T_DOUBLE_LANGLE; }
-{DOUBLE_RANGLE}     { return T_DOUBLE_RANGLE; }
+{EQUAL}             { return EQUAL; }
+{PLUS_EQUAL}        { return PLUS_EQUAL; }
+{MINUS_EQUAL}       { return MINUS_EQUAL; }
+{ASTERISK_EQUAL}    { return ASTERISK_EQUAL; }
+{SLASH_EQUAL}       { return SLASH_EQUAL; }
+{PERCENT_EQUAL}     { return PERCENT_EQUAL; }
+{LANGLE_EQUAL}      { return LANGLE_EQUAL; }
+{RANGLE_EQUAL}      { return RANGLE_EQUAL; }
+{EQUAL_EQUAL}       { return EQUAL_EQUAL; }
+{EXCL_EQUAL}        { return EXCL_EQUAL; }
+{DOUBLE_LANGLE}     { return DOUBLE_LANGLE; }
+{DOUBLE_RANGLE}     { return DOUBLE_RANGLE; }
 
-{TILDE}             { return T_TILDE; }
-{AND}               { return T_AND; }
-{BAR}               { return T_BAR; }
-{CARET}             { return T_CARET; }
-{EXCL}              { return T_EXCL; }
-{BAR_BAR}           { return T_BAR_BAR; }
-{AND_AND}           { return T_AND_AND; }
-{COMMA}             { return T_COMMA; }
-{SEMICOLON}         { return T_SEMICOLON; }
-{PLUS}              { return T_PLUS; }
-{MINUS}             { return T_MINUS; }
-{ASTERISK}          { return T_ASTERISK; }
-{SLASH}             { return T_SLASH; }
-{PERCENT}           { return T_PERCENT; }
+{TILDE}             { return TILDE; }
+{AND}               { return AND; }
+{BAR}               { return BAR; }
+{CARET}             { return CARET; }
+{EXCL}              { return EXCL; }
+{BAR_BAR}           { return BAR_BAR; }
+{AND_AND}           { return AND_AND; }
+{COMMA}             { return COMMA; }
+{SEMICOLON}         { return SEMICOLON; }
+{PLUS}              { return PLUS; }
+{MINUS}             { return MINUS; }
+{ASTERISK}          { return ASTERISK; }
+{SLASH}             { return SLASH; }
+{PERCENT}           { return PERCENT; }
 
-{IN_RW}             { return T_IN_RW; }
-{RM_RW}             { return T_RM_RW; }
-{SIZEOF_RW}         { return T_SIZEOF_RW; }
-{VOID_RW}           { return T_VOID_RW; }
-{BOOL_RW}           { return T_BOOL_RW; }
-{BYTE_RW}           { return T_BYTE_RW; }
-{CHAR_RW}           { return T_CHAR_RW; }
-{SHORT_RW}          { return T_SHORT_RW; }
-{INT_RW}            { return T_INT_RW; }
-{LONG_RW}           { return T_LONG_RW; }
-{FLOAT_RW}          { return T_FLOAT_RW; }
-{DOUBLE_RW}         { return T_DOUBLE_RW; }
-{PRINT_RW}          { return T_PRINT_RW; }
-{PRINTC_RW}         { return T_PRINTC_RW; }
-{PRINTX_RW}         { return T_PRINTX_RW; }
-{SCAN_RW}           { return T_SCAN_RW; }
-{SCANC_RW}          { return T_SCANC_RW; }
-{SCANF_RW}          { return T_SCANF_RW; }
-{IF_RW}             { return T_IF_RW; }
-{ELSE_RW}           { return T_ELSE_RW; }
-{WHILE_RW}          { return T_WHILE_RW; }
-{FOR_RW}            { return T_FOR_RW; }
-{RETURN_RW}         { return T_RETURN_RW; }
+{IN_RW}             { return IN_RW; }
+{RM_RW}             { return RM_RW; }
+{SIZEOF_RW}         { return SIZEOF_RW; }
+{VOID_RW}           { return VOID_RW; }
+{BOOL_RW}           { return BOOL_RW; }
+{BYTE_RW}           { return BYTE_RW; }
+{CHAR_RW}           { return CHAR_RW; }
+{SHORT_RW}          { return SHORT_RW; }
+{INT_RW}            { return INT_RW; }
+{LONG_RW}           { return LONG_RW; }
+{FLOAT_RW}          { return FLOAT_RW; }
+{DOUBLE_RW}         { return DOUBLE_RW; }
+{PRINT_RW}          { return PRINT_RW; }
+{PRINTC_RW}         { return PRINTC_RW; }
+{PRINTX_RW}         { return PRINTX_RW; }
+{SCAN_RW}           { return SCAN_RW; }
+{SCANC_RW}          { return SCANC_RW; }
+{SCANF_RW}          { return SCANF_RW; }
+{IF_RW}             { return IF_RW; }
+{ELSE_RW}           { return ELSE_RW; }
+{WHILE_RW}          { return WHILE_RW; }
+{FOR_RW}            { return FOR_RW; }
+{RETURN_RW}         { return RETURN_RW; }
 
-{INTEGER}           { return T_INTEGER; }
-{REAL}              { return T_REAL; }
-{IDENTIFIER}        { return T_IDENTIFIER; }
-{STRING}            { return T_STRING; }
-{CHAR}              { return T_CHAR; }
-{WHITESPACE}        { return T_WHITESPACE; }
-{NEWLINE}           { column = 0; line++; return T_WHITESPACE; }
-.                   { return T_ERROR; }
+{INTEGER}           { return INTEGER; }
+{REAL}              { return REAL; }
+{IDENTIFIER}        { return IDENTIFIER; }
+{STRING}            { return STRING; }
+{CHAR}              { return CHAR; }
+{WHITESPACE}        { BEGIN(INITIAL); }
+{NEWLINE}           { column = 0; line++; BEGIN(INITIAL); }
+.                   { printf("error?\n"); }
 
 %%

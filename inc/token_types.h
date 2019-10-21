@@ -2,80 +2,12 @@
 #define TOKEN_TYPES_H
 
 #include <stdio.h>
+#include "abstract_syntax_tree.h"
 #include "lexical_error_handler.h"
-
-typedef enum TOKEN {
-  T_ERROR = 1,
-  T_INTEGER,
-  T_WHITESPACE,
-  T_REAL,
-  T_IDENTIFIER,
-  T_STRING,
-  T_CHAR,
-  T_LEFT_BRACE,
-  T_RIGHT_BRACE,
-  T_LEFT_BRACKET,
-  T_RIGHT_BRACKET,
-  T_LEFT_PAREN,
-  T_RIGHT_PAREN,
-  T_LEFT_ANGLE,
-  T_RIGHT_ANGLE,
-
-  T_EQUAL,
-  T_PLUS_EQUAL,
-  T_MINUS_EQUAL,
-  T_ASTERISK_EQUAL,
-  T_SLASH_EQUAL,
-  T_PERCENT_EQUAL,
-  T_LANGLE_EQUAL,
-  T_RANGLE_EQUAL,
-  T_EQUAL_EQUAL,
-  T_EXCL_EQUAL,
-  T_DOUBLE_LANGLE,
-  T_DOUBLE_RANGLE,
-
-  T_TILDE,
-  T_AND,
-  T_BAR,
-  T_CARET,
-  T_EXCL,
-  T_BAR_BAR,
-  T_AND_AND,
-  T_COMMA,
-  T_SEMICOLON,
-  T_PLUS,
-  T_MINUS,
-  T_ASTERISK,
-  T_SLASH,
-  T_PERCENT,
-
-  T_IN_RW,
-  T_RM_RW,
-  T_SIZEOF_RW,
-  T_VOID_RW,
-  T_BOOL_RW,
-  T_BYTE_RW,
-  T_CHAR_RW,
-  T_SHORT_RW,
-  T_INT_RW,
-  T_LONG_RW,
-  T_FLOAT_RW,
-  T_DOUBLE_RW,
-  T_PRINT_RW,
-  T_PRINTC_RW,
-  T_PRINTX_RW,
-  T_SCAN_RW,
-  T_SCANC_RW,
-  T_SCANF_RW,
-  T_IF_RW,
-  T_ELSE_RW,
-  T_WHILE_RW,
-  T_FOR_RW,
-  T_RETURN_RW,
-} TOKEN;
+#include "parser.h"
 
 void print_lexical_error(t_lexical_error* error);
 
-void print_token_name(TOKEN token, char* match);
+void print_token_name(int token, char* match);
 
 #endif

@@ -1,5 +1,5 @@
 C		= gcc
-CINCS  	= -I"inc/"
+CINCS  	= -I"inc/" -I"src/"
 CFLAGS 	= $(CINCS) -std=c11 -O2 -lfl
 SRCS	= $(shell find src -name '*.c')
 OBJ		= $(addprefix obj/,$(notdir $(SRCS:%.c=%.o))) 
@@ -15,15 +15,15 @@ debug: CFLAGS = -DDEBUG $(CINCS) -std=c11 -lfl -g3 -ggdb3 -Wall -Wextra -D_GLIBC
 debug: all
 
 clean: clean-custom
-	${RM} $(OBJ) $(BIN)
+	${RM} $(OBJ) $(BIN) src/yy.lex.cc src/parser.c src/parser.h
 
-$(LEXICAL): flex bison compile
+$(LEXICAL): bison flex compile
 
 flex:
 	flex -o src/lex.yy.c src/tokenizer.lex
 
 bison:
-	bison -o src/parser.c src/parser.y
+	bison -o src/parser.c src/parser.y -d -v
 
 compile: $(OBJ)
 	$(C) $(OBJ) -o $(BIN) $(CFLAGS)

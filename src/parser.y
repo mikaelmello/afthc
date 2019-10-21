@@ -1,13 +1,21 @@
 %{
 
+#include "abstract_syntax_tree.h"
 #include "my_string.h"
 #include "lexical_error_handler.h"
 #include <stdio.h>
+#include <string.h>
 
 extern FILE* yyin;
+extern int yylex();
+extern uint32_t line;
+extern uint32_t column;
 
-int yyerror() {
-    
+void yyerror(const char *str) {    
+    size_t sz = strlen(str) + 256;
+    char* msg = malloc(sz);
+
+    sprintf(msg, "%d:%d: %s\n", line, column, str);
 }
 
 %}
@@ -22,178 +30,236 @@ int yyerror() {
 %token BOOL_RW BYTE_RW CHAR_RW SHORT_RW INT_RW LONG_RW
 %token FLOAT_RW DOUBLE_RW PRINT_RW PRINTC_RW PRINTX_RW SCAN_RW
 %token SCANC_RW SCANF_RW IF_RW ELSE_RW WHILE_RW TRUE_RW
-%token FALSE_RW FOR_RW RETURN_RW UNDERSCORE WHITESPACE STRING
+%token FALSE_RW FOR_RW RETURN_RW UNDERSCORE STRING
 %token NEWLINE DIGIT LETTER CHAR INTEGER REAL IDENTIFIER
 
 %nonassoc REDUCE
 %nonassoc ELSE_RW
+
+%union {
+    t_program* c_program;
+    // t_declaration_list* c_declaration_list;
+}
+
+%type <c_program> program;
+// %type <c_declaration_list> declaration-list;
+
+%start program
+
 %%
 
-library:
-    declaration-list
+program:
+    declaration-list {
+        printf("oi!\n");
+        t_program* program = create_program();
+        // program->declarations = $1;
+        $$ = program;
+    }
+;
 
 declaration-list:
     declaration-list declaration
 |   %empty
+;
 
-declaration: var-declaration
+declaration:
+    var-declaration
 |   fun-declaration
+;
 
 var-declaration:
-    type IDENTIFIER var-structure SEMICOLON
-
-var-structure:
-    LEFT_BRACKET INTEGER RIGHT_BRACKET
-|   LEFT_BRACKET RIGHT_BRACKET
-|   LEFT_BRACE RIGHT_BRACE
-|   %empty
+    type IDENTIFIER SEMICOLON
+|   type IDENTIFIER LEFT_BRACKET INTEGER RIGHT_BRACKET SEMICOLON
+|   type IDENTIFIER LEFT_BRACKET RIGHT_BRACKET SEMICOLON
+|   type IDENTIFIER LEFT_BRACE RIGHT_BRACE SEMICOLON
+;
 
 fun-declaration:
     type IDENTIFIER LEFT_PAREN param-decs RIGHT_PAREN scope
+;
 
 param-decs:
     param-decs COMMA param-dec
 |   %empty
+;
 
 param-dec:
-    type IDENTIFIER var-structure
+    type IDENTIFIER
+|   type IDENTIFIER LEFT_BRACKET INTEGER RIGHT_BRACKET
+|   type IDENTIFIER LEFT_BRACKET RIGHT_BRACKET
+|   type IDENTIFIER LEFT_BRACE RIGHT_BRACE
+;
 
 scope:
     LEFT_BRACE statement-list RIGHT_BRACE
+;
 
 statement-list:
     statement-list statement
 |   %empty
+;
 
 statement:  
     scope
 |   var-declaration
-|   assignment
 |   print
 |   scan
 |   expression SEMICOLON
 |   condition
 |   iteration
 |   return
+;
 
 print:
     print-words expression SEMICOLON
+;
 
 scan:
     scan-words IDENTIFIER SEMICOLON
+;
 
 print-words:
     PRINT_RW | PRINTC_RW | PRINTX_RW
+;
 
 scan-words:
     SCAN_RW | SCANC_RW | SCANF_RW
+;
 
 condition:
-    IF_RW LEFT_PAREN expression RIGHT_PAREN statement REDUCE
+    IF_RW LEFT_PAREN expression RIGHT_PAREN statement %prec REDUCE
 |   IF_RW LEFT_PAREN expression RIGHT_PAREN statement ELSE_RW statement
+;
 
 iteration:
     WHILE_RW LEFT_PAREN expression RIGHT_PAREN statement
 |   FOR_RW LEFT_PAREN optional-expression SEMICOLON optional-expression SEMICOLON optional-expression RIGHT_PAREN statement
+;
 
 return:
     RETURN_RW optional-expression SEMICOLON
-
-assignment:
-    IDENTIFIER assignment-op expression SEMICOLON
+;
 
 optional-expression:
     expression
 |   %empty
+;
 
 expression:
-    and-expression
+    assignment
+;
+
+assignment:
+    IDENTIFIER assignment-op and-expression
+|   and-expression
+;
 
 and-expression:
     and-expression AND_AND or-expression
 |   or-expression
+;
 
 or-expression:
     or-expression BAR_BAR bw-or-expression
 |   bw-or-expression
+;
 
 bw-or-expression:
     bw-or-expression BAR bw-xor-expression
 |   bw-xor-expression
+;
 
 bw-xor-expression:
     bw-xor-expression CARET bw-and-expression
 |   bw-and-expression
+;
 
 bw-and-expression:
     bw-and-expression AND eq-expression
 |   eq-expression
+;
 
 eq-expression:
     eq-expression EQUAL_EQUAL rel-expression
 |   eq-expression EXCL_EQUAL rel-expression
 |   rel-expression
+;
 
 rel-expression:
     rel-expression rel-op shift-expression
 |   shift-expression
+;
 
 shift-expression:
     shift-expression DOUBLE_LANGLE set-rm-expression
 |   shift-expression DOUBLE_RANGLE set-rm-expression
 |   set-rm-expression
+;
 
 set-rm-expression:
     set-rm-expression RM_RW add-expression
 |   add-expression
+;
 
 add-expression:
     add-expression PLUS mult-expression
 |   add-expression MINUS mult-expression
 |   mult-expression
+;
 
 mult-expression:
     mult-expression mul-op cast-expression
 |   cast-expression
+;
 
 cast-expression:
     LEFT_PAREN type RIGHT_PAREN cast-expression
 |   unary-expression
+;
 
 unary-expression:
     unary-op cast-expression
 |   SIZEOF_RW cast-expression
 |   postfix-expression
+;
 
 postfix-expression:
     postfix-expression LEFT_BRACKET expression RIGHT_BRACKET
 |   postfix-expression LEFT_PAREN param-vals RIGHT_PAREN
 |   primary-expression
+;
 
 param-vals:
     param-vals COMMA expression
-|   %empty
+|   expression
+;
 
 primary-expression:
     IDENTIFIER
 |   constant
 |   STRING
 |   LEFT_PAREN expression RIGHT_PAREN
+;
 
 constant:
     INTEGER | CHAR | REAL
+;
 
 assignment-op:
     EQUAL | PLUS_EQUAL | MINUS_EQUAL | ASTERISK_EQUAL | SLASH_EQUAL | PERCENT_EQUAL
+;
 
 unary-op:
     PLUS | MINUS | EXCL
+;
 
 rel-op:
     LEFT_ANGLE | RIGHT_ANGLE | LANGLE_EQUAL | RANGLE_EQUAL | IN_RW
+;
 
 mul-op:
     ASTERISK | SLASH | PERCENT
+;
 
 type: VOID_RW | BOOL_RW | BYTE_RW | CHAR_RW | SHORT_RW | INT_RW | LONG_RW | FLOAT_RW | DOUBLE_RW
 
