@@ -3,6 +3,7 @@
 #include "abstract_syntax_tree.h"
 #include "my_string.h"
 #include "lexical_error_handler.h"
+#include "symbol_table.h"
 #include <stdio.h>
 #include <string.h>
 
@@ -12,6 +13,9 @@ extern FILE* yyin;
 extern int yylex();
 extern uint32_t line;
 extern uint32_t column;
+
+t_symbol_table_list* sym_table = NULL;
+node ast_root;
 
 void yyerror (char const *s)
 {
@@ -154,14 +158,12 @@ void free_ast(node root, node_type type);
 
 program:
     declaration-list {
-        printf("OK!\n");
         t_program* program = zero_allocate(t_program);
         program->declarations = $1;
-        node root;
-        root.c_program = program;
-        print_ast(root, NT_PROGRAM, 0);
+        ast_root.c_program = program;
+        print_ast(ast_root, NT_PROGRAM, 0);
+        print_symbol_table_list(sym_table);
         $$ = program;
-        free_ast(root, NT_PROGRAM);
     }
 ;
 
@@ -182,12 +184,14 @@ declaration:
         t_declaration* dec = zero_allocate(t_declaration);
         dec->type = VAR_DECLARATION;
         dec->member.variable = $1;
+        append_symbol_table_node(sym_table, dec);
         $$ = dec;
     }
 |   fun-declaration {
         t_declaration* dec = zero_allocate(t_declaration);
         dec->type = FUN_DECLARATION;
-        dec->member.function = $1;   
+        dec->member.function = $1;  
+        append_symbol_table_node(sym_table, dec); 
         $$ = dec;  
     }
 ;
@@ -311,10 +315,10 @@ statement:
         stmt->member.scope = $1;
         $$ = stmt;
     }
-|   var-declaration {
+|   declaration {
         t_statement* stmt = zero_allocate(t_statement);
-        stmt->type = VAR_DECLARATION_STATEMENT;
-        stmt->member.variable = $1;
+        stmt->type = DECLARATION_STATEMENT;
+        stmt->member.declaration = $1;
         $$ = stmt;
     }
 |   print {
@@ -1091,9 +1095,9 @@ void print_ast(node root, node_type type, int cur_level) {
                     print_ast(child[0], NT_SCOPE, cur_level+1);
                 break;
 
-                case VAR_DECLARATION_STATEMENT:
-                    child[0].c_variable = root.c_statement->member.variable;
-                    print_ast(child[0], NT_VARIABLE, cur_level+1);
+                case DECLARATION_STATEMENT:
+                    child[0].c_declaration = root.c_statement->member.declaration;
+                    print_ast(child[0], NT_DECLARATION, cur_level+1);
                 break;
 
                 case PRINT_STATEMENT:
@@ -1646,9 +1650,9 @@ void free_ast(node root, node_type type) {
                     free_ast(child[0], NT_SCOPE);
                 break;
 
-                case VAR_DECLARATION_STATEMENT:
-                    child[0].c_variable = root.c_statement->member.variable;
-                    free_ast(child[0], NT_VARIABLE);
+                case DECLARATION_STATEMENT:
+                    child[0].c_declaration = root.c_statement->member.declaration;
+                    free_ast(child[0], NT_DECLARATION);
                 break;
 
                 case PRINT_STATEMENT:

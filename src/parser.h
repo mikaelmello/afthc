@@ -121,7 +121,7 @@ extern int yydebug;
 
 union YYSTYPE
 {
-#line 49 "src/parser.y" /* yacc.c:1909  */
+#line 53 "src/parser.y" /* yacc.c:1909  */
 
     t_primary_expression_type c_primary_expression_type;
     t_constant_type c_constant_type;
