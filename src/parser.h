@@ -45,75 +45,74 @@ extern int yydebug;
 # define YYTOKENTYPE
   enum yytokentype
   {
-    LEFT_BRACE = 258,
-    RIGHT_BRACE = 259,
-    LEFT_BRACKET = 260,
-    RIGHT_BRACKET = 261,
-    LEFT_PAREN = 262,
-    RIGHT_PAREN = 263,
-    LEFT_ANGLE = 264,
-    RIGHT_ANGLE = 265,
-    EQUAL = 266,
-    PLUS_EQUAL = 267,
-    MINUS_EQUAL = 268,
-    ASTERISK_EQUAL = 269,
-    SLASH_EQUAL = 270,
-    PERCENT_EQUAL = 271,
-    LANGLE_EQUAL = 272,
-    RANGLE_EQUAL = 273,
-    EQUAL_EQUAL = 274,
-    EXCL_EQUAL = 275,
-    DOUBLE_LANGLE = 276,
-    DOUBLE_RANGLE = 277,
-    TILDE = 278,
-    AND = 279,
-    BAR = 280,
-    CARET = 281,
-    EXCL = 282,
-    BAR_BAR = 283,
-    AND_AND = 284,
-    COMMA = 285,
-    SEMICOLON = 286,
-    PLUS = 287,
-    MINUS = 288,
-    ASTERISK = 289,
-    SLASH = 290,
-    PERCENT = 291,
-    IN_RW = 292,
-    RM_RW = 293,
-    SIZEOF_RW = 294,
-    VOID_RW = 295,
-    BOOL_RW = 296,
-    BYTE_RW = 297,
-    CHAR_RW = 298,
-    SHORT_RW = 299,
-    INT_RW = 300,
-    LONG_RW = 301,
-    FLOAT_RW = 302,
-    DOUBLE_RW = 303,
-    PRINT_RW = 304,
-    PRINTC_RW = 305,
-    PRINTX_RW = 306,
-    SCAN_RW = 307,
-    SCANC_RW = 308,
-    SCANF_RW = 309,
-    IF_RW = 310,
-    ELSE_RW = 311,
-    WHILE_RW = 312,
-    TRUE_RW = 313,
-    FALSE_RW = 314,
-    FOR_RW = 315,
-    RETURN_RW = 316,
-    UNDERSCORE = 317,
-    STRING = 318,
-    NEWLINE = 319,
-    DIGIT = 320,
-    LETTER = 321,
-    CHAR = 322,
-    INTEGER = 323,
-    REAL = 324,
-    IDENTIFIER = 325,
-    REDUCE = 326
+    IDENTIFIER = 258,
+    STRING = 259,
+    DIGIT = 260,
+    INTEGER = 261,
+    CHAR = 262,
+    REAL = 263,
+    LEFT_BRACE = 264,
+    RIGHT_BRACE = 265,
+    LEFT_BRACKET = 266,
+    RIGHT_BRACKET = 267,
+    LEFT_PAREN = 268,
+    RIGHT_PAREN = 269,
+    LEFT_ANGLE = 270,
+    RIGHT_ANGLE = 271,
+    EQUAL = 272,
+    PLUS_EQUAL = 273,
+    MINUS_EQUAL = 274,
+    ASTERISK_EQUAL = 275,
+    SLASH_EQUAL = 276,
+    PERCENT_EQUAL = 277,
+    LANGLE_EQUAL = 278,
+    RANGLE_EQUAL = 279,
+    EQUAL_EQUAL = 280,
+    EXCL_EQUAL = 281,
+    DOUBLE_LANGLE = 282,
+    DOUBLE_RANGLE = 283,
+    TILDE = 284,
+    AND = 285,
+    BAR = 286,
+    CARET = 287,
+    EXCL = 288,
+    BAR_BAR = 289,
+    AND_AND = 290,
+    COMMA = 291,
+    SEMICOLON = 292,
+    PLUS = 293,
+    MINUS = 294,
+    ASTERISK = 295,
+    SLASH = 296,
+    PERCENT = 297,
+    IN_RW = 298,
+    RM_RW = 299,
+    SIZEOF_RW = 300,
+    VOID_RW = 301,
+    BOOL_RW = 302,
+    BYTE_RW = 303,
+    CHAR_RW = 304,
+    SHORT_RW = 305,
+    INT_RW = 306,
+    LONG_RW = 307,
+    FLOAT_RW = 308,
+    DOUBLE_RW = 309,
+    PRINT_RW = 310,
+    PRINTC_RW = 311,
+    PRINTX_RW = 312,
+    SCAN_RW = 313,
+    SCANC_RW = 314,
+    SCANF_RW = 315,
+    IF_RW = 316,
+    ELSE_RW = 317,
+    WHILE_RW = 318,
+    TRUE_RW = 319,
+    FALSE_RW = 320,
+    FOR_RW = 321,
+    RETURN_RW = 322,
+    UNDERSCORE = 323,
+    NEWLINE = 324,
+    REDUCE = 325
   };
 #endif
 
@@ -122,12 +121,64 @@ extern int yydebug;
 
 union YYSTYPE
 {
-#line 39 "src/parser.y" /* yacc.c:1909  */
+#line 45 "src/parser.y" /* yacc.c:1909  */
 
+    t_primary_expression_type c_primary_expression_type;
+    t_constant_type c_constant_type;
+    t_postfix_expression_type c_postfix_expression_type;
+    t_unary_expression_type c_unary_expression_type;
+    t_add_expression_type c_add_expression_type;
+    t_eq_expression_type c_eq_expression_type;
+    t_shift_expression_type c_shift_expression_type;
+    t_rel_expression_type c_rel_expression_type;
+    t_mult_operator c_mult_operator;
+    t_assignment_operator c_assignment_operator;
+    t_iteration_type c_iteration_type;
+    t_primitive_type c_primitive_type;
+    t_print_type c_print_type;
+    t_scan_type c_scan_type;
     t_program* c_program;
-    // t_declaration_list* c_declaration_list;
+    t_declaration_list* c_declaration_list;
+    t_declaration* c_declaration;
+    t_variable* c_variable;
+    t_function* c_function;
+    t_function_param* c_function_param;
+    t_function_params* c_function_params;
+    t_scope* c_scope;
+    t_statement_list* c_statement_list;
+    t_statement* c_statement;
+    t_print* c_print;
+    t_scan* c_scan;
+    t_return* c_return;
+    t_expression* c_expression;
+    t_condition* c_condition;
+    t_iteration* c_iteration;
+    t_while* c_while;
+    t_for* c_for;
+    t_assignment* c_assignment;
+    t_and_expression* c_and_expression;
+    t_or_expression* c_or_expression;
+    t_bw_or_expression* c_bw_or_expression;
+    t_bw_xor_expression* c_bw_xor_expression;
+    t_bw_and_expression* c_bw_and_expression;
+    t_eq_expression* c_eq_expression;
+    t_rel_expression* c_rel_expression;
+    t_shift_expression* c_shift_expression;
+    t_set_rm_expression* c_set_rm_expression;
+    t_add_expression* c_add_expression;
+    t_mult_expression* c_mult_expression;
+    t_cast_expression* c_cast_expression;
+    t_unary_expression* c_unary_expression;
+    t_postfix_expression* c_postfix_expression;
+    t_primary_expression* c_primary_expression;
+    t_constant* c_constant;
+    t_param_vals* c_param_vals;
+    char* string_val;
+    uint64_t integer_val;
+    double float_val;
+    char char_val;
 
-#line 131 "src/parser.h" /* yacc.c:1909  */
+#line 182 "src/parser.h" /* yacc.c:1909  */
 };
 
 typedef union YYSTYPE YYSTYPE;
