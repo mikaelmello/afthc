@@ -45,3 +45,11 @@ void m_string_free(t_string* s) {
   free(s->characters);
   free(s);
 }
+
+char* duplicate(char* source) {
+  int size = strlen(source);
+  char* new = (char*)malloc(size + 1);
+  strncpy(new, source, size);
+  new[size] = 0;
+  return new;
+}

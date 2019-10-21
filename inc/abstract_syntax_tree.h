@@ -59,6 +59,64 @@ typedef enum t_primitive_type t_primitive_type;
 typedef enum t_structure_type t_structure_type;
 typedef enum t_rel_expression_type t_rel_expression_type;
 
+typedef enum node_type {
+  NT_PRIMARY_EXPRESSION_TYPE,
+  NT_CONSTANT_TYPE,
+  NT_POSTFIX_EXPRESSION_TYPE,
+  NT_UNARY_EXPRESSION_TYPE,
+  NT_ADD_EXPRESSION_TYPE,
+  NT_EQ_EXPRESSION_TYPE,
+  NT_SHIFT_EXPRESSION_TYPE,
+  NT_REL_EXPRESSION_TYPE,
+  NT_MULT_OPERATOR,
+  NT_ASSIGNMENT_OPERATOR,
+  NT_ITERATION_TYPE,
+  NT_PRIMITIVE_TYPE,
+  NT_PRINT_TYPE,
+  NT_SCAN_TYPE,
+  NT_PROGRAM,
+  NT_DECLARATION_LIST,
+  NT_DECLARATION,
+  NT_VARIABLE,
+  NT_FUNCTION,
+  NT_FUNCTION_PARAM,
+  NT_FUNCTION_PARAMS,
+  NT_SCOPE,
+  NT_STATEMENT_LIST,
+  NT_STATEMENT,
+  NT_PRINT,
+  NT_SCAN,
+  NT_RETURN,
+  NT_EXPRESSION,
+  NT_CONDITION,
+  NT_ITERATION,
+  NT_WHILE,
+  NT_FOR,
+  NT_ASSIGNMENT,
+  NT_AND_EXPRESSION,
+  NT_OR_EXPRESSION,
+  NT_BW_OR_EXPRESSION,
+  NT_BW_XOR_EXPRESSION,
+  NT_BW_AND_EXPRESSION,
+  NT_EQ_EXPRESSION,
+  NT_REL_EXPRESSION,
+  NT_SHIFT_EXPRESSION,
+  NT_SET_RM_EXPRESSION,
+  NT_ADD_EXPRESSION,
+  NT_MULT_EXPRESSION,
+  NT_CAST_EXPRESSION,
+  NT_UNARY_EXPRESSION,
+  NT_POSTFIX_EXPRESSION,
+  NT_PRIMARY_EXPRESSION,
+  NT_CONSTANT,
+  NT_PARAM_VALS,
+  NT_STRING,
+  NT_INTEGER,
+  NT_DOUBLE,
+  NT_CHAR,
+  NT_IDENTIFIER,
+} node_type;
+
 enum t_rel_expression_type {
   LESS_THAN,
   GREATER_THAN,
@@ -95,7 +153,7 @@ struct t_constant {
 
   union {
     char* string_val;
-    uint64_t integer_val;
+    int64_t integer_val;
     double float_val;
     char char_val;
   } member;
@@ -391,15 +449,15 @@ struct t_function {
   t_scope* body;
 
   union {
-    uint8_t (*byte_function)();
-    uint16_t (*short_function)();
-    uint32_t (*int_function)();
-    uint64_t (*long_function)();
+    int8_t (*byte_function)();
+    int16_t (*short_function)();
+    int32_t (*int_function)();
+    int64_t (*long_function)();
 
-    uint8_t* (*array_byte_function)();
-    uint16_t* (*array_short_function)();
-    uint32_t* (*array_int_function)();
-    uint64_t* (*array_long_function)();
+    int8_t* (*array_byte_function)();
+    int16_t* (*array_short_function)();
+    int32_t* (*array_int_function)();
+    int64_t* (*array_long_function)();
 
     t_set* (*set_function)();
 
@@ -425,15 +483,15 @@ struct t_variable {
   char* identifier;
 
   union {
-    uint8_t byte_val;
-    uint16_t short_val;
-    uint32_t int_val;
-    uint64_t long_val;
+    int8_t byte_val;
+    int16_t short_val;
+    int32_t int_val;
+    int64_t long_val;
 
-    uint8_t* array_byte_val;
-    uint16_t* array_short_val;
-    uint32_t* array_int_val;
-    uint64_t* array_long_val;
+    int8_t* array_byte_val;
+    int16_t* array_short_val;
+    int32_t* array_int_val;
+    int64_t* array_long_val;
 
     t_set* set_val;
 
@@ -441,5 +499,62 @@ struct t_variable {
     double double_val;
   } member;
 };
+
+typedef union node {
+  t_primary_expression_type c_primary_expression_type;
+  t_constant_type c_constant_type;
+  t_postfix_expression_type c_postfix_expression_type;
+  t_unary_expression_type c_unary_expression_type;
+  t_add_expression_type c_add_expression_type;
+  t_eq_expression_type c_eq_expression_type;
+  t_shift_expression_type c_shift_expression_type;
+  t_rel_expression_type c_rel_expression_type;
+  t_mult_operator c_mult_operator;
+  t_assignment_operator c_assignment_operator;
+  t_iteration_type c_iteration_type;
+  t_primitive_type c_primitive_type;
+  t_print_type c_print_type;
+  t_scan_type c_scan_type;
+  t_program* c_program;
+  t_declaration_list* c_declaration_list;
+  t_declaration* c_declaration;
+  t_variable* c_variable;
+  t_function* c_function;
+  t_function_param* c_function_param;
+  t_function_params* c_function_params;
+  t_scope* c_scope;
+  t_statement_list* c_statement_list;
+  t_statement* c_statement;
+  t_print* c_print;
+  t_scan* c_scan;
+  t_return* c_return;
+  t_expression* c_expression;
+  t_condition* c_condition;
+  t_iteration* c_iteration;
+  t_while* c_while;
+  t_for* c_for;
+  t_assignment* c_assignment;
+  t_and_expression* c_and_expression;
+  t_or_expression* c_or_expression;
+  t_bw_or_expression* c_bw_or_expression;
+  t_bw_xor_expression* c_bw_xor_expression;
+  t_bw_and_expression* c_bw_and_expression;
+  t_eq_expression* c_eq_expression;
+  t_rel_expression* c_rel_expression;
+  t_shift_expression* c_shift_expression;
+  t_set_rm_expression* c_set_rm_expression;
+  t_add_expression* c_add_expression;
+  t_mult_expression* c_mult_expression;
+  t_cast_expression* c_cast_expression;
+  t_unary_expression* c_unary_expression;
+  t_postfix_expression* c_postfix_expression;
+  t_primary_expression* c_primary_expression;
+  t_constant* c_constant;
+  t_param_vals* c_param_vals;
+  char* string_val;
+  int64_t integer_val;
+  double float_val;
+  char char_val;
+} node;
 
 #endif

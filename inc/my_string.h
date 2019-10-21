@@ -34,4 +34,6 @@ void m_string_clear(t_string* string);
  */
 void m_string_free(t_string* string);
 
+char* duplicate(char* source);
+
 #endif

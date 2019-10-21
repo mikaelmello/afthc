@@ -6,6 +6,7 @@
 #include "my_string.h"
 #include "lexical_error_handler.h"
 #include "abstract_syntax_tree.h"
+#include <stdio.h>
 
 int fileno(FILE *stream);
 uint32_t line = 1;
@@ -161,11 +162,11 @@ IDENTIFIER      {LETTER}({DIGIT}|{LETTER}|{UNDERSCORE})*
 {FOR_RW}            { return FOR_RW; }
 {RETURN_RW}         { return RETURN_RW; }
 
-{INTEGER}           { return INTEGER; }
-{REAL}              { return REAL; }
-{IDENTIFIER}        { return IDENTIFIER; }
-{STRING}            { return STRING; }
-{CHAR}              { return CHAR; }
+{INTEGER}           { yylval.integer_val = atoi(yytext); return INTEGER; }
+{REAL}              { yylval.float_val = atof(yytext); return REAL; }
+{IDENTIFIER}        { yylval.string_val = duplicate(yytext); return IDENTIFIER; }
+{STRING}            { yylval.string_val = duplicate(yytext); return STRING; }
+{CHAR}              { yylval.char_val = *yytext; return CHAR; }
 {WHITESPACE}        { BEGIN(INITIAL); }
 {NEWLINE}           { column = 0; line++; BEGIN(INITIAL); }
 .                   { printf("error?\n"); }
