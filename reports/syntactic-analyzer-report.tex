@@ -1,0 +1,537 @@
+%% abtex2-modelo-artigo.tex, v-1.9.7 laurocesar
+%% Copyright 2012-2018 by abnTeX2 group at http://www.abntex.net.br/ 
+%%
+%% This work may be distributed and/or modified under the
+%% conditions of the LaTeX Project Public License, either version 1.3
+%% of this license or (at your option) any later version.
+%% The latest version of this license is in
+%%   http://www.latex-project.org/lppl.txt
+%% and version 1.3 or later is part of all distributions of LaTeX
+%% version 2005/12/01 or later.
+%%
+%% This work has the LPPL maintenance status `maintained'.
+%% 
+%% The Current Maintainer of this work is the abnTeX2 team, led
+%% by Lauro César Araujo. Further information are available on 
+%% http://www.abntex.net.br/
+%%
+%% This work consists of the files abntex2-modelo-artigo.tex and
+%% abntex2-modelo-references.bib
+%%
+
+% ------------------------------------------------------------------------
+% ------------------------------------------------------------------------
+% abnTeX2: Modelo de Artigo Acadêmico em conformidade com
+% ABNT NBR 6022:2018: Informação e documentação - Artigo em publicação 
+% periódica científica - Apresentação
+% ------------------------------------------------------------------------
+% ------------------------------------------------------------------------
+
+\documentclass[
+	% -- opções da classe memoir --
+	article,			% indica que é um artigo acadêmico
+	11pt,				% tamanho da fonte
+	oneside,			% para impressão apenas no recto. Oposto a twoside
+	a4paper,			% tamanho do papel. 
+	% -- opções da classe abntex2 --
+	%chapter=TITLE,		% títulos de capítulos convertidos em letras maiúsculas
+	%section=TITLE,		% títulos de seções convertidos em letras maiúsculas
+	%subsection=TITLE,	% títulos de subseções convertidos em letras maiúsculas
+	%subsubsection=TITLE % títulos de subsubseções convertidos em letras maiúsculas
+	% -- opções do pacote babel --
+	english,			% idioma adicional para hifenização
+	brazil,				% o último idioma é o principal do documento
+	sumario=tradicional
+	]{abntex2}
+
+
+% ---
+% PACOTES
+% ---
+
+% ---
+% Pacotes fundamentais 
+% ---
+\usepackage{lmodern}			% Usa a fonte Latin Modern
+\usepackage[T1]{fontenc}		% Selecao de codigos de fonte.
+\usepackage[utf8]{inputenc}		% Codificacao do documento (conversão automática dos acentos)
+\usepackage{indentfirst}		% Indenta o primeiro parágrafo de cada seção.
+\usepackage{nomencl} 			% Lista de simbolos
+\usepackage{color}				% Controle das cores
+\usepackage{graphicx}			% Inclusão de gráficos
+\usepackage{microtype} 			% para melhorias de justificação
+\usepackage{syntax}				% BNF Grammar definition
+% ---
+		
+% ---
+% Pacotes adicionais, usados apenas no âmbito do Modelo Canônico do abnteX2
+% ---
+\usepackage{lipsum}				% para geração de dummy text
+% ---
+		
+% ---
+% Pacotes de citações
+% ---
+\usepackage[brazilian,hyperpageref]{backref}	 % Paginas com as citações na bibl
+\usepackage[alf]{abntex2cite}	% Citações padrão ABNT
+% ---
+
+% ---
+% Configurações do pacote backref
+% Usado sem a opção hyperpageref de backref
+\renewcommand{\backrefpagesname}{Citado na(s) página(s):~}
+% Texto padrão antes do número das páginas
+\renewcommand{\backref}{}
+% Define os textos da citação
+\renewcommand*{\backrefalt}[4]{
+	\ifcase #1 %
+		Nenhuma citação no texto.%
+	\or
+		Citado na página #2.%
+	\else
+		Citado #1 vezes nas páginas #2.%
+	\fi}%
+% ---
+
+% --- Informações de dados para CAPA e FOLHA DE ROSTO ---
+\titulo{Implementação do Analisador Sintático}
+% \tituloestrangeiro{Implementation of the Lexical Analyzer}
+
+\autor{
+Mikael Mello\thanks{Departamento de Ciência da Computação, Universidade de Brasília,
+Brasília, DF, Brasil.
+\mbox{\href{mailto:contact@mikaelmello.com}{contact@mikaelmello.com}} }
+}
+
+\local{Brasil}
+\data{Setembro 2019}
+% ---
+
+% ---
+% Configurações de aparência do PDF final
+
+% alterando o aspecto da cor azul
+\definecolor{blue}{RGB}{41,5,195}
+
+% informações do PDF
+\makeatletter
+\hypersetup{
+     	%pagebackref=true,
+		pdftitle={\@title}, 
+		pdfauthor={\@author},
+    	pdfsubject={},
+	   pdfcreator={Mikael Mello},
+		pdfkeywords={tradutores}{relatório}{escolha do tema}, 
+		colorlinks=true,       		% false: boxed links; true: colored links
+    	linkcolor=blue,          	% color of internal links
+    	citecolor=blue,        		% color of links to bibliography
+    	filecolor=magenta,      		% color of file links
+		urlcolor=blue,
+		bookmarksdepth=4
+}
+\makeatother
+% --- 
+
+% ---
+% compila o indice
+% ---
+\makeindex
+% ---
+
+% ---
+% Altera as margens padrões
+% ---
+\setlrmarginsandblock{3cm}{3cm}{*}
+\setulmarginsandblock{3cm}{3cm}{*}
+\checkandfixthelayout
+% ---
+
+% --- 
+% Espaçamentos entre linhas e parágrafos 
+% --- 
+
+% O tamanho do parágrafo é dado por:
+\setlength{\parindent}{1.3cm}
+
+% Controle do espaçamento entre um parágrafo e outro:
+\setlength{\parskip}{0.2cm}  % tente também \onelineskip
+
+% Espaçamento simples
+\SingleSpacing
+
+
+% ----
+% Início do documento
+% ----
+\begin{document}
+
+% Seleciona o idioma do documento (conforme pacotes do babel)
+%\selectlanguage{english}
+\selectlanguage{brazil}
+
+% Retira espaço extra obsoleto entre as frases.
+\frenchspacing 
+
+% ----------------------------------------------------------
+% ELEMENTOS PRÉ-TEXTUAIS
+% ----------------------------------------------------------
+
+%---
+%
+% Se desejar escrever o artigo em duas colunas, descomente a linha abaixo
+% e a linha com o texto ``FIM DE ARTIGO EM DUAS COLUNAS''.
+% \twocolumn[    		% INICIO DE ARTIGO EM DUAS COLUNAS
+%
+%---
+
+% página de titulo principal (obrigatório)
+\maketitle
+
+
+% titulo em outro idioma (opcional)
+
+
+
+% resumo em português
+\begin{resumoumacoluna}
+	Neste relatório é descrita a implementação do analisador sintático
+	para a linguagem Afth, tendo sua análise gerada com a ferramenta
+	Flex e o sintático com a ferramenta Bison.
+
+	\vspace{\onelineskip}
+	 
+	\noindent
+	\textbf{Palavras-chave}: tradutores. analisador sintático. flex. bison.
+\end{resumoumacoluna}
+
+
+% resumo em inglês
+\renewcommand{\resumoname}{Abstract}
+\begin{resumoumacoluna}
+	\begin{otherlanguage*}{english}
+		This report describes the implementation of the syntactic
+		analyzer for the Afth language, generated by the Flex and Bison tools.
+
+		\vspace{\onelineskip}
+		 
+		\noindent
+		\textbf{Keywords}: translators. lexical analyzer. flex.
+	\end{otherlanguage*}  
+\end{resumoumacoluna}
+
+% ]  				% FIM DE ARTIGO EM DUAS COLUNAS
+% ---
+
+\begin{center}\smaller
+	
+	%   \textbf{Data de submissão e aprovação}: 26 de agosto de 2019.
+	
+\end{center}
+
+% ----------------------------------------------------------
+% ELEMENTOS TEXTUAIS
+% ----------------------------------------------------------
+\textual
+
+\section{Introdução}
+
+O analisador sintático é responsável por ler uma sequência de tokens, gerada pelo analisador léxico, e gerar uma árvore de derivação a partir de uma gramática especificada. Esta árvore de derivação será então usada pelo futuro analisador semântico.
+
+É papel do analisador sintático verificar se a entrada é parte da linguagem especificada, assim como identificar símbolos ou similares, adicionando-os a tabela de símbolos.
+
+Como desafio, este analisador sintático foi desenvolvido em apenas um dia, e por isso um relatório detalhado de erros não foi implementado. 
+
+Na linguagem Afth, há a implementação de conjunto como estrutura nativa. Para declarar uma variável que seja um conjunto de elementos de um tipo arbitrário, deve ser escrito \texttt{<tipo> <nome da variável>\{\};}.
+
+Para inserir um elemento no conjunto, \texttt{<variável> << <elemento>} ou \texttt{<elemento> >> <variável>}. Para remover um elemento, a notação é \texttt{<variável> rm <elemento>}, e por fim, para verificar se um elemento pertence a um conjunto, \texttt{<elemento> in <variável>}.
+
+\section{Funcionamento do analisador}
+
+Este analisador é responsável por encontrar uma derivação da linguagem especificada que corresponda a sequeência de tokens lida do analisador léxico.
+
+Para isso, o \textit{parser} gerado é do formato LR(1), o que significa que a entrada será lida da esquerda para a direita, construindo uma derivação da direita para a esquerda, sempre olhando até um símbolo seguinte da entrada de modo a identificar qual regra deve ser seguida.
+
+Cada regra da gramática possui uma estrutura de dados correspondente, de modo que as derivações a partir desta regra são propriedades da estrutura de dados correspondente.
+
+Assim, é criada uma árvore sintática abstrata onde o tipo de dados raiz corresponde a regra inicial da gramática, seus membros a derivação desta regra, e assim em diante.
+
+Deste modo, a árvore pode ser facilmente atravessada por qualquer algoritmo de busca como busca em largura ou profundidade. 
+
+Ao final do programa, esta árvore é impressa na saída padrão usando o algoritmo de busca em profundidade.
+
+Além disso, o programa também adiciona uma entrada na tabela de símbolos toda vez que há uma declaração, que pode ser de variável ou função.
+
+\subsection{Tratamento de erros}
+
+Várias correções foram feitas na gramática ao longo do desenvolvimento, de modo a tanto facilitar o trabalho como corrigir conflitos.
+
+A regra \texttt{var-declaration} agora possui uma derivação em que não há inteiro entre os colchetes. A regra \texttt{fun-declaration} agora possui uma derivação com inteiro entre os cochetes.
+
+A regra \texttt{assignment} não é mais uma derivação direta de \texttt{statement}, mas sim de \texttt{expression}.
+
+Havia também um conflito de shift/reduce nas regras derivadas a partir de \texttt{condition}, isto foi resolvido ao ter apenas uma regra \texttt{condition}, com variações para ambos \texttt{if} e \texttt{if else}. Além disso, no Bison é usado o modificador \texttt{\%prec} para decidir que a regra sem o \texttt{else} tem precedência, ou seja, um shift deve ser feito.
+
+A regra \texttt{iteration} agora deriva duas regras novas, \texttt{for-iteration} e \texttt{while-iteration}, que são exatamente iguais às antigas derivações de \texttt{iteration}.
+
+Uma regra chamada \texttt{optional-expression} foi adicionada, pois não existe a notação de uma derivação opcional em Bison, uma vez que isto não é possível em linguagens LR(1).
+
+Houveram algumas mudanças nas ordens das regras derivadas a partir de \texttt{expression}, e além disso, \texttt{shift-expression} não possui mais uma derivação com o operador \texttt{rm}, isto foi movido para uma nova regra chamada \texttt{set-rm-expression}.
+
+\subsection{Testes}
+
+Para testar a identificação correta de tokens foram escritos quatro
+arquivos, de extensão \texttt{.afth}, dois deles apenas com tokens
+válidos e dois com alguns erros.
+
+O primeiro, \texttt{samples/correct.lexical.afth}, contém apenas
+algumas declarações de variáveis e expressões aritméticas e condicionais
+simples, juntamente com uma expressão de saída \texttt{print}.
+Todos os tokens são corretamente identificados, as variáveis são
+interpretadas como lexemas do tipo identificador, as palavras reservadas
+são identificadas de forma apropriada assim como diversos símbolos.
+
+O segundo, \texttt{samples/correct2.lexical.afth}, possui a declaração
+de uma variável do tipo conjunto de inteiros, onde todos os tokens são
+devidamente agrupados em lexemas apropriados, assim como nas operações
+de inserção e remoção dos elementos neste conjunto. Os símbolos de
+maior e menor duplos são devidamente agrupados como um só lexema, assim
+como as palavras reservadas \texttt{in} e \texttt{rm}.
+
+O terceiro, \texttt{samples/strange-chars.lexical.afth}, possui
+cadeias de caracteres não presentes na gramática da linguagem. As três
+são devidamente informadas como inválidas pelo analisador léxico,
+indicando corretamente a linha e a coluna onde são iniciadas.
+
+O quarto, \texttt{samples/identifier-invalid-char.lexica.afth}, possui
+testes para verificar a análise correta de identificadores. Várias letras
+contínuas, separadas por símbolos como \texttt{-} ou \texttt{/}, são
+devidamente interpretados como diferentes identificadores, uma vez que
+o erro presente é sintático, não são reportados erros pelo analisador léxico.
+Além disso, um dos identificadores possui um caractere inválido no
+meio da cadeia, o analisador interpreta corretamente cada metade da cadeia
+como sendo um identificador diferente e o caractere inválido é identificado
+como um erro e impresso no final da execução do analisador.
+
+\section{Gramática da linguagem}
+
+
+\setlength{\grammarparsep}{0pt plus 1pt minus 1pt} % increase separation between rules
+\setlength{\grammarindent}{12em} % increase separation between LHS/RHS 
+
+\begin{grammar}
+	
+	<program> ::= <declaration-list>
+		
+	<declaration-list> ::= <declaration-list> <declaration> | <declaration>
+	
+	<declaration> ::= <var-declaration> | <fun-declaration>
+	
+	<var-declaration> ::= <type> <identifier> `;'
+	\alt <type> <identifier> `[' <integer> `]' `;'
+	\alt <type> <identifier> `[' `]' `;'
+	\alt <type> <identifier> `\{' `\}' `;'
+	
+	<fun-declaration> ::= <type> <identifier> `(' <param-decs> `)' <scope>
+		
+	<param-decs> ::= <param-decs> `,' <param-dec> | <param-dec> | $\varepsilon$
+	
+	<param-dec> ::= <type> <identifier>
+	\alt <type> <identifier> `[' <integer> `]'
+	\alt <type> <identifier> `[' `]'
+	\alt <type> <identifier> `\{' `\}'
+	
+	<scope> ::= `\{' <statement-list> `\}'
+	
+	<statement-list> ::= <statement-list> <statement> | $\varepsilon$
+	
+	<statement> ::= <scope>
+	\alt <declaration>
+	\alt <print>
+	\alt <scan>
+	\alt <expression> `;'
+	\alt <condition>
+	\alt <iteration>
+	\alt <return>
+	
+	<print> ::= <print-type> <expression> `;'
+
+	<scan> ::= <scan-type> <identifier> `;'
+
+	<print-type> ::= `print' | `printc' | `printx'
+
+	<scan-type> ::= `scan' | `scanc' | `scanf'	
+
+	<condition> ::= `if' `(' <expression> `)' <statement>
+	\alt `if' `(' <expression> `)' <statement> `else' <statement>
+		
+	<iteration> ::= <while-iteration> | <for-iteration>
+
+	<while-iteration> ::= `while' `(' <expression> `)' <statement>
+	
+	<for-iteration> ::= `for' `(' <optional-expression> `;' <optional-expression> `;' <optional-expression> `)' <statement>
+
+	<optional-expression> ::= <expression>
+	\alt $\varepsilon$
+
+	<return> ::= `return' <optional-expression> `;'
+	
+	<expression> ::= <assignment>
+
+	<assignment> ::= <identifier> <assignment-op> <expression>
+	\alt <and-expression>
+	
+	<and-expression> ::= <or-expression>
+	\alt <and-expression> `&&' <or-expression>
+	
+	<or-expression> ::= <bw-and-expression>
+	\alt <or-expression> `||' <bw-and-expression>
+	
+	<bw-and-expression> ::= <bw-or-expression>
+	\alt <bw-and-expression> `&' <bw-or-expression>
+	
+	<bw-or-expression> ::= <bw-xor-expression>
+	\alt <bw-or-expression> `|' <bw-xor-expression>
+	
+	<bw-xor-expression> ::= <eq-expression>
+	\alt <bw-xor-expression> `^' <eq-expression>
+	
+	<eq-expression> ::= <rel-expression>
+	\alt <eq-expression> `==' <rel-expression>
+	\alt <eq-expression> `!=' <rel-expression>
+	
+	<rel-expression> ::= <shift-expression>
+	\alt <rel-expression> <rel-op> <shift-expression>
+	
+	<shift-expression> ::= <set-rm-expression>
+	\alt <shift-expression> `<<' <set-rm-expression>
+	\alt <shift-expression> `>>' <set-rm-expression>
+
+	<set-rm-expression> ::= <add-expression>
+	\alt <set-rm-expression> `rm' <add-expression>
+	
+	<add-expression> ::= <mult-expression>
+	\alt <add-expression> `+' <mult-expression>
+	\alt <add-expression> `-' <mult-expression>
+	
+	<mult-expression> ::= <cast-expression>
+	\alt <mult-expression> <mul-op> <cast-expression>
+	
+	<cast-expression> ::= <unary-expression>
+	\alt `(' <type> `)' <cast-expression>
+	
+	<unary-expression> ::= <postfix-expression>
+	\alt <unary-op> <cast-expression>
+	\alt `sizeof' <cast-expression>
+	
+	<postfix-expression> ::= <primary-expression>
+	\alt <postfix-expression> [ <expression> ]
+	\alt <postfix-expression> ( <param-vals> )
+		
+	<param-vals> ::= <param-vals> `,' <expression> | <expression> | $\varepsilon$
+	
+	<primary-expression> ::= <identifier>
+	\alt <constant>
+	\alt <string>
+	\alt `(' <expression> `)'
+	
+	<constant> ::= <integer>
+	\alt `'' <symbol> `''
+	\alt <integer> `.' <integer>
+	
+	<integer> ::= <digit>+
+	
+	<identifier> ::= <letter> \{ <letter> | <digit> | `_' \}*
+
+	<type> ::= `void' | `bool' | `byte' | `char' | `short' | `int' | `long' | `float' | `double'
+	
+	<symbol> ::= any printable ascii character
+
+	<letter> ::= `a' | `b' | ... | `z' | `A' | ... | `Z'
+	
+	<digit> ::= `0' | `1' | `2' | ... | `9'
+	
+	<assignment-op> ::= `=' | `+=' | `-=' | `*=' | `/=' | `\%='
+	
+	<unary-op> ::= `+' | `-' | `~' | `!'
+	
+	<rel-op> ::= `<' | `>' | `<=' | `>=' | `in'
+	
+	<mul-op> ::= `*' | `/' | `\%'
+	
+\end{grammar}
+
+\section{Considerações finais}
+
+A construção do analisador sintático se provou um bom desafio, e com mais tempo disponível para seu desenvolvimento será possível melhorá-lo e torná-lo completo, contruindo estruturas de dados mais completas para o \textit{parsing} da entrada e a possibilidade um relatório de erros detalhado.
+
+Para a construção do analisador semântico no futuro, este analisador sintático será melhorado de modo a fornecer todas as funcionalidades necessárias para um bom tradutor.
+
+A melhora da gramática não teria sido possível sem consultar gramáticas existentes e corretas \cite{Kernighan:1988:CPL:576122} \cite{BNFCM}. Além disso, a estrutura do analisador sintático foi inspirada em diversas soluções existentes online. \cite{youtube} \cite{Lucas1993}
+
+\bookmarksetup{startatroot}% 
+
+% ----------------------------------------------------------
+% ELEMENTOS PÓS-TEXTUAIS
+% ----------------------------------------------------------
+\postextual
+
+% ----------------------------------------------------------
+% Referências bibliográficas
+% ----------------------------------------------------------
+\bibliography{references}
+
+% ----------------------------------------------------------
+% Glossário
+% ----------------------------------------------------------
+%
+% Há diversas soluções prontas para glossário em LaTeX. 
+% Consulte o manual do abnTeX2 para obter sugestões.
+%
+%\glossary
+
+% ----------------------------------------------------------
+% Apêndices
+% ----------------------------------------------------------
+
+% ---
+% Inicia os apêndices
+% ---
+% \begin{apendicesenv}
+
+% % ----------------------------------------------------------
+% \chapter{Nullam elementum urna vel imperdiet sodales elit ipsum pharetra ligula
+% ac pretium ante justo a nulla curabitur tristique arcu eu metus}
+% % ----------------------------------------------------------
+% \lipsum[55-56]
+
+% \end{apendicesenv}
+% ---
+
+% ----------------------------------------------------------
+% Anexos
+% ----------------------------------------------------------
+% \cftinserthook{toc}{AAA}
+% % ---
+% % Inicia os anexos
+% % ---
+% %\anexos
+% \begin{anexosenv}
+
+% % ---
+% \chapter{Cras non urna sed feugiat cum sociis natoque penatibus et magnis dis
+% parturient montes nascetur ridiculus mus}
+% % ---
+
+% \lipsum[31]
+
+% \end{anexosenv}
+
+% ----------------------------------------------------------
+% Agradecimentos
+% ----------------------------------------------------------
+
+% \section*{Agradecimentos}
+% Texto sucinto aprovado pelo periódico em que será publicado. Último 
+% elemento pós-textual.
+
+\end{document}

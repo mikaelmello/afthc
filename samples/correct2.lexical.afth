@@ -1,29 +1,37 @@
-void test() {
-    return;
-}
+void test() { return; }
 
 int main() {
-    int myset{};
-    int iterator;
+  int myset{};
+  int iterator;
+  int i;
+  3 >> myset;
+  4 >> myset;
+  3 >> myset;
+  7 >> myset;
 
-    3 >> myset;
-    4 >> myset;
-    3 >> myset;
-    7 >> myset;
+  iterator = 0;
+  i <= 10;
+  i += 1;
 
-    for (iterator = 0; i <= 10; i += 1) {
-        if (iterator in myset) {
-            print iterator;
-        }
+  // for (iterator = 0; i <= 10; i += 1) {
+  //     if (iterator in myset) {
+  //         print iterator;
+  //     }
+  // }
+
+  for (iterator = 3; i <= 10; i += 1) {
+    if (x) {
+      mikael;
     }
+  }
 
-    myset rm 5;
-    myset rm 3;
-    myset rm 4;
+  myset rm 5;
+  myset rm 3;
+  myset rm 4;
 
-    for (iterator = 0; i <= 10; i += 1) {
-        if (iterator in myset) {
-            print iterator;
-        }
-    }
+  // for (iterator = 0; i <= 10; i += 1) {
+  //     if (iterator in myset) {
+  //         print iterator;
+  //     }
+  // }
 }

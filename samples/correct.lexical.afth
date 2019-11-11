@@ -1,15 +1,16 @@
 int first_global_variable;
 
-int main() {
+int main(int argc, char argv) {
     int loopCounter;
     int answer;
 
     first_global_variable = 3;
     answer = 2;
 
-    for (loopCounter = 0; loopCounter < first_global_variable; loopCounter += 1) {
+    for (loopCounter == 0; loopCounter < first_global_variable; loopCounter += 1) {
         answer *= (loopCounter + 1);
     }
 
     print answer;
+    return 0;
 }
