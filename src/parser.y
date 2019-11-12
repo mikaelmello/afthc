@@ -237,6 +237,15 @@ fun-declaration:
         fun->body = $6;
         $$ = fun;
     }
+|   type IDENTIFIER LEFT_PAREN RIGHT_PAREN scope {
+        t_function* fun = zero_allocate(t_function);
+        fun->return_type = $1;
+        fun->return_structure = PRIMITIVE_TYPE;
+        fun->identifier = $2;
+        fun->params = NULL;
+        fun->body = $5;
+        $$ = fun;
+    }
 ;
 
 param-decs:
@@ -252,10 +261,8 @@ param-decs:
         fp->prev = NULL;
         $$ = fp; 
     }
-|   %empty {
-        $$ = NULL;
-    }
 ;
+
 
 param-dec:
     type IDENTIFIER {

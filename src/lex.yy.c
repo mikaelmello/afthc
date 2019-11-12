@@ -1,6 +1,6 @@
-#line 2 "src/lex.yy.c"
+#line 1 "src/lex.yy.c"
 
-#line 4 "src/lex.yy.c"
+#line 3 "src/lex.yy.c"
 
 #define  YY_INT_ALIGNED short int
 
@@ -548,10 +548,10 @@ char *yytext;
 int fileno(FILE *stream);
 uint32_t line = 1;
 uint32_t column = 0;
-#line 552 "src/lex.yy.c"
+#line 551 "src/lex.yy.c"
 #define YY_NO_INPUT 1
 
-#line 555 "src/lex.yy.c"
+#line 554 "src/lex.yy.c"
 
 #define INITIAL 0
 #define COMMENT 1
@@ -771,7 +771,7 @@ YY_DECL
 #line 96 "src/tokenizer.lex"
 
 
-#line 775 "src/lex.yy.c"
+#line 774 "src/lex.yy.c"
 
 	while ( /*CONSTCOND*/1 )		/* loops until end-of-file is reached */
 		{
@@ -1197,7 +1197,7 @@ YY_RULE_SETUP
 #line 177 "src/tokenizer.lex"
 ECHO;
 	YY_BREAK
-#line 1201 "src/lex.yy.c"
+#line 1200 "src/lex.yy.c"
 case YY_STATE_EOF(INITIAL):
 case YY_STATE_EOF(COMMENT):
 case YY_STATE_EOF(LINE_COMMENT):
