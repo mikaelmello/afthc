@@ -289,10 +289,10 @@ statement:
         stmt->member.scope = $1;
         $$ = stmt;
     }
-|   declaration {
+|   var-declaration SEMICOLON {
         t_statement* stmt = zero_allocate(t_statement);
-        stmt->type = DECLARATION_STATEMENT;
-        stmt->member.declaration = $1;
+        stmt->type = VAR_DECLARATION_STATEMENT;
+        stmt->member.variable = $1;
         $$ = stmt;
     }
 |   print {

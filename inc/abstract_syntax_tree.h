@@ -377,7 +377,7 @@ struct t_scan {
 
 enum t_statement_type {
   SCOPE_STATEMENT,
-  DECLARATION_STATEMENT,
+  VAR_DECLARATION_STATEMENT,
   PRINT_STATEMENT,
   SCAN_STATEMENT,
   EXPRESSION_STATEMENT,
@@ -391,7 +391,7 @@ struct t_statement {
 
   union {
     t_scope* scope;
-    t_declaration* declaration;
+    t_variable* variable;
     t_print* print;
     t_scan* scan;
     t_return* _return;
