@@ -136,7 +136,6 @@ union YYSTYPE
     t_rel_expression_type c_rel_expression_type;
     t_mult_operator c_mult_operator;
     t_assignment_operator c_assignment_operator;
-    t_iteration_type c_iteration_type;
     t_primitive_type c_primitive_type;
     t_print_type c_print_type;
     t_scan_type c_scan_type;
@@ -145,7 +144,6 @@ union YYSTYPE
     t_declaration* c_declaration;
     t_variable* c_variable;
     t_function* c_function;
-    t_function_param* c_function_param;
     t_function_params* c_function_params;
     t_scope* c_scope;
     t_statement_list* c_statement_list;
@@ -156,8 +154,6 @@ union YYSTYPE
     t_expression* c_expression;
     t_condition* c_condition;
     t_iteration* c_iteration;
-    t_while* c_while;
-    t_for* c_for;
     t_assignment* c_assignment;
     t_and_expression* c_and_expression;
     t_or_expression* c_or_expression;
@@ -181,7 +177,7 @@ union YYSTYPE
     double float_val;
     char char_val;
 
-#line 185 "src/parser.h"
+#line 181 "src/parser.h"
 
 };
 typedef union YYSTYPE YYSTYPE;

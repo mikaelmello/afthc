@@ -61,7 +61,6 @@ void free_ast(node root, node_type type);
     t_rel_expression_type c_rel_expression_type;
     t_mult_operator c_mult_operator;
     t_assignment_operator c_assignment_operator;
-    t_iteration_type c_iteration_type;
     t_primitive_type c_primitive_type;
     t_print_type c_print_type;
     t_scan_type c_scan_type;
@@ -70,7 +69,6 @@ void free_ast(node root, node_type type);
     t_declaration* c_declaration;
     t_variable* c_variable;
     t_function* c_function;
-    t_function_param* c_function_param;
     t_function_params* c_function_params;
     t_scope* c_scope;
     t_statement_list* c_statement_list;
@@ -81,8 +79,6 @@ void free_ast(node root, node_type type);
     t_expression* c_expression;
     t_condition* c_condition;
     t_iteration* c_iteration;
-    t_while* c_while;
-    t_for* c_for;
     t_assignment* c_assignment;
     t_and_expression* c_and_expression;
     t_or_expression* c_or_expression;
@@ -126,8 +122,6 @@ void free_ast(node root, node_type type);
 %type <c_expression> optional-expression;
 %type <c_condition> condition;
 %type <c_iteration> iteration;
-%type <c_while> while-iteration;
-%type <c_for> for-iteration;
 %type <c_assignment> assignment;
 %type <c_and_expression> and-expression;
 %type <c_or_expression> or-expression;
@@ -393,32 +387,16 @@ condition:
 ;
 
 iteration:
-    while-iteration {
-        t_iteration* it = zero_allocate(t_iteration);
-        it->type = WHILE_ITERATION;
-        it->member._while = $1;
-        $$ = it;
-    }
-|   for-iteration {
-        t_iteration* it = zero_allocate(t_iteration);
-        it->type = FOR_ITERATION;
-        it->member._for = $1;
-        $$ = it;
-    }
-;
-
-while-iteration:
     WHILE_RW LEFT_PAREN expression RIGHT_PAREN statement {
-        t_while* w = zero_allocate(t_while);
+        t_iteration* w = zero_allocate(t_iteration);
+        w->initialization = NULL;
         w->condition = $3;
+        w->step = NULL;
         w->body = $5;
         $$ = w;
     }
-;
-
-for-iteration:
-    FOR_RW LEFT_PAREN optional-expression SEMICOLON optional-expression SEMICOLON optional-expression RIGHT_PAREN statement {
-        t_for* f = zero_allocate(t_for);
+|   FOR_RW LEFT_PAREN optional-expression SEMICOLON optional-expression SEMICOLON optional-expression RIGHT_PAREN statement {
+        t_iteration* f = zero_allocate(t_iteration);
         f->initialization = $3;
         f->condition = $5;
         f->step = $7;
@@ -1004,21 +982,6 @@ void print_ast(node root, node_type type, int cur_level) {
             printf("\n");
         break;
 
-        case NT_FUNCTION_PARAM:
-            spaces(cur_level);
-            printf("Parameter");
-            switch(root.c_variable->structure) {
-                case ARRAY_TYPE: printf(" (array)"); break;
-                case SET_TYPE: printf(" (set)"); break;
-                case PRIMITIVE_TYPE: printf(" (primitive)"); break;
-            }
-            printf("\n");
-            child[0].c_primitive_type = root.c_variable->type;
-            print_ast(child[0], NT_PRIMITIVE_TYPE, cur_level+1);
-            child[1].string_val = root.c_variable->identifier;
-            print_ast(child[1], NT_IDENTIFIER, cur_level+1); 
-        break;
-
         case NT_FUNCTION_PARAMS:
             if (root.c_function_params == NULL) return;
             
@@ -1069,8 +1032,8 @@ void print_ast(node root, node_type type, int cur_level) {
                     print_ast(child[0], NT_SCOPE, cur_level+1);
                 break;
 
-                case DECLARATION_STATEMENT:
-                    child[0].c_declaration = root.c_statement->member.declaration;
+                case VAR_DECLARATION_STATEMENT:
+                    child[0].c_variable = root.c_statement->member.variable;
                     print_ast(child[0], NT_DECLARATION, cur_level+1);
                 break;
 
@@ -1160,40 +1123,19 @@ void print_ast(node root, node_type type, int cur_level) {
         case NT_ITERATION:
             spaces(cur_level);
             printf("Iteration\n");
-            if (root.c_iteration->type == WHILE_ITERATION) {
-                child[0].c_while = root.c_iteration->member._while;
-                print_ast(child[0], NT_WHILE, cur_level+1);
-            } else if (root.c_iteration->type == FOR_ITERATION) {
-                child[0].c_for = root.c_iteration->member._for;
-                print_ast(child[0], NT_FOR, cur_level+1);
-            }
-        break;
-
-        case NT_WHILE:
-            spaces(cur_level);
-            printf("While\n");
-            child[0].c_expression = root.c_while->condition;
-            print_ast(child[0], NT_EXPRESSION, cur_level+1);
-            child[1].c_statement = root.c_while->body;
-            print_ast(child[1], NT_STATEMENT, cur_level+1);
-        break;
-
-        case NT_FOR:
-            spaces(cur_level);
-            printf("For\n");
-            if (root.c_for->initialization) {
-                child[0].c_expression = root.c_for->initialization;
+            if (root.c_iteration->initialization) {
+                child[0].c_expression = root.c_iteration->initialization;
                 print_ast(child[0], NT_EXPRESSION, cur_level+1);
             }
-            if (root.c_for->condition) {
-                child[1].c_expression = root.c_for->condition;
+            if (root.c_iteration->condition) {
+                child[1].c_expression = root.c_iteration->condition;
                 print_ast(child[1], NT_EXPRESSION, cur_level+1);
             }
-            if (root.c_for->step) {
-                child[2].c_expression = root.c_for->step;
+            if (root.c_iteration->step) {
+                child[2].c_expression = root.c_iteration->step;
                 print_ast(child[2], NT_EXPRESSION, cur_level+1);
             }
-            child[3].c_statement = root.c_for->body;
+            child[3].c_statement = root.c_iteration->body;
             print_ast(child[3], NT_STATEMENT, cur_level+1);
         break;
 
@@ -1617,8 +1559,8 @@ void free_ast(node root, node_type type) {
                     free_ast(child[0], NT_SCOPE);
                 break;
 
-                case DECLARATION_STATEMENT:
-                    child[0].c_declaration = root.c_statement->member.declaration;
+                case VAR_DECLARATION_STATEMENT:
+                    child[0].c_variable = root.c_statement->member.variable;
                     free_ast(child[0], NT_DECLARATION);
                 break;
 
@@ -1704,43 +1646,22 @@ void free_ast(node root, node_type type) {
         break;
 
         case NT_ITERATION:
-            if (root.c_iteration->type == WHILE_ITERATION) {
-                child[0].c_while = root.c_iteration->member._while;
-                free_ast(child[0], NT_WHILE);
-            } else if (root.c_iteration->type == FOR_ITERATION) {
-                child[0].c_for = root.c_iteration->member._for;
-                free_ast(child[0], NT_FOR);
-            }
-
-            free(root.c_iteration);
-        break;
-
-        case NT_WHILE:
-            child[0].c_expression = root.c_while->condition;
-            free_ast(child[0], NT_EXPRESSION);
-            child[1].c_statement = root.c_while->body;
-            free_ast(child[1], NT_STATEMENT);
-
-            free(root.c_while);
-        break;
-
-        case NT_FOR:
-            if (root.c_for->initialization) {
-                child[0].c_expression = root.c_for->initialization;
+            if (root.c_iteration->initialization) {
+                child[0].c_expression = root.c_iteration->initialization;
                 free_ast(child[0], NT_EXPRESSION);
             }
-            if (root.c_for->condition) {
-                child[1].c_expression = root.c_for->condition;
+            if (root.c_iteration->condition) {
+                child[1].c_expression = root.c_iteration->condition;
                 free_ast(child[1], NT_EXPRESSION);
             }
-            if (root.c_for->step) {
-                child[2].c_expression = root.c_for->step;
+            if (root.c_iteration->step) {
+                child[2].c_expression = root.c_iteration->step;
                 free_ast(child[2], NT_EXPRESSION);
             }
-            child[3].c_statement = root.c_for->body;
+            child[3].c_statement = root.c_iteration->body;
             free_ast(child[3], NT_STATEMENT);
 
-            free(root.c_for);
+            free(root.c_iteration);
         break;
 
         case NT_ASSIGNMENT:

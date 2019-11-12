@@ -7,7 +7,6 @@ typedef struct t_program t_program;
 typedef struct t_declaration_list t_declaration_list;
 typedef struct t_declaration t_declaration;
 typedef struct t_function t_function;
-typedef struct t_function_param t_function_param;
 typedef struct t_function_params t_function_params;
 typedef struct t_set t_set;
 typedef struct t_variable t_variable;
@@ -20,8 +19,6 @@ typedef struct t_return t_return;
 typedef struct t_expression t_expression;
 typedef struct t_condition t_condition;
 typedef struct t_iteration t_iteration;
-typedef struct t_while t_while;
-typedef struct t_for t_for;
 typedef struct t_expression t_expression;
 typedef struct t_assignment t_assignment;
 typedef struct t_and_expression t_and_expression;
@@ -79,7 +76,6 @@ typedef enum node_type {
   NT_DECLARATION,
   NT_VARIABLE,
   NT_FUNCTION,
-  NT_FUNCTION_PARAM,
   NT_FUNCTION_PARAMS,
   NT_SCOPE,
   NT_STATEMENT_LIST,
@@ -90,8 +86,6 @@ typedef enum node_type {
   NT_EXPRESSION,
   NT_CONDITION,
   NT_ITERATION,
-  NT_WHILE,
-  NT_FOR,
   NT_ASSIGNMENT,
   NT_AND_EXPRESSION,
   NT_OR_EXPRESSION,
@@ -314,32 +308,12 @@ struct t_expression {
   t_assignment* assignment;
 };
 
-enum t_iteration_type {
-  FOR_ITERATION,
-  WHILE_ITERATION,
-};
-
-struct t_while {
-  t_expression* condition;
-
-  t_statement* body;
-};
-
-struct t_for {
+struct t_iteration {
   t_expression* initialization;
   t_expression* condition;
   t_expression* step;
 
   t_statement* body;
-};
-
-struct t_iteration {
-  t_iteration_type type;
-
-  union {
-    t_while* _while;
-    t_for* _for;
-  } member;
 };
 
 struct t_condition {
@@ -511,7 +485,6 @@ typedef union node {
   t_rel_expression_type c_rel_expression_type;
   t_mult_operator c_mult_operator;
   t_assignment_operator c_assignment_operator;
-  t_iteration_type c_iteration_type;
   t_primitive_type c_primitive_type;
   t_print_type c_print_type;
   t_scan_type c_scan_type;
@@ -530,8 +503,6 @@ typedef union node {
   t_expression* c_expression;
   t_condition* c_condition;
   t_iteration* c_iteration;
-  t_while* c_while;
-  t_for* c_for;
   t_assignment* c_assignment;
   t_and_expression* c_and_expression;
   t_or_expression* c_or_expression;
