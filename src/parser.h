@@ -126,15 +126,10 @@ union YYSTYPE
 {
 #line 53 "src/parser.y"
 
+    t_expression_type c_expression_type;
     t_primary_expression_type c_primary_expression_type;
     t_constant_type c_constant_type;
     t_postfix_expression_type c_postfix_expression_type;
-    t_unary_expression_type c_unary_expression_type;
-    t_add_expression_type c_add_expression_type;
-    t_eq_expression_type c_eq_expression_type;
-    t_shift_expression_type c_shift_expression_type;
-    t_rel_expression_type c_rel_expression_type;
-    t_mult_operator c_mult_operator;
     t_assignment_operator c_assignment_operator;
     t_primitive_type c_primitive_type;
     t_print_type c_print_type;
@@ -155,21 +150,9 @@ union YYSTYPE
     t_condition* c_condition;
     t_iteration* c_iteration;
     t_assignment* c_assignment;
-    t_and_expression* c_and_expression;
-    t_or_expression* c_or_expression;
-    t_bw_or_expression* c_bw_or_expression;
-    t_bw_xor_expression* c_bw_xor_expression;
-    t_bw_and_expression* c_bw_and_expression;
-    t_eq_expression* c_eq_expression;
-    t_rel_expression* c_rel_expression;
-    t_shift_expression* c_shift_expression;
-    t_set_rm_expression* c_set_rm_expression;
-    t_add_expression* c_add_expression;
-    t_mult_expression* c_mult_expression;
-    t_cast_expression* c_cast_expression;
-    t_unary_expression* c_unary_expression;
     t_postfix_expression* c_postfix_expression;
     t_primary_expression* c_primary_expression;
+    t_cast_expression* c_cast_expression;
     t_constant* c_constant;
     t_param_vals* c_param_vals;
     char* string_val;
@@ -177,7 +160,7 @@ union YYSTYPE
     double float_val;
     char char_val;
 
-#line 181 "src/parser.h"
+#line 164 "src/parser.h"
 
 };
 typedef union YYSTYPE YYSTYPE;

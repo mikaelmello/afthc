@@ -16,58 +16,32 @@ typedef struct t_statement t_statement;
 typedef struct t_print t_print;
 typedef struct t_scan t_scan;
 typedef struct t_return t_return;
-typedef struct t_expression t_expression;
 typedef struct t_condition t_condition;
 typedef struct t_iteration t_iteration;
 typedef struct t_expression t_expression;
 typedef struct t_assignment t_assignment;
-typedef struct t_and_expression t_and_expression;
-typedef struct t_or_expression t_or_expression;
-typedef struct t_bw_or_expression t_bw_or_expression;
-typedef struct t_bw_xor_expression t_bw_xor_expression;
-typedef struct t_bw_and_expression t_bw_and_expression;
-typedef struct t_eq_expression t_eq_expression;
-typedef struct t_rel_expression t_rel_expression;
-typedef struct t_shift_expression t_shift_expression;
-typedef struct t_set_rm_expression t_set_rm_expression;
-typedef struct t_add_expression t_add_expression;
-typedef struct t_mult_expression t_mult_expression;
 typedef struct t_cast_expression t_cast_expression;
-typedef struct t_unary_expression t_unary_expression;
 typedef struct t_postfix_expression t_postfix_expression;
 typedef struct t_primary_expression t_primary_expression;
 typedef struct t_constant t_constant;
 typedef struct t_param_vals t_param_vals;
+typedef enum t_expression_type t_expression_type;
 typedef enum t_primary_expression_type t_primary_expression_type;
 typedef enum t_constant_type t_constant_type;
 typedef enum t_postfix_expression_type t_postfix_expression_type;
-typedef enum t_unary_expression_type t_unary_expression_type;
-typedef enum t_add_expression_type t_add_expression_type;
-typedef enum t_eq_expression_type t_eq_expression_type;
-typedef enum t_shift_expression_type t_shift_expression_type;
-typedef enum t_mult_operator t_mult_operator;
 typedef enum t_assignment_operator t_assignment_operator;
-typedef enum t_iteration_type t_iteration_type;
 typedef enum t_scan_type t_scan_type;
 typedef enum t_print_type t_print_type;
 typedef enum t_statement_type t_statement_type;
 typedef enum t_declaration_type t_declaration_type;
 typedef enum t_primitive_type t_primitive_type;
 typedef enum t_structure_type t_structure_type;
-typedef enum t_rel_expression_type t_rel_expression_type;
 
 typedef enum node_type {
   NT_PRIMARY_EXPRESSION_TYPE,
   NT_CONSTANT_TYPE,
   NT_POSTFIX_EXPRESSION_TYPE,
-  NT_UNARY_EXPRESSION_TYPE,
-  NT_ADD_EXPRESSION_TYPE,
-  NT_EQ_EXPRESSION_TYPE,
-  NT_SHIFT_EXPRESSION_TYPE,
-  NT_REL_EXPRESSION_TYPE,
-  NT_MULT_OPERATOR,
   NT_ASSIGNMENT_OPERATOR,
-  NT_ITERATION_TYPE,
   NT_PRIMITIVE_TYPE,
   NT_PRINT_TYPE,
   NT_SCAN_TYPE,
@@ -87,19 +61,7 @@ typedef enum node_type {
   NT_CONDITION,
   NT_ITERATION,
   NT_ASSIGNMENT,
-  NT_AND_EXPRESSION,
-  NT_OR_EXPRESSION,
-  NT_BW_OR_EXPRESSION,
-  NT_BW_XOR_EXPRESSION,
-  NT_BW_AND_EXPRESSION,
-  NT_EQ_EXPRESSION,
-  NT_REL_EXPRESSION,
-  NT_SHIFT_EXPRESSION,
-  NT_SET_RM_EXPRESSION,
-  NT_ADD_EXPRESSION,
-  NT_MULT_EXPRESSION,
   NT_CAST_EXPRESSION,
-  NT_UNARY_EXPRESSION,
   NT_POSTFIX_EXPRESSION,
   NT_PRIMARY_EXPRESSION,
   NT_CONSTANT,
@@ -110,14 +72,6 @@ typedef enum node_type {
   NT_CHAR,
   NT_IDENTIFIER,
 } node_type;
-
-enum t_rel_expression_type {
-  LESS_THAN,
-  GREATER_THAN,
-  LESS_THAN_OR_EQUAL,
-  GREATER_THAN_OR_EQUAL,
-  IS_IN,
-};
 
 enum t_primitive_type {
   BYTE_TYPE,
@@ -157,6 +111,7 @@ struct t_primary_expression {
   t_primary_expression_type type;
 
   union {
+    t_assignment* assignment;
     char* identifier;
     t_constant* constant;
     char* string;
@@ -171,28 +126,6 @@ struct t_param_vals {
 
 enum t_postfix_expression_type { ARRAY_ACCESS, FUNCTION_CALL };
 
-enum t_unary_expression_type {
-  UNARY_PLUS,
-  UNARY_MINUS,
-  UNARY_EXCL,
-  UNARY_SIZEOF
-};
-
-enum t_add_expression_type {
-  ADD_PLUS,
-  ADD_MINUS,
-};
-
-enum t_eq_expression_type {
-  EQ_EQ_EXPRESSION,
-  NOT_EQ_EXPRESSION,
-};
-
-enum t_shift_expression_type {
-  LEFT_SHIFT_EXPRESSION,
-  RIGHT_SHIFT_EXPRESSION,
-};
-
 struct t_postfix_expression {
   t_postfix_expression_type type;
 
@@ -203,90 +136,6 @@ struct t_postfix_expression {
 
   t_postfix_expression* left;
   t_primary_expression* primary;
-};
-
-struct t_unary_expression {
-  t_unary_expression_type type;
-
-  t_unary_expression* left;
-  t_postfix_expression* right;
-};
-
-struct t_cast_expression {
-  t_primitive_type type;
-
-  t_cast_expression* left;
-  t_unary_expression* right;
-};
-
-enum t_mult_operator {
-  ASTERISK_OPERATOR,
-  SLASH_OPERATOR,
-  PERCENT_OPERATOR,
-};
-
-struct t_mult_expression {
-  t_mult_operator type;
-
-  t_mult_expression* left;
-  t_cast_expression* right;
-};
-
-struct t_add_expression {
-  t_add_expression_type type;
-
-  t_add_expression* left;
-  t_mult_expression* right;
-};
-
-struct t_set_rm_expression {
-  t_set_rm_expression* left;
-  t_add_expression* right;
-};
-
-struct t_shift_expression {
-  t_shift_expression_type type;
-  t_shift_expression* left;
-  t_set_rm_expression* right;
-};
-
-struct t_rel_expression {
-  t_rel_expression_type type;
-
-  t_rel_expression* left;
-  t_shift_expression* right;
-};
-
-struct t_eq_expression {
-  t_eq_expression_type type;
-
-  t_eq_expression* left;
-  t_rel_expression* right;
-};
-
-struct t_bw_xor_expression {
-  t_bw_xor_expression* left;
-  t_eq_expression* right;
-};
-
-struct t_bw_and_expression {
-  t_bw_and_expression* left;
-  t_bw_or_expression* right;
-};
-
-struct t_bw_or_expression {
-  t_bw_or_expression* left;
-  t_bw_xor_expression* right;
-};
-
-struct t_or_expression {
-  t_or_expression* left;
-  t_bw_and_expression* right;
-};
-
-struct t_and_expression {
-  t_and_expression* left;
-  t_or_expression* right;
 };
 
 enum t_assignment_operator {
@@ -301,11 +150,52 @@ enum t_assignment_operator {
 struct t_assignment {
   char* identifier;
   t_assignment_operator operator;
-  t_and_expression* and_expression;
+  t_expression* expression;
+};
+
+enum t_expression_type {
+  AND_EXPRESSION,
+  OR_EXPRESSION,
+  BW_AND_EXPRESSION,
+  BW_OR_EXPRESSION,
+  BW_XOR_EXPRESSION,
+  NOT_EQ_EXPRESSION,
+  EQ_EQ_EXPRESSION,
+  LESS_THAN,
+  GREATER_THAN,
+  LESS_THAN_OR_EQUAL,
+  GREATER_THAN_OR_EQUAL,
+  CAST_EXPRESSION,
+  IS_IN,
+  LEFT_SHIFT_EXPRESSION,
+  ASSIGNMENT_EXPRESSION,
+  RIGHT_SHIFT_EXPRESSION,
+  RM_EXPRESSION,
+  UNARY_PLUS,
+  UNARY_MINUS,
+  UNARY_EXCL,
+  UNARY_SIZEOF,
+  ADD_PLUS,
+  ADD_MINUS,
+  ASTERISK_OPERATOR,
+  SLASH_OPERATOR,
+  PERCENT_OPERATOR,
 };
 
 struct t_expression {
+  t_expression_type type;
+  t_expression* left;
+  t_expression* right;
+
+  t_cast_expression* value;
+
   t_assignment* assignment;
+};
+
+struct t_cast_expression {
+  int cast;
+  t_primitive_type cast_type;
+  t_postfix_expression* right;
 };
 
 struct t_iteration {
@@ -478,12 +368,6 @@ typedef union node {
   t_primary_expression_type c_primary_expression_type;
   t_constant_type c_constant_type;
   t_postfix_expression_type c_postfix_expression_type;
-  t_unary_expression_type c_unary_expression_type;
-  t_add_expression_type c_add_expression_type;
-  t_eq_expression_type c_eq_expression_type;
-  t_shift_expression_type c_shift_expression_type;
-  t_rel_expression_type c_rel_expression_type;
-  t_mult_operator c_mult_operator;
   t_assignment_operator c_assignment_operator;
   t_primitive_type c_primitive_type;
   t_print_type c_print_type;
@@ -504,23 +388,12 @@ typedef union node {
   t_condition* c_condition;
   t_iteration* c_iteration;
   t_assignment* c_assignment;
-  t_and_expression* c_and_expression;
-  t_or_expression* c_or_expression;
-  t_bw_or_expression* c_bw_or_expression;
-  t_bw_xor_expression* c_bw_xor_expression;
-  t_bw_and_expression* c_bw_and_expression;
-  t_eq_expression* c_eq_expression;
-  t_rel_expression* c_rel_expression;
-  t_shift_expression* c_shift_expression;
-  t_set_rm_expression* c_set_rm_expression;
-  t_add_expression* c_add_expression;
-  t_mult_expression* c_mult_expression;
-  t_cast_expression* c_cast_expression;
-  t_unary_expression* c_unary_expression;
   t_postfix_expression* c_postfix_expression;
   t_primary_expression* c_primary_expression;
+  t_cast_expression* c_cast_expression;
   t_constant* c_constant;
   t_param_vals* c_param_vals;
+  t_expression_type c_expression_type;
   char* string_val;
   int64_t integer_val;
   double float_val;

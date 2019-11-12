@@ -51,15 +51,10 @@ void free_ast(node root, node_type type);
 %nonassoc ELSE_RW
 
 %union {
+    t_expression_type c_expression_type;
     t_primary_expression_type c_primary_expression_type;
     t_constant_type c_constant_type;
     t_postfix_expression_type c_postfix_expression_type;
-    t_unary_expression_type c_unary_expression_type;
-    t_add_expression_type c_add_expression_type;
-    t_eq_expression_type c_eq_expression_type;
-    t_shift_expression_type c_shift_expression_type;
-    t_rel_expression_type c_rel_expression_type;
-    t_mult_operator c_mult_operator;
     t_assignment_operator c_assignment_operator;
     t_primitive_type c_primitive_type;
     t_print_type c_print_type;
@@ -80,21 +75,9 @@ void free_ast(node root, node_type type);
     t_condition* c_condition;
     t_iteration* c_iteration;
     t_assignment* c_assignment;
-    t_and_expression* c_and_expression;
-    t_or_expression* c_or_expression;
-    t_bw_or_expression* c_bw_or_expression;
-    t_bw_xor_expression* c_bw_xor_expression;
-    t_bw_and_expression* c_bw_and_expression;
-    t_eq_expression* c_eq_expression;
-    t_rel_expression* c_rel_expression;
-    t_shift_expression* c_shift_expression;
-    t_set_rm_expression* c_set_rm_expression;
-    t_add_expression* c_add_expression;
-    t_mult_expression* c_mult_expression;
-    t_cast_expression* c_cast_expression;
-    t_unary_expression* c_unary_expression;
     t_postfix_expression* c_postfix_expression;
     t_primary_expression* c_primary_expression;
+    t_cast_expression* c_cast_expression;
     t_constant* c_constant;
     t_param_vals* c_param_vals;
     char* string_val;
@@ -118,32 +101,32 @@ void free_ast(node root, node_type type);
 %type <c_scan> scan;
 %type <c_scan_type> scan-type;
 %type <c_return> return;
-%type <c_expression> expression;
 %type <c_expression> optional-expression;
 %type <c_condition> condition;
 %type <c_iteration> iteration;
 %type <c_assignment> assignment;
-%type <c_and_expression> and-expression;
-%type <c_or_expression> or-expression;
-%type <c_bw_or_expression> bw-or-expression;
-%type <c_bw_xor_expression> bw-xor-expression;
-%type <c_bw_and_expression> bw-and-expression;
-%type <c_eq_expression> eq-expression;
-%type <c_rel_expression> rel-expression;
-%type <c_shift_expression> shift-expression;
-%type <c_set_rm_expression> set-rm-expression;
-%type <c_add_expression> add-expression;
-%type <c_mult_expression> mult-expression;
+%type <c_expression> expression;
+%type <c_expression> and-expression;
+%type <c_expression> or-expression;
+%type <c_expression> bw-or-expression;
+%type <c_expression> bw-xor-expression;
+%type <c_expression> bw-and-expression;
+%type <c_expression> eq-expression;
+%type <c_expression> rel-expression;
+%type <c_expression> shift-expression;
+%type <c_expression> set-rm-expression;
+%type <c_expression> add-expression;
+%type <c_expression> mult-expression;
 %type <c_cast_expression> cast-expression;
-%type <c_unary_expression> unary-expression;
+%type <c_expression> unary-expression;
 %type <c_postfix_expression> postfix-expression;
 %type <c_primary_expression> primary-expression;
 %type <c_constant> constant;
 %type <c_param_vals> param-vals;
 %type <c_assignment_operator> assignment-op;
-%type <c_rel_expression_type> rel-op;
-%type <c_mult_operator> mul-op;
-%type <c_unary_expression_type> unary-op;
+%type <c_expression_type> rel-op;
+%type <c_expression_type> mul-op;
+%type <c_expression_type> unary-op;
 
 %start program
 
@@ -422,238 +405,218 @@ optional-expression:
     }
 ;
 
-expression:
-    assignment {
-        t_expression* exp = zero_allocate(t_expression);
-        exp->assignment = $1;
+assignment:
+    IDENTIFIER assignment-op expression {
+        t_assignment* exp = zero_allocate(t_assignment);
+        exp->identifier = $1;
+        exp->operator = $2;
+        exp->expression = $3;
         $$ = exp;
     }
 ;
 
-assignment:
-    IDENTIFIER assignment-op and-expression {
-        t_assignment* exp = zero_allocate(t_assignment);
-        exp->identifier = $1;
-        exp->operator = $2;
-        exp->and_expression = $3;
+expression:
+    assignment {
+        t_expression* exp = zero_allocate(t_expression);
+        exp->type = ASSIGNMENT_EXPRESSION;
+        exp->assignment = $1;
         $$ = exp;
     }
 |   and-expression {
-        t_assignment* exp = zero_allocate(t_assignment);
-        exp->and_expression = $1;
-        $$ = exp;
+        $$ = $1;
     }
 ;
 
 and-expression:
     and-expression AND_AND or-expression {
-        t_and_expression* exp = zero_allocate(t_and_expression);
+        t_expression* exp = zero_allocate(t_expression);
         exp->left = $1;
+        exp->type = AND_EXPRESSION;
         exp->right = $3;
         $$ = exp;
     }
 |   or-expression {
-        t_and_expression* exp = zero_allocate(t_and_expression);
-        exp->right = $1;
-        $$ = exp;
+        $$ = $1;
     }
 ;
 
 or-expression:
     or-expression BAR_BAR bw-and-expression {
-        t_or_expression* exp = zero_allocate(t_or_expression);
+        t_expression* exp = zero_allocate(t_expression);
         exp->left = $1;
+        exp->type = OR_EXPRESSION;
         exp->right = $3;
         $$ = exp;
     }
 |   bw-and-expression {
-        t_or_expression* exp = zero_allocate(t_or_expression);
-        exp->right = $1;
-        $$ = exp;
+        $$ = $1;
     }
 ;
 
 bw-and-expression:
     bw-and-expression AND bw-or-expression {
-        t_bw_and_expression* exp = zero_allocate(t_bw_and_expression);
+        t_expression* exp = zero_allocate(t_expression);
         exp->left = $1;
+        exp->type = BW_AND_EXPRESSION;
         exp->right = $3;
         $$ = exp;
     }
 |   bw-or-expression {
-        t_bw_and_expression* exp = zero_allocate(t_bw_and_expression);
-        exp->right = $1;
-        $$ = exp;
+        $$ = $1;
     }
 ;
 
 bw-or-expression:
     bw-or-expression BAR bw-xor-expression {
-        t_bw_or_expression* exp = zero_allocate(t_bw_or_expression);
+        t_expression* exp = zero_allocate(t_expression);
         exp->left = $1;
+        exp->type = BW_OR_EXPRESSION;
         exp->right = $3;
         $$ = exp;
     }
 |   bw-xor-expression {
-        t_bw_or_expression* exp = zero_allocate(t_bw_or_expression);
-        exp->right = $1;
-        $$ = exp;
+        $$ = $1;
     }
 ;
 
 bw-xor-expression:
     bw-xor-expression CARET eq-expression {
-        t_bw_xor_expression* exp = zero_allocate(t_bw_xor_expression);
+        t_expression* exp = zero_allocate(t_expression);
         exp->left = $1;
+        exp->type = BW_XOR_EXPRESSION;
         exp->right = $3;
         $$ = exp;
     }
 |   eq-expression {
-        t_bw_xor_expression* exp = zero_allocate(t_bw_xor_expression);
-        exp->right = $1;
-        $$ = exp;
+        $$ = $1;
     }
 ;
 
 eq-expression:
     eq-expression EQUAL_EQUAL rel-expression {
-        t_eq_expression* exp = zero_allocate(t_eq_expression);
+        t_expression* exp = zero_allocate(t_expression);
         exp->type = EQ_EQ_EXPRESSION;
         exp->left = $1;
         exp->right = $3;
         $$ = exp;
     }
 |   eq-expression EXCL_EQUAL rel-expression {
-        t_eq_expression* exp = zero_allocate(t_eq_expression);
+        t_expression* exp = zero_allocate(t_expression);
         exp->type = NOT_EQ_EXPRESSION;
         exp->left = $1;
         exp->right = $3;
         $$ = exp;
     }
 |   rel-expression {
-        t_eq_expression* exp = zero_allocate(t_eq_expression);
-        exp->right = $1;
-        $$ = exp;
+        $$ = $1;
     }
 ;
 
 rel-expression:
     rel-expression rel-op shift-expression {
-        t_rel_expression* exp = zero_allocate(t_rel_expression);
+        t_expression* exp = zero_allocate(t_expression);
         exp->left = $1;
         exp->type = $2;
         exp->right = $3;
         $$ = exp;
     }
 |   shift-expression {
-        t_rel_expression* exp = zero_allocate(t_rel_expression);
-        exp->right = $1;
-        $$ = exp;
+        $$ = $1;
     }
 ;
 
 shift-expression:
     shift-expression DOUBLE_LANGLE set-rm-expression {
-        t_shift_expression* exp = zero_allocate(t_shift_expression);
+        t_expression* exp = zero_allocate(t_expression);
         exp->left = $1;
         exp->type = LEFT_SHIFT_EXPRESSION;
         exp->right = $3;
         $$ = exp;
     }
 |   shift-expression DOUBLE_RANGLE set-rm-expression {
-        t_shift_expression* exp = zero_allocate(t_shift_expression);
+        t_expression* exp = zero_allocate(t_expression);
         exp->left = $1;
         exp->type = RIGHT_SHIFT_EXPRESSION;
         exp->right = $3;
         $$ = exp;
     }
 |   set-rm-expression {
-        t_shift_expression* exp = zero_allocate(t_shift_expression);
-        exp->right = $1;
-        $$ = exp;
+        $$ = $1;
     }
 ;
 
 set-rm-expression:
     set-rm-expression RM_RW add-expression {
-        t_set_rm_expression* exp = zero_allocate(t_set_rm_expression);
+        t_expression* exp = zero_allocate(t_expression);
         exp->left = $1;
+        exp->type = RM_EXPRESSION;
         exp->right = $3;
         $$ = exp;
     }
 |   add-expression  {
-        t_set_rm_expression* exp = zero_allocate(t_set_rm_expression);
-        exp->right = $1;
-        $$ = exp;
+        $$ = $1;
     }
 ;
 
 add-expression:
     add-expression PLUS mult-expression {
-        t_add_expression* exp = zero_allocate(t_add_expression);
+        t_expression* exp = zero_allocate(t_expression);
         exp->left = $1;
         exp->type = ADD_PLUS;
         exp->right = $3;
         $$ = exp;
     }
 |   add-expression MINUS mult-expression {
-        t_add_expression* exp = zero_allocate(t_add_expression);
+        t_expression* exp = zero_allocate(t_expression);
         exp->left = $1;
         exp->type = ADD_MINUS;
         exp->right = $3;
         $$ = exp;
     }
 |   mult-expression {
-        t_add_expression* exp = zero_allocate(t_add_expression);
-        exp->right = $1;
-        $$ = exp;
+        $$ = $1;
     }
 ;
 
 mult-expression:
-    mult-expression mul-op cast-expression {
-        t_mult_expression* exp = zero_allocate(t_mult_expression);
+    mult-expression mul-op unary-expression {
+        t_expression* exp = zero_allocate(t_expression);
         exp->left = $1;
         exp->type = $2;
         exp->right = $3;
         $$ = exp;
     }
-|   cast-expression {
-        t_mult_expression* exp = zero_allocate(t_mult_expression);
-        exp->right = $1;
-        $$ = exp;
-    }
-;
-
-cast-expression:
-    LEFT_PAREN type RIGHT_PAREN cast-expression {
-        t_cast_expression* exp = zero_allocate(t_cast_expression);
-        exp->type = $2;
-        exp->left = $4;
-        $$ = exp;
-    }
 |   unary-expression {
-        t_cast_expression* exp = zero_allocate(t_cast_expression);
-        exp->right = $1;
-        $$ = exp;
+        $$ = $1;
     }
 ;
 
 unary-expression:
     unary-op unary-expression {
-        t_unary_expression* exp = zero_allocate(t_unary_expression);
+        t_expression* exp = zero_allocate(t_expression);
         exp->type = $1;
-        exp->left = $2;
+        exp->right = $2;
         $$ = exp;
     }
-|   SIZEOF_RW unary-expression {
-        t_unary_expression* exp = zero_allocate(t_unary_expression);
-        exp->type = UNARY_SIZEOF;
-        exp->left = $2;
+|   cast-expression {
+        t_expression* exp = zero_allocate(t_expression);
+        exp->type = CAST_EXPRESSION;
+        exp->value = $1;
+        $$ = exp;
+    }
+;
+
+cast-expression:
+    LEFT_PAREN type RIGHT_PAREN postfix-expression {
+        t_cast_expression* exp = zero_allocate(t_cast_expression);
+        exp->cast = 1;
+        exp->cast_type = $2;
+        exp->right = $4;
         $$ = exp;
     }
 |   postfix-expression {
-        t_unary_expression* exp = zero_allocate(t_unary_expression);
+        t_cast_expression* exp = zero_allocate(t_cast_expression);
+        exp->cast = 0;
         exp->right = $1;
         $$ = exp;
     }
@@ -759,6 +722,7 @@ unary-op:
     PLUS { $$ = UNARY_PLUS; }
 |   MINUS { $$ = UNARY_MINUS; }
 |   EXCL { $$ = UNARY_EXCL; }
+|   SIZEOF_RW { $$ = UNARY_SIZEOF; }
 ;
 
 rel-op:
@@ -814,1098 +778,1098 @@ void print_ast(node root, node_type type, int cur_level) {
     node child[10];
     memset(child, 0, sizeof child);
 
-    switch(type) {
-        case NT_UNARY_EXPRESSION_TYPE:
-            spaces(cur_level);
-            printf("Unary operator\n");
-            spaces(cur_level+1);
-            switch(root.c_unary_expression_type) {
-                case UNARY_PLUS: printf("+\n"); break;
-                case UNARY_MINUS: printf("-\n"); break;
-                case UNARY_EXCL: printf("!\n"); break;
-                case UNARY_SIZEOF: printf("sizeof\n"); break;
-            }
-        break;
+    // switch(type) {
+    //     case NT_UNARY_EXPRESSION_TYPE:
+    //         spaces(cur_level);
+    //         printf("Unary operator\n");
+    //         spaces(cur_level+1);
+    //         switch(root.c_unary_expression_type) {
+    //             case UNARY_PLUS: printf("+\n"); break;
+    //             case UNARY_MINUS: printf("-\n"); break;
+    //             case UNARY_EXCL: printf("!\n"); break;
+    //             case UNARY_SIZEOF: printf("sizeof\n"); break;
+    //         }
+    //     break;
 
-        case NT_REL_EXPRESSION_TYPE:
-            spaces(cur_level);
-            printf("Relational operator\n");
-            spaces(cur_level+1);
-            switch(root.c_rel_expression_type) {
-                case LESS_THAN: printf("<\n"); break;
-                case GREATER_THAN: printf(">\n"); break;
-                case LESS_THAN_OR_EQUAL: printf("<=\n"); break;
-                case GREATER_THAN_OR_EQUAL: printf(">=\n"); break;
-                case IS_IN: printf("in\n"); break;
-            }
-        break;
+    //     case NT_REL_EXPRESSION_TYPE:
+    //         spaces(cur_level);
+    //         printf("Relational operator\n");
+    //         spaces(cur_level+1);
+    //         switch(root.c_rel_expression_type) {
+    //             case LESS_THAN: printf("<\n"); break;
+    //             case GREATER_THAN: printf(">\n"); break;
+    //             case LESS_THAN_OR_EQUAL: printf("<=\n"); break;
+    //             case GREATER_THAN_OR_EQUAL: printf(">=\n"); break;
+    //             case IS_IN: printf("in\n"); break;
+    //         }
+    //     break;
 
-        case NT_MULT_OPERATOR:
-            spaces(cur_level);
-            printf("Mult Operator\n");
-            spaces(cur_level+1);
-            switch(root.c_mult_operator) {
-                case ASTERISK_OPERATOR:
-                printf("*\n");
-                break;
-                case SLASH_OPERATOR:
-                printf("/\n");
-                break;
-                case PERCENT_OPERATOR:
-                printf("%%\n");
-                break;
-            }
-        break;
+    //     case NT_MULT_OPERATOR:
+    //         spaces(cur_level);
+    //         printf("Mult Operator\n");
+    //         spaces(cur_level+1);
+    //         switch(root.c_mult_operator) {
+    //             case ASTERISK_OPERATOR:
+    //             printf("*\n");
+    //             break;
+    //             case SLASH_OPERATOR:
+    //             printf("/\n");
+    //             break;
+    //             case PERCENT_OPERATOR:
+    //             printf("%%\n");
+    //             break;
+    //         }
+    //     break;
 
-        case NT_ASSIGNMENT_OPERATOR:
-            spaces(cur_level);
-            printf("Assignment Operator\n");
-            spaces(cur_level+1);
-            switch(root.c_assignment_operator) {
-                case EQUAL_OPERATOR:
-                printf("=\n");
-                break;
-                case PLUS_EQUAL_OPERATOR:
-                printf("+=\n");
-                break;
-                case MINUS_EQUAL_OPERATOR:
-                printf("-=\n");
-                break;
-                case ASTERISK_EQUAL_OPERATOR:
-                printf("*=\n");
-                break;
-                case SLASH_EQUAL_OPERATOR:
-                printf("/=\n");
-                break;
-                case PERCENT_EQUAL_OPERATOR:
-                printf("%%=\n");
-                break;
-            }
-        break;
+    //     case NT_ASSIGNMENT_OPERATOR:
+    //         spaces(cur_level);
+    //         printf("Assignment Operator\n");
+    //         spaces(cur_level+1);
+    //         switch(root.c_assignment_operator) {
+    //             case EQUAL_OPERATOR:
+    //             printf("=\n");
+    //             break;
+    //             case PLUS_EQUAL_OPERATOR:
+    //             printf("+=\n");
+    //             break;
+    //             case MINUS_EQUAL_OPERATOR:
+    //             printf("-=\n");
+    //             break;
+    //             case ASTERISK_EQUAL_OPERATOR:
+    //             printf("*=\n");
+    //             break;
+    //             case SLASH_EQUAL_OPERATOR:
+    //             printf("/=\n");
+    //             break;
+    //             case PERCENT_EQUAL_OPERATOR:
+    //             printf("%%=\n");
+    //             break;
+    //         }
+    //     break;
 
-        case NT_PRIMITIVE_TYPE:
-            spaces(cur_level);
-            printf("Type\n");
-            spaces(cur_level+1);
-            switch(root.c_primitive_type) {
-                case BYTE_TYPE:
-                printf("byte\n");
-                break;
-                case SHORT_TYPE:
-                printf("short\n");
-                break;
-                case INT_TYPE:
-                printf("int\n");
-                break;
-                case LONG_TYPE:
-                printf("long\n");
-                break;
-                case FLOAT_TYPE:
-                printf("float\n");
-                break;
-                case DOUBLE_TYPE:
-                printf("double\n");
-                break;
-                case VOID_TYPE:
-                printf("void\n");
-                break;
-            }
-        break;
+    //     case NT_PRIMITIVE_TYPE:
+    //         spaces(cur_level);
+    //         printf("Type\n");
+    //         spaces(cur_level+1);
+    //         switch(root.c_primitive_type) {
+    //             case BYTE_TYPE:
+    //             printf("byte\n");
+    //             break;
+    //             case SHORT_TYPE:
+    //             printf("short\n");
+    //             break;
+    //             case INT_TYPE:
+    //             printf("int\n");
+    //             break;
+    //             case LONG_TYPE:
+    //             printf("long\n");
+    //             break;
+    //             case FLOAT_TYPE:
+    //             printf("float\n");
+    //             break;
+    //             case DOUBLE_TYPE:
+    //             printf("double\n");
+    //             break;
+    //             case VOID_TYPE:
+    //             printf("void\n");
+    //             break;
+    //         }
+    //     break;
 
-        case NT_PRINT_TYPE:
-        break;
+    //     case NT_PRINT_TYPE:
+    //     break;
 
-        case NT_SCAN_TYPE:
-        break;
+    //     case NT_SCAN_TYPE:
+    //     break;
 
-        case NT_PROGRAM:
-            spaces(cur_level);
-            printf("Program\n");
-            child[0].c_declaration_list = root.c_program->declaration_list;
-            print_ast(child[0], NT_DECLARATION_LIST, cur_level+1);
-        break;
+    //     case NT_PROGRAM:
+    //         spaces(cur_level);
+    //         printf("Program\n");
+    //         child[0].c_declaration_list = root.c_program->declaration_list;
+    //         print_ast(child[0], NT_DECLARATION_LIST, cur_level+1);
+    //     break;
 
-        case NT_DECLARATION_LIST:
-            if (root.c_declaration_list->prev) {
-                child[0].c_declaration_list = root.c_declaration_list->prev;
-                print_ast(child[0], NT_DECLARATION_LIST, cur_level);
-            } else {
-                // print only at beginning of declaration list
-                spaces(cur_level);
-                printf("Declaration List\n");
-            }
+    //     case NT_DECLARATION_LIST:
+    //         if (root.c_declaration_list->prev) {
+    //             child[0].c_declaration_list = root.c_declaration_list->prev;
+    //             print_ast(child[0], NT_DECLARATION_LIST, cur_level);
+    //         } else {
+    //             // print only at beginning of declaration list
+    //             spaces(cur_level);
+    //             printf("Declaration List\n");
+    //         }
 
-            if (root.c_declaration_list->cur) {
-                child[1].c_declaration = root.c_declaration_list->cur;
-                print_ast(child[1], NT_DECLARATION, cur_level+1);
-            }
-        break;
+    //         if (root.c_declaration_list->cur) {
+    //             child[1].c_declaration = root.c_declaration_list->cur;
+    //             print_ast(child[1], NT_DECLARATION, cur_level+1);
+    //         }
+    //     break;
 
-        case NT_DECLARATION:
-            spaces(cur_level);
-            printf("Declaration\n");
-            if (root.c_declaration->type == VAR_DECLARATION) {
-                child[0].c_variable = root.c_declaration->member.variable;
-                print_ast(child[0], NT_VARIABLE, cur_level+1);
-            } else if (root.c_declaration->type == FUN_DECLARATION) {
-                child[0].c_function = root.c_declaration->member.function;
-                print_ast(child[0], NT_FUNCTION, cur_level+1);
-            } 
-        break;
+    //     case NT_DECLARATION:
+    //         spaces(cur_level);
+    //         printf("Declaration\n");
+    //         if (root.c_declaration->type == VAR_DECLARATION) {
+    //             child[0].c_variable = root.c_declaration->member.variable;
+    //             print_ast(child[0], NT_VARIABLE, cur_level+1);
+    //         } else if (root.c_declaration->type == FUN_DECLARATION) {
+    //             child[0].c_function = root.c_declaration->member.function;
+    //             print_ast(child[0], NT_FUNCTION, cur_level+1);
+    //         } 
+    //     break;
 
-        case NT_VARIABLE:
-            spaces(cur_level);
-            printf("Variable");
-            switch(root.c_variable->structure) {
-                case ARRAY_TYPE: printf(" (array)"); break;
-                case SET_TYPE: printf(" (set)"); break;
-                case PRIMITIVE_TYPE: printf(" (primitive)"); break;
-            }
-            printf("\n");
-            child[0].c_primitive_type = root.c_variable->type;
-            print_ast(child[0], NT_PRIMITIVE_TYPE, cur_level+1);
-            child[1].string_val = root.c_variable->identifier;
-            print_ast(child[1], NT_IDENTIFIER, cur_level+1);
-        break;
+    //     case NT_VARIABLE:
+    //         spaces(cur_level);
+    //         printf("Variable");
+    //         switch(root.c_variable->structure) {
+    //             case ARRAY_TYPE: printf(" (array)"); break;
+    //             case SET_TYPE: printf(" (set)"); break;
+    //             case PRIMITIVE_TYPE: printf(" (primitive)"); break;
+    //         }
+    //         printf("\n");
+    //         child[0].c_primitive_type = root.c_variable->type;
+    //         print_ast(child[0], NT_PRIMITIVE_TYPE, cur_level+1);
+    //         child[1].string_val = root.c_variable->identifier;
+    //         print_ast(child[1], NT_IDENTIFIER, cur_level+1);
+    //     break;
 
-        case NT_FUNCTION:
-            spaces(cur_level);
-            printf("Function\n");
-            child[0].c_primitive_type = root.c_function->return_type;
-            print_ast(child[0], NT_PRIMITIVE_TYPE, cur_level+1);
-            child[1].string_val = root.c_function->identifier;
-            print_ast(child[1], NT_IDENTIFIER, cur_level+1);   
-            child[2].c_function_params = root.c_function->params;
-            print_ast(child[2], NT_FUNCTION_PARAMS, cur_level+1);
-            child[3].c_scope = root.c_function->body;
-            print_ast(child[3], NT_SCOPE, cur_level+1);
-            printf("\n");
-        break;
+    //     case NT_FUNCTION:
+    //         spaces(cur_level);
+    //         printf("Function\n");
+    //         child[0].c_primitive_type = root.c_function->return_type;
+    //         print_ast(child[0], NT_PRIMITIVE_TYPE, cur_level+1);
+    //         child[1].string_val = root.c_function->identifier;
+    //         print_ast(child[1], NT_IDENTIFIER, cur_level+1);   
+    //         child[2].c_function_params = root.c_function->params;
+    //         print_ast(child[2], NT_FUNCTION_PARAMS, cur_level+1);
+    //         child[3].c_scope = root.c_function->body;
+    //         print_ast(child[3], NT_SCOPE, cur_level+1);
+    //         printf("\n");
+    //     break;
 
-        case NT_FUNCTION_PARAMS:
-            if (root.c_function_params == NULL) return;
+    //     case NT_FUNCTION_PARAMS:
+    //         if (root.c_function_params == NULL) return;
             
-            if (root.c_function_params->prev) {
-                child[0].c_function_params = root.c_function_params->prev;
-                print_ast(child[0], NT_FUNCTION_PARAMS, cur_level);
-            } else {
-                spaces(cur_level);
-                printf("Parameters\n");
-            }
+    //         if (root.c_function_params->prev) {
+    //             child[0].c_function_params = root.c_function_params->prev;
+    //             print_ast(child[0], NT_FUNCTION_PARAMS, cur_level);
+    //         } else {
+    //             spaces(cur_level);
+    //             printf("Parameters\n");
+    //         }
 
-            if (root.c_function_params->cur) {
-                child[1].c_variable = root.c_function_params->cur;
-                print_ast(child[1], NT_VARIABLE, cur_level+1);
-            }
-        break;
+    //         if (root.c_function_params->cur) {
+    //             child[1].c_variable = root.c_function_params->cur;
+    //             print_ast(child[1], NT_VARIABLE, cur_level+1);
+    //         }
+    //     break;
 
-        case NT_SCOPE:
-            spaces(cur_level);
-            printf("Scope\n");
-            child[0].c_statement_list = root.c_scope->statements;
-            print_ast(child[0], NT_STATEMENT_LIST, cur_level+1);
-        break;
+    //     case NT_SCOPE:
+    //         spaces(cur_level);
+    //         printf("Scope\n");
+    //         child[0].c_statement_list = root.c_scope->statements;
+    //         print_ast(child[0], NT_STATEMENT_LIST, cur_level+1);
+    //     break;
 
-        case NT_STATEMENT_LIST:
-            if (root.c_statement_list == NULL) return;
+    //     case NT_STATEMENT_LIST:
+    //         if (root.c_statement_list == NULL) return;
             
-            if (root.c_statement_list->prev) {
-                child[0].c_statement_list = root.c_statement_list->prev;
-                print_ast(child[0], NT_STATEMENT_LIST, cur_level);
-            } else {
-                spaces(cur_level);
-                printf("Statements\n");
-            }
+    //         if (root.c_statement_list->prev) {
+    //             child[0].c_statement_list = root.c_statement_list->prev;
+    //             print_ast(child[0], NT_STATEMENT_LIST, cur_level);
+    //         } else {
+    //             spaces(cur_level);
+    //             printf("Statements\n");
+    //         }
 
-            if (root.c_statement_list->cur) {
-                child[1].c_statement = root.c_statement_list->cur;
-                print_ast(child[1], NT_STATEMENT, cur_level+1);
-            }
-        break;
+    //         if (root.c_statement_list->cur) {
+    //             child[1].c_statement = root.c_statement_list->cur;
+    //             print_ast(child[1], NT_STATEMENT, cur_level+1);
+    //         }
+    //     break;
 
-        case NT_STATEMENT:
-            spaces(cur_level);
-            printf("Statement\n");
-            switch (root.c_statement->type) {
-                case SCOPE_STATEMENT:
-                    child[0].c_scope = root.c_statement->member.scope;
-                    print_ast(child[0], NT_SCOPE, cur_level+1);
-                break;
+    //     case NT_STATEMENT:
+    //         spaces(cur_level);
+    //         printf("Statement\n");
+    //         switch (root.c_statement->type) {
+    //             case SCOPE_STATEMENT:
+    //                 child[0].c_scope = root.c_statement->member.scope;
+    //                 print_ast(child[0], NT_SCOPE, cur_level+1);
+    //             break;
 
-                case VAR_DECLARATION_STATEMENT:
-                    child[0].c_variable = root.c_statement->member.variable;
-                    print_ast(child[0], NT_DECLARATION, cur_level+1);
-                break;
+    //             case VAR_DECLARATION_STATEMENT:
+    //                 child[0].c_variable = root.c_statement->member.variable;
+    //                 print_ast(child[0], NT_DECLARATION, cur_level+1);
+    //             break;
 
-                case PRINT_STATEMENT:
-                    child[0].c_print = root.c_statement->member.print;
-                    print_ast(child[0], NT_PRINT, cur_level+1);
-                break;
+    //             case PRINT_STATEMENT:
+    //                 child[0].c_print = root.c_statement->member.print;
+    //                 print_ast(child[0], NT_PRINT, cur_level+1);
+    //             break;
 
-                case SCAN_STATEMENT:
-                    child[0].c_scan = root.c_statement->member.scan;
-                    print_ast(child[0], NT_SCAN, cur_level+1);
-                break;
+    //             case SCAN_STATEMENT:
+    //                 child[0].c_scan = root.c_statement->member.scan;
+    //                 print_ast(child[0], NT_SCAN, cur_level+1);
+    //             break;
 
-                case EXPRESSION_STATEMENT:
-                    child[0].c_expression = root.c_statement->member.expression;
-                    print_ast(child[0], NT_EXPRESSION, cur_level+1);
-                break;
+    //             case EXPRESSION_STATEMENT:
+    //                 child[0].c_expression = root.c_statement->member.expression;
+    //                 print_ast(child[0], NT_EXPRESSION, cur_level+1);
+    //             break;
 
-                case CONDITION_STATEMENT:
-                    child[0].c_condition = root.c_statement->member.condition;
-                    print_ast(child[0], NT_CONDITION, cur_level+1);
-                break;
+    //             case CONDITION_STATEMENT:
+    //                 child[0].c_condition = root.c_statement->member.condition;
+    //                 print_ast(child[0], NT_CONDITION, cur_level+1);
+    //             break;
 
-                case ITERATION_STATEMENT:
-                    child[0].c_iteration = root.c_statement->member.iteration;
-                    print_ast(child[0], NT_ITERATION, cur_level+1);
-                break;
+    //             case ITERATION_STATEMENT:
+    //                 child[0].c_iteration = root.c_statement->member.iteration;
+    //                 print_ast(child[0], NT_ITERATION, cur_level+1);
+    //             break;
 
-                case RETURN_STATEMENT:
-                    child[0].c_return = root.c_statement->member._return;
-                    print_ast(child[0], NT_RETURN, cur_level+1);
-                break;
+    //             case RETURN_STATEMENT:
+    //                 child[0].c_return = root.c_statement->member._return;
+    //                 print_ast(child[0], NT_RETURN, cur_level+1);
+    //             break;
 
-            }
-        break;
+    //         }
+    //     break;
 
-        case NT_PRINT:
-            spaces(cur_level);
-            printf("Print\n");
-            child[0].c_print_type = root.c_print->type;
-            print_ast(child[0], NT_PRINT_TYPE, cur_level+1);
-            child[1].c_expression = root.c_print->expression;
-            print_ast(child[1], NT_EXPRESSION, cur_level+1);
-        break;
+    //     case NT_PRINT:
+    //         spaces(cur_level);
+    //         printf("Print\n");
+    //         child[0].c_print_type = root.c_print->type;
+    //         print_ast(child[0], NT_PRINT_TYPE, cur_level+1);
+    //         child[1].c_expression = root.c_print->expression;
+    //         print_ast(child[1], NT_EXPRESSION, cur_level+1);
+    //     break;
 
-        case NT_SCAN:
-            spaces(cur_level);
-            printf("Scan\n");
-            child[0].c_scan_type = root.c_scan->type;
-            print_ast(child[0], NT_SCAN_TYPE, cur_level+1);
-            child[1].string_val = root.c_scan->destiny;
-            print_ast(child[1], NT_IDENTIFIER, cur_level+1);
-        break;
+    //     case NT_SCAN:
+    //         spaces(cur_level);
+    //         printf("Scan\n");
+    //         child[0].c_scan_type = root.c_scan->type;
+    //         print_ast(child[0], NT_SCAN_TYPE, cur_level+1);
+    //         child[1].string_val = root.c_scan->destiny;
+    //         print_ast(child[1], NT_IDENTIFIER, cur_level+1);
+    //     break;
 
-        case NT_RETURN:
-            spaces(cur_level);
-            printf("Return\n");
-            if (root.c_return->expression) {
-                child[0].c_expression = root.c_return->expression;
-                print_ast(child[0], NT_EXPRESSION, cur_level+1);
-            }
-        break;
+    //     case NT_RETURN:
+    //         spaces(cur_level);
+    //         printf("Return\n");
+    //         if (root.c_return->expression) {
+    //             child[0].c_expression = root.c_return->expression;
+    //             print_ast(child[0], NT_EXPRESSION, cur_level+1);
+    //         }
+    //     break;
 
-        case NT_EXPRESSION:
-            if (root.c_expression == NULL) return;
+    //     case NT_EXPRESSION:
+    //         if (root.c_expression == NULL) return;
 
-            spaces(cur_level);
-            printf("Expression\n");
+    //         spaces(cur_level);
+    //         printf("Expression\n");
 
-            child[0].c_assignment = root.c_expression->assignment;
-            print_ast(child[0], NT_ASSIGNMENT, cur_level+1);
-        break;
+    //         child[0].c_assignment = root.c_expression->assignment;
+    //         print_ast(child[0], NT_ASSIGNMENT, cur_level+1);
+    //     break;
 
-        case NT_CONDITION:
-            spaces(cur_level);
-            printf("Condition\n");
-            child[0].c_expression = root.c_condition->condition;
-            print_ast(child[0], NT_EXPRESSION, cur_level+1);
-            child[1].c_statement = root.c_condition->body;
-            print_ast(child[1], NT_STATEMENT, cur_level+1);
-            if (root.c_condition->else_body) {
-                child[2].c_statement = root.c_condition->else_body;
-                print_ast(child[2], NT_STATEMENT, cur_level+1);
-            }
-        break;
+    //     case NT_CONDITION:
+    //         spaces(cur_level);
+    //         printf("Condition\n");
+    //         child[0].c_expression = root.c_condition->condition;
+    //         print_ast(child[0], NT_EXPRESSION, cur_level+1);
+    //         child[1].c_statement = root.c_condition->body;
+    //         print_ast(child[1], NT_STATEMENT, cur_level+1);
+    //         if (root.c_condition->else_body) {
+    //             child[2].c_statement = root.c_condition->else_body;
+    //             print_ast(child[2], NT_STATEMENT, cur_level+1);
+    //         }
+    //     break;
 
-        case NT_ITERATION:
-            spaces(cur_level);
-            printf("Iteration\n");
-            if (root.c_iteration->initialization) {
-                child[0].c_expression = root.c_iteration->initialization;
-                print_ast(child[0], NT_EXPRESSION, cur_level+1);
-            }
-            if (root.c_iteration->condition) {
-                child[1].c_expression = root.c_iteration->condition;
-                print_ast(child[1], NT_EXPRESSION, cur_level+1);
-            }
-            if (root.c_iteration->step) {
-                child[2].c_expression = root.c_iteration->step;
-                print_ast(child[2], NT_EXPRESSION, cur_level+1);
-            }
-            child[3].c_statement = root.c_iteration->body;
-            print_ast(child[3], NT_STATEMENT, cur_level+1);
-        break;
+    //     case NT_ITERATION:
+    //         spaces(cur_level);
+    //         printf("Iteration\n");
+    //         if (root.c_iteration->initialization) {
+    //             child[0].c_expression = root.c_iteration->initialization;
+    //             print_ast(child[0], NT_EXPRESSION, cur_level+1);
+    //         }
+    //         if (root.c_iteration->condition) {
+    //             child[1].c_expression = root.c_iteration->condition;
+    //             print_ast(child[1], NT_EXPRESSION, cur_level+1);
+    //         }
+    //         if (root.c_iteration->step) {
+    //             child[2].c_expression = root.c_iteration->step;
+    //             print_ast(child[2], NT_EXPRESSION, cur_level+1);
+    //         }
+    //         child[3].c_statement = root.c_iteration->body;
+    //         print_ast(child[3], NT_STATEMENT, cur_level+1);
+    //     break;
 
-        case NT_ASSIGNMENT:
-            spaces(cur_level);
-            printf("Assignment\n");
+    //     case NT_ASSIGNMENT:
+    //         spaces(cur_level);
+    //         printf("Assignment\n");
 
-            if (root.c_assignment->identifier) {
-                child[0].string_val = root.c_assignment->identifier;
-                print_ast(child[0], NT_IDENTIFIER, cur_level+1);
-                child[1].c_assignment_operator = root.c_assignment->operator;
-                print_ast(child[1], NT_ASSIGNMENT_OPERATOR, cur_level+1);
-            }
-            child[2].c_and_expression = root.c_assignment->and_expression;
-            print_ast(child[2], NT_AND_EXPRESSION, cur_level+1);
-        break;
+    //         if (root.c_assignment->identifier) {
+    //             child[0].string_val = root.c_assignment->identifier;
+    //             print_ast(child[0], NT_IDENTIFIER, cur_level+1);
+    //             child[1].c_assignment_operator = root.c_assignment->operator;
+    //             print_ast(child[1], NT_ASSIGNMENT_OPERATOR, cur_level+1);
+    //         }
+    //         child[2].c_and_expression = root.c_assignment->and_expression;
+    //         print_ast(child[2], NT_AND_EXPRESSION, cur_level+1);
+    //     break;
 
-        case NT_AND_EXPRESSION:
-            spaces(cur_level);
-            printf("And Expression\n");
+    //     case NT_AND_EXPRESSION:
+    //         spaces(cur_level);
+    //         printf("And Expression\n");
 
-            if (root.c_and_expression->left) {
-                child[0].c_and_expression = root.c_and_expression->left;
-                print_ast(child[0], NT_AND_EXPRESSION, cur_level+1);
-                spaces(cur_level+1);
-                printf("&&\n");
-            }
-            child[1].c_or_expression = root.c_and_expression->right;
-            print_ast(child[1], NT_OR_EXPRESSION, cur_level+1);
-        break;
+    //         if (root.c_and_expression->left) {
+    //             child[0].c_and_expression = root.c_and_expression->left;
+    //             print_ast(child[0], NT_AND_EXPRESSION, cur_level+1);
+    //             spaces(cur_level+1);
+    //             printf("&&\n");
+    //         }
+    //         child[1].c_or_expression = root.c_and_expression->right;
+    //         print_ast(child[1], NT_OR_EXPRESSION, cur_level+1);
+    //     break;
 
-        case NT_OR_EXPRESSION:
-            spaces(cur_level);
-            printf("Or Expression\n");
+    //     case NT_OR_EXPRESSION:
+    //         spaces(cur_level);
+    //         printf("Or Expression\n");
 
-            if (root.c_or_expression->left) {
-                child[0].c_or_expression = root.c_or_expression->left;
-                print_ast(child[0], NT_OR_EXPRESSION, cur_level+1);
-                spaces(cur_level+1);
-                printf("||\n");
-            }
-            child[1].c_bw_and_expression = root.c_or_expression->right;
-            print_ast(child[1], NT_BW_AND_EXPRESSION, cur_level+1);
-        break;
+    //         if (root.c_or_expression->left) {
+    //             child[0].c_or_expression = root.c_or_expression->left;
+    //             print_ast(child[0], NT_OR_EXPRESSION, cur_level+1);
+    //             spaces(cur_level+1);
+    //             printf("||\n");
+    //         }
+    //         child[1].c_bw_and_expression = root.c_or_expression->right;
+    //         print_ast(child[1], NT_BW_AND_EXPRESSION, cur_level+1);
+    //     break;
 
-        case NT_BW_AND_EXPRESSION:
-            spaces(cur_level);
-            printf("Bitwise And Expression\n");
+    //     case NT_BW_AND_EXPRESSION:
+    //         spaces(cur_level);
+    //         printf("Bitwise And Expression\n");
 
-            if (root.c_bw_and_expression->left) {
-                child[0].c_bw_and_expression = root.c_bw_and_expression->left;
-                print_ast(child[0], NT_BW_AND_EXPRESSION, cur_level+1);
-                spaces(cur_level+1);
-                printf("&\n");
-            }
-            child[1].c_bw_or_expression = root.c_bw_and_expression->right;
-            print_ast(child[1], NT_BW_OR_EXPRESSION, cur_level+1);
-        break;
+    //         if (root.c_bw_and_expression->left) {
+    //             child[0].c_bw_and_expression = root.c_bw_and_expression->left;
+    //             print_ast(child[0], NT_BW_AND_EXPRESSION, cur_level+1);
+    //             spaces(cur_level+1);
+    //             printf("&\n");
+    //         }
+    //         child[1].c_bw_or_expression = root.c_bw_and_expression->right;
+    //         print_ast(child[1], NT_BW_OR_EXPRESSION, cur_level+1);
+    //     break;
 
-        case NT_BW_OR_EXPRESSION:
-            spaces(cur_level);
-            printf("Bitwise Or Expression\n");
+    //     case NT_BW_OR_EXPRESSION:
+    //         spaces(cur_level);
+    //         printf("Bitwise Or Expression\n");
 
-            if (root.c_bw_or_expression->left) {
-                child[0].c_bw_or_expression = root.c_bw_or_expression->left;
-                print_ast(child[0], NT_BW_OR_EXPRESSION, cur_level+1);
-                spaces(cur_level+1);
-                printf("&\n");
-            }
-            child[1].c_bw_xor_expression = root.c_bw_or_expression->right;
-            print_ast(child[1], NT_BW_XOR_EXPRESSION, cur_level+1);
-        break;
+    //         if (root.c_bw_or_expression->left) {
+    //             child[0].c_bw_or_expression = root.c_bw_or_expression->left;
+    //             print_ast(child[0], NT_BW_OR_EXPRESSION, cur_level+1);
+    //             spaces(cur_level+1);
+    //             printf("&\n");
+    //         }
+    //         child[1].c_bw_xor_expression = root.c_bw_or_expression->right;
+    //         print_ast(child[1], NT_BW_XOR_EXPRESSION, cur_level+1);
+    //     break;
 
-        case NT_BW_XOR_EXPRESSION:
-            spaces(cur_level);
-            printf("Bitwise Xor Expression\n");
+    //     case NT_BW_XOR_EXPRESSION:
+    //         spaces(cur_level);
+    //         printf("Bitwise Xor Expression\n");
 
-            if (root.c_bw_xor_expression->left) {
-                child[0].c_bw_xor_expression = root.c_bw_xor_expression->left;
-                print_ast(child[0], NT_BW_XOR_EXPRESSION, cur_level+1);
-                spaces(cur_level+1);
-                printf("&\n");
-            }
-            child[1].c_eq_expression = root.c_bw_xor_expression->right;
-            print_ast(child[1], NT_EQ_EXPRESSION, cur_level+1);
-        break;
+    //         if (root.c_bw_xor_expression->left) {
+    //             child[0].c_bw_xor_expression = root.c_bw_xor_expression->left;
+    //             print_ast(child[0], NT_BW_XOR_EXPRESSION, cur_level+1);
+    //             spaces(cur_level+1);
+    //             printf("&\n");
+    //         }
+    //         child[1].c_eq_expression = root.c_bw_xor_expression->right;
+    //         print_ast(child[1], NT_EQ_EXPRESSION, cur_level+1);
+    //     break;
 
-        case NT_EQ_EXPRESSION:
-            spaces(cur_level);
-            printf("Eq Expression\n");
+    //     case NT_EQ_EXPRESSION:
+    //         spaces(cur_level);
+    //         printf("Eq Expression\n");
 
-            if (root.c_eq_expression->left) {
-                child[0].c_eq_expression = root.c_eq_expression->left;
-                print_ast(child[0], NT_EQ_EXPRESSION, cur_level+1);
+    //         if (root.c_eq_expression->left) {
+    //             child[0].c_eq_expression = root.c_eq_expression->left;
+    //             print_ast(child[0], NT_EQ_EXPRESSION, cur_level+1);
 
-                spaces(cur_level+1);
-                if (root.c_eq_expression->type == EQ_EQ_EXPRESSION) {
-                    printf("==\n");
-                } else {
-                    printf("!=\n");
-                }
-            }
-            child[1].c_rel_expression = root.c_eq_expression->right;
-            print_ast(child[1], NT_REL_EXPRESSION, cur_level+1);
-        break;
+    //             spaces(cur_level+1);
+    //             if (root.c_eq_expression->type == EQ_EQ_EXPRESSION) {
+    //                 printf("==\n");
+    //             } else {
+    //                 printf("!=\n");
+    //             }
+    //         }
+    //         child[1].c_rel_expression = root.c_eq_expression->right;
+    //         print_ast(child[1], NT_REL_EXPRESSION, cur_level+1);
+    //     break;
 
-        case NT_REL_EXPRESSION:
-            spaces(cur_level);
-            printf("Rel Expression\n");
+    //     case NT_REL_EXPRESSION:
+    //         spaces(cur_level);
+    //         printf("Rel Expression\n");
 
-            if (root.c_rel_expression->left) {
-                child[0].c_rel_expression = root.c_rel_expression->left;
-                print_ast(child[0], NT_REL_EXPRESSION, cur_level+1);
+    //         if (root.c_rel_expression->left) {
+    //             child[0].c_rel_expression = root.c_rel_expression->left;
+    //             print_ast(child[0], NT_REL_EXPRESSION, cur_level+1);
 
-                child[0].c_rel_expression_type = root.c_rel_expression->type;
-                print_ast(child[0], NT_REL_EXPRESSION_TYPE, cur_level+1);
-            }
-            child[1].c_shift_expression = root.c_rel_expression->right;
-            print_ast(child[1], NT_SHIFT_EXPRESSION, cur_level+1);
-        break;
+    //             child[0].c_rel_expression_type = root.c_rel_expression->type;
+    //             print_ast(child[0], NT_REL_EXPRESSION_TYPE, cur_level+1);
+    //         }
+    //         child[1].c_shift_expression = root.c_rel_expression->right;
+    //         print_ast(child[1], NT_SHIFT_EXPRESSION, cur_level+1);
+    //     break;
 
-        case NT_SHIFT_EXPRESSION:
-            spaces(cur_level);
-            printf("Shift Expression\n");
+    //     case NT_SHIFT_EXPRESSION:
+    //         spaces(cur_level);
+    //         printf("Shift Expression\n");
 
-            if (root.c_shift_expression->left) {
-                child[0].c_shift_expression = root.c_shift_expression->left;
-                print_ast(child[0], NT_SHIFT_EXPRESSION, cur_level+1);
+    //         if (root.c_shift_expression->left) {
+    //             child[0].c_shift_expression = root.c_shift_expression->left;
+    //             print_ast(child[0], NT_SHIFT_EXPRESSION, cur_level+1);
 
-                spaces(cur_level+1);
-                if (root.c_shift_expression->type == LEFT_SHIFT_EXPRESSION) {
-                    printf("<<\n");
-                } else {
-                    printf(">>\n");
-                }    
-            }
-            child[1].c_set_rm_expression = root.c_shift_expression->right;
-            print_ast(child[1], NT_SET_RM_EXPRESSION, cur_level+1);
-        break;
+    //             spaces(cur_level+1);
+    //             if (root.c_shift_expression->type == LEFT_SHIFT_EXPRESSION) {
+    //                 printf("<<\n");
+    //             } else {
+    //                 printf(">>\n");
+    //             }    
+    //         }
+    //         child[1].c_set_rm_expression = root.c_shift_expression->right;
+    //         print_ast(child[1], NT_SET_RM_EXPRESSION, cur_level+1);
+    //     break;
 
-        case NT_SET_RM_EXPRESSION:
-            spaces(cur_level);
-            printf("Set Rm Expression\n");
+    //     case NT_SET_RM_EXPRESSION:
+    //         spaces(cur_level);
+    //         printf("Set Rm Expression\n");
 
-            if (root.c_set_rm_expression->left) {
-                child[0].c_set_rm_expression = root.c_set_rm_expression->left;
-                print_ast(child[0], NT_SET_RM_EXPRESSION, cur_level+1);
-                spaces(cur_level+1);
-                printf("rm\n");
-            }
-            child[1].c_add_expression = root.c_set_rm_expression->right;
-            print_ast(child[1], NT_ADD_EXPRESSION, cur_level+1);
-        break;
+    //         if (root.c_set_rm_expression->left) {
+    //             child[0].c_set_rm_expression = root.c_set_rm_expression->left;
+    //             print_ast(child[0], NT_SET_RM_EXPRESSION, cur_level+1);
+    //             spaces(cur_level+1);
+    //             printf("rm\n");
+    //         }
+    //         child[1].c_add_expression = root.c_set_rm_expression->right;
+    //         print_ast(child[1], NT_ADD_EXPRESSION, cur_level+1);
+    //     break;
 
-        case NT_ADD_EXPRESSION:
-            spaces(cur_level);
-            printf("Add Expression\n");
+    //     case NT_ADD_EXPRESSION:
+    //         spaces(cur_level);
+    //         printf("Add Expression\n");
 
-            if (root.c_add_expression->left) {
-                child[0].c_add_expression = root.c_add_expression->left;
-                print_ast(child[0], NT_ADD_EXPRESSION, cur_level+1);
+    //         if (root.c_add_expression->left) {
+    //             child[0].c_add_expression = root.c_add_expression->left;
+    //             print_ast(child[0], NT_ADD_EXPRESSION, cur_level+1);
 
-                spaces(cur_level+1);
-                if (root.c_add_expression->type == ADD_PLUS) {
-                    printf("+\n");
-                } else {
-                    printf("-\n");
-                }    
-            }
-            child[1].c_mult_expression = root.c_add_expression->right;
-            print_ast(child[1], NT_MULT_EXPRESSION, cur_level+1);
-        break;
+    //             spaces(cur_level+1);
+    //             if (root.c_add_expression->type == ADD_PLUS) {
+    //                 printf("+\n");
+    //             } else {
+    //                 printf("-\n");
+    //             }    
+    //         }
+    //         child[1].c_mult_expression = root.c_add_expression->right;
+    //         print_ast(child[1], NT_MULT_EXPRESSION, cur_level+1);
+    //     break;
 
-        case NT_MULT_EXPRESSION:
-            spaces(cur_level);
-            printf("Mult Expression\n");
+    //     case NT_MULT_EXPRESSION:
+    //         spaces(cur_level);
+    //         printf("Mult Expression\n");
 
-            if (root.c_mult_expression->left) {
-                child[0].c_mult_expression = root.c_mult_expression->left;
-                print_ast(child[0], NT_MULT_EXPRESSION, cur_level+1);
+    //         if (root.c_mult_expression->left) {
+    //             child[0].c_mult_expression = root.c_mult_expression->left;
+    //             print_ast(child[0], NT_MULT_EXPRESSION, cur_level+1);
 
-                child[1].c_mult_operator = root.c_mult_expression->type;
-                print_ast(child[1], NT_MULT_OPERATOR, cur_level+1);
-            }
-            child[2].c_cast_expression = root.c_mult_expression->right;
-            print_ast(child[2], NT_CAST_EXPRESSION, cur_level+1);
-        break;
+    //             child[1].c_mult_operator = root.c_mult_expression->type;
+    //             print_ast(child[1], NT_MULT_OPERATOR, cur_level+1);
+    //         }
+    //         child[2].c_cast_expression = root.c_mult_expression->right;
+    //         print_ast(child[2], NT_CAST_EXPRESSION, cur_level+1);
+    //     break;
 
-        case NT_CAST_EXPRESSION:
-            spaces(cur_level);
-            printf("Cast Expression\n");
+    //     case NT_CAST_EXPRESSION:
+    //         spaces(cur_level);
+    //         printf("Cast Expression\n");
 
-            if (root.c_cast_expression->left) {
-                child[0].c_cast_expression = root.c_cast_expression->left;
-                print_ast(child[0], NT_CAST_EXPRESSION, cur_level+1);
+    //         if (root.c_cast_expression->left) {
+    //             child[0].c_cast_expression = root.c_cast_expression->left;
+    //             print_ast(child[0], NT_CAST_EXPRESSION, cur_level+1);
 
-                child[1].c_primitive_type = root.c_cast_expression->type;
-                print_ast(child[1], NT_PRIMITIVE_TYPE, cur_level+1);
-            }
-            child[2].c_unary_expression = root.c_cast_expression->right;
-            print_ast(child[2], NT_UNARY_EXPRESSION, cur_level+1);
-        break;
+    //             child[1].c_primitive_type = root.c_cast_expression->type;
+    //             print_ast(child[1], NT_PRIMITIVE_TYPE, cur_level+1);
+    //         }
+    //         child[2].c_unary_expression = root.c_cast_expression->right;
+    //         print_ast(child[2], NT_UNARY_EXPRESSION, cur_level+1);
+    //     break;
 
-        case NT_UNARY_EXPRESSION:
-            spaces(cur_level);
-            printf("Unary Expression\n");
+    //     case NT_UNARY_EXPRESSION:
+    //         spaces(cur_level);
+    //         printf("Unary Expression\n");
 
-            if (root.c_unary_expression->left) {
-                child[0].c_unary_expression = root.c_unary_expression->left;
-                print_ast(child[0], NT_UNARY_EXPRESSION, cur_level+1);
+    //         if (root.c_unary_expression->left) {
+    //             child[0].c_unary_expression = root.c_unary_expression->left;
+    //             print_ast(child[0], NT_UNARY_EXPRESSION, cur_level+1);
 
-                child[1].c_unary_expression_type = root.c_unary_expression->type;
-                print_ast(child[1], NT_UNARY_EXPRESSION_TYPE, cur_level+1);
-            }
-            child[2].c_postfix_expression = root.c_unary_expression->right;
-            print_ast(child[2], NT_POSTFIX_EXPRESSION, cur_level+1);
-        break;
+    //             child[1].c_unary_expression_type = root.c_unary_expression->type;
+    //             print_ast(child[1], NT_UNARY_EXPRESSION_TYPE, cur_level+1);
+    //         }
+    //         child[2].c_postfix_expression = root.c_unary_expression->right;
+    //         print_ast(child[2], NT_POSTFIX_EXPRESSION, cur_level+1);
+    //     break;
 
-        case NT_POSTFIX_EXPRESSION:
-            spaces(cur_level);
-            printf("Postfix Expression\n");
+    //     case NT_POSTFIX_EXPRESSION:
+    //         spaces(cur_level);
+    //         printf("Postfix Expression\n");
 
-            if (root.c_postfix_expression->left) {
-                child[0].c_postfix_expression = root.c_postfix_expression->left;
-                print_ast(child[0], NT_POSTFIX_EXPRESSION, cur_level+1);
+    //         if (root.c_postfix_expression->left) {
+    //             child[0].c_postfix_expression = root.c_postfix_expression->left;
+    //             print_ast(child[0], NT_POSTFIX_EXPRESSION, cur_level+1);
                 
-                spaces(cur_level+1);
-                if (root.c_postfix_expression->type == ARRAY_ACCESS) {
-                    child[1].c_expression = root.c_postfix_expression->member.array_index;
-                    print_ast(child[1], NT_EXPRESSION, cur_level+1);
-                } else {
-                    child[1].c_param_vals = root.c_postfix_expression->member.function_params;
-                    print_ast(child[1], NT_PARAM_VALS, cur_level+1);
-                }    
-            }
-            child[2].c_primary_expression = root.c_postfix_expression->primary;
-            print_ast(child[2], NT_PRIMARY_EXPRESSION, cur_level+1);
-        break;
+    //             spaces(cur_level+1);
+    //             if (root.c_postfix_expression->type == ARRAY_ACCESS) {
+    //                 child[1].c_expression = root.c_postfix_expression->member.array_index;
+    //                 print_ast(child[1], NT_EXPRESSION, cur_level+1);
+    //             } else {
+    //                 child[1].c_param_vals = root.c_postfix_expression->member.function_params;
+    //                 print_ast(child[1], NT_PARAM_VALS, cur_level+1);
+    //             }    
+    //         }
+    //         child[2].c_primary_expression = root.c_postfix_expression->primary;
+    //         print_ast(child[2], NT_PRIMARY_EXPRESSION, cur_level+1);
+    //     break;
 
-        case NT_PRIMARY_EXPRESSION:
-            spaces(cur_level);
-            printf("Primary expression\n");
+    //     case NT_PRIMARY_EXPRESSION:
+    //         spaces(cur_level);
+    //         printf("Primary expression\n");
 
-            switch(root.c_primary_expression->type) {
-                case IDENTIFIER_PRIMARY_EXPRESSION:
-                child[0].string_val = root.c_primary_expression->member.identifier;
-                print_ast(child[0], NT_IDENTIFIER, cur_level+1);
-                break;
-                case CONSTANT_PRIMARY_EXPRESSION:
-                child[0].c_constant = root.c_primary_expression->member.constant;
-                print_ast(child[0], NT_CONSTANT, cur_level+1);
-                break;
-                case STRING_PRIMARY_EXPRESSION:
-                child[0].string_val = root.c_primary_expression->member.string;
-                print_ast(child[0], NT_STRING, cur_level+1);
-                break;
-                case NESTED_PRIMARY_EXPRESSION:
-                child[0].c_expression = root.c_primary_expression->member.expression;
-                print_ast(child[0], NT_EXPRESSION, cur_level+1);
-                break;
-            }
-        break;
+    //         switch(root.c_primary_expression->type) {
+    //             case IDENTIFIER_PRIMARY_EXPRESSION:
+    //             child[0].string_val = root.c_primary_expression->member.identifier;
+    //             print_ast(child[0], NT_IDENTIFIER, cur_level+1);
+    //             break;
+    //             case CONSTANT_PRIMARY_EXPRESSION:
+    //             child[0].c_constant = root.c_primary_expression->member.constant;
+    //             print_ast(child[0], NT_CONSTANT, cur_level+1);
+    //             break;
+    //             case STRING_PRIMARY_EXPRESSION:
+    //             child[0].string_val = root.c_primary_expression->member.string;
+    //             print_ast(child[0], NT_STRING, cur_level+1);
+    //             break;
+    //             case NESTED_PRIMARY_EXPRESSION:
+    //             child[0].c_expression = root.c_primary_expression->member.expression;
+    //             print_ast(child[0], NT_EXPRESSION, cur_level+1);
+    //             break;
+    //         }
+    //     break;
 
-        case NT_CONSTANT:
-            spaces(cur_level);
-            printf("Constant\n");
+    //     case NT_CONSTANT:
+    //         spaces(cur_level);
+    //         printf("Constant\n");
 
-            switch(root.c_constant->type) {
-                case INTEGER_CONSTANT:
-                    spaces(cur_level+1);
-                    printf("Integer %lld\n", (long long)root.c_constant->member.integer_val);
-                break;
+    //         switch(root.c_constant->type) {
+    //             case INTEGER_CONSTANT:
+    //                 spaces(cur_level+1);
+    //                 printf("Integer %lld\n", (long long)root.c_constant->member.integer_val);
+    //             break;
 
-                case CHAR_CONSTANT:
-                    spaces(cur_level+1);
-                    printf("Char %c\n", root.c_constant->member.char_val);
-                break;
+    //             case CHAR_CONSTANT:
+    //                 spaces(cur_level+1);
+    //                 printf("Char %c\n", root.c_constant->member.char_val);
+    //             break;
 
-                case REAL_CONSTANT:
-                    spaces(cur_level+1);
-                    printf("Real %lf\n", root.c_constant->member.float_val);
-                break;
-            }
-        break;
+    //             case REAL_CONSTANT:
+    //                 spaces(cur_level+1);
+    //                 printf("Real %lf\n", root.c_constant->member.float_val);
+    //             break;
+    //         }
+    //     break;
 
-        case NT_PARAM_VALS:
-            if (root.c_param_vals == NULL) return;
+    //     case NT_PARAM_VALS:
+    //         if (root.c_param_vals == NULL) return;
 
-            if (root.c_param_vals->prev) {
-                child[0].c_param_vals = root.c_param_vals->prev;
-                print_ast(child[0], NT_PARAM_VALS, cur_level);
-            } else {
-                // print only at beginning of declaration list
-                spaces(cur_level);
-                printf("Parameter Values\n");
-            }
+    //         if (root.c_param_vals->prev) {
+    //             child[0].c_param_vals = root.c_param_vals->prev;
+    //             print_ast(child[0], NT_PARAM_VALS, cur_level);
+    //         } else {
+    //             // print only at beginning of declaration list
+    //             spaces(cur_level);
+    //             printf("Parameter Values\n");
+    //         }
 
-            if (root.c_param_vals->cur) {
-                child[1].c_expression = root.c_param_vals->cur;
-                print_ast(child[1], NT_EXPRESSION, cur_level+1);
-            }
-        break;
+    //         if (root.c_param_vals->cur) {
+    //             child[1].c_expression = root.c_param_vals->cur;
+    //             print_ast(child[1], NT_EXPRESSION, cur_level+1);
+    //         }
+    //     break;
 
-        case NT_STRING:
-            spaces(cur_level);
-            printf("String %s\n", root.string_val);
-        break;
+    //     case NT_STRING:
+    //         spaces(cur_level);
+    //         printf("String %s\n", root.string_val);
+    //     break;
 
-        case NT_IDENTIFIER:
-            spaces(cur_level);
-            printf("Identifier %s\n", root.string_val);
-        break;
+    //     case NT_IDENTIFIER:
+    //         spaces(cur_level);
+    //         printf("Identifier %s\n", root.string_val);
+    //     break;
 
-        default:
-            printf("SHOULD NOT HAPPEN!\n");
-            exit(1);
+    //     default:
+    //         printf("SHOULD NOT HAPPEN!\n");
+    //         exit(1);
 
-    }
+    // }
 }
 
 void free_ast(node root, node_type type) {
     node child[10];
     memset(child, 0, sizeof child);
 
-    switch(type) {
-         case NT_PROGRAM:
-            child[0].c_declaration_list = root.c_program->declaration_list;
-            free_ast(child[0], NT_DECLARATION_LIST);
-            free(root.c_program);
-        break;
+    // switch(type) {
+    //      case NT_PROGRAM:
+    //         child[0].c_declaration_list = root.c_program->declaration_list;
+    //         free_ast(child[0], NT_DECLARATION_LIST);
+    //         free(root.c_program);
+    //     break;
 
-        case NT_DECLARATION_LIST:
-            if (root.c_declaration_list->cur) {
-                child[1].c_declaration = root.c_declaration_list->cur;
-                free_ast(child[1], NT_DECLARATION);
-            }
+    //     case NT_DECLARATION_LIST:
+    //         if (root.c_declaration_list->cur) {
+    //             child[1].c_declaration = root.c_declaration_list->cur;
+    //             free_ast(child[1], NT_DECLARATION);
+    //         }
 
-            if (root.c_declaration_list->prev) {
-                child[0].c_declaration_list = root.c_declaration_list->prev;
-                free_ast(child[0], NT_DECLARATION_LIST);
-            }
+    //         if (root.c_declaration_list->prev) {
+    //             child[0].c_declaration_list = root.c_declaration_list->prev;
+    //             free_ast(child[0], NT_DECLARATION_LIST);
+    //         }
 
-            free(root.c_declaration_list);
-        break;
+    //         free(root.c_declaration_list);
+    //     break;
 
-        case NT_DECLARATION:
-            if (root.c_declaration->type == VAR_DECLARATION) {
-                child[0].c_variable = root.c_declaration->member.variable;
-                free_ast(child[0], NT_VARIABLE);
-            } else if (root.c_declaration->type == FUN_DECLARATION) {
-                child[0].c_function = root.c_declaration->member.function;
-                free_ast(child[0], NT_FUNCTION);
-            }
+    //     case NT_DECLARATION:
+    //         if (root.c_declaration->type == VAR_DECLARATION) {
+    //             child[0].c_variable = root.c_declaration->member.variable;
+    //             free_ast(child[0], NT_VARIABLE);
+    //         } else if (root.c_declaration->type == FUN_DECLARATION) {
+    //             child[0].c_function = root.c_declaration->member.function;
+    //             free_ast(child[0], NT_FUNCTION);
+    //         }
 
-            free(root.c_declaration);
-        break;
+    //         free(root.c_declaration);
+    //     break;
 
-        case NT_VARIABLE:
-            child[1].string_val = root.c_variable->identifier;
-            free_ast(child[1], NT_IDENTIFIER);
+    //     case NT_VARIABLE:
+    //         child[1].string_val = root.c_variable->identifier;
+    //         free_ast(child[1], NT_IDENTIFIER);
 
-            free(root.c_variable);
-        break;
+    //         free(root.c_variable);
+    //     break;
 
-        case NT_FUNCTION:
-            child[1].string_val = root.c_function->identifier;
-            free_ast(child[1], NT_IDENTIFIER);   
+    //     case NT_FUNCTION:
+    //         child[1].string_val = root.c_function->identifier;
+    //         free_ast(child[1], NT_IDENTIFIER);   
 
-            child[2].c_function_params = root.c_function->params;
-            free_ast(child[2], NT_FUNCTION_PARAMS);
+    //         child[2].c_function_params = root.c_function->params;
+    //         free_ast(child[2], NT_FUNCTION_PARAMS);
 
-            child[3].c_scope = root.c_function->body;
-            free_ast(child[3], NT_SCOPE);
+    //         child[3].c_scope = root.c_function->body;
+    //         free_ast(child[3], NT_SCOPE);
             
-            free(root.c_function);
-        break;
+    //         free(root.c_function);
+    //     break;
 
-        case NT_FUNCTION_PARAMS:
-            if (root.c_function_params == NULL) return;
+    //     case NT_FUNCTION_PARAMS:
+    //         if (root.c_function_params == NULL) return;
 
-            if (root.c_function_params->cur) {
-                child[1].c_variable = root.c_function_params->cur;
-                free_ast(child[1], NT_VARIABLE);
-            }
+    //         if (root.c_function_params->cur) {
+    //             child[1].c_variable = root.c_function_params->cur;
+    //             free_ast(child[1], NT_VARIABLE);
+    //         }
             
-            if (root.c_function_params->prev) {
-                child[0].c_function_params = root.c_function_params->prev;
-                free_ast(child[0], NT_FUNCTION_PARAMS);
-            }
+    //         if (root.c_function_params->prev) {
+    //             child[0].c_function_params = root.c_function_params->prev;
+    //             free_ast(child[0], NT_FUNCTION_PARAMS);
+    //         }
             
-            free(root.c_function_params);
-        break;
+    //         free(root.c_function_params);
+    //     break;
 
-        case NT_SCOPE:
-            child[0].c_statement_list = root.c_scope->statements;
-            free_ast(child[0], NT_STATEMENT_LIST);
+    //     case NT_SCOPE:
+    //         child[0].c_statement_list = root.c_scope->statements;
+    //         free_ast(child[0], NT_STATEMENT_LIST);
 
-            free(root.c_scope);
-        break;
+    //         free(root.c_scope);
+    //     break;
 
-        case NT_STATEMENT_LIST:
-            if (root.c_statement_list == NULL) return;
+    //     case NT_STATEMENT_LIST:
+    //         if (root.c_statement_list == NULL) return;
 
-            if (root.c_statement_list->cur) {
-                child[1].c_statement = root.c_statement_list->cur;
-                free_ast(child[1], NT_STATEMENT);
-            }
+    //         if (root.c_statement_list->cur) {
+    //             child[1].c_statement = root.c_statement_list->cur;
+    //             free_ast(child[1], NT_STATEMENT);
+    //         }
             
-            if (root.c_statement_list->prev) {
-                child[0].c_statement_list = root.c_statement_list->prev;
-                free_ast(child[0], NT_STATEMENT_LIST);
-            }
+    //         if (root.c_statement_list->prev) {
+    //             child[0].c_statement_list = root.c_statement_list->prev;
+    //             free_ast(child[0], NT_STATEMENT_LIST);
+    //         }
 
-            free(root.c_statement_list);
-        break;
+    //         free(root.c_statement_list);
+    //     break;
 
-        case NT_STATEMENT:
-            switch (root.c_statement->type) {
-                case SCOPE_STATEMENT:
-                    child[0].c_scope = root.c_statement->member.scope;
-                    free_ast(child[0], NT_SCOPE);
-                break;
+    //     case NT_STATEMENT:
+    //         switch (root.c_statement->type) {
+    //             case SCOPE_STATEMENT:
+    //                 child[0].c_scope = root.c_statement->member.scope;
+    //                 free_ast(child[0], NT_SCOPE);
+    //             break;
 
-                case VAR_DECLARATION_STATEMENT:
-                    child[0].c_variable = root.c_statement->member.variable;
-                    free_ast(child[0], NT_DECLARATION);
-                break;
+    //             case VAR_DECLARATION_STATEMENT:
+    //                 child[0].c_variable = root.c_statement->member.variable;
+    //                 free_ast(child[0], NT_DECLARATION);
+    //             break;
 
-                case PRINT_STATEMENT:
-                    child[0].c_print = root.c_statement->member.print;
-                    free_ast(child[0], NT_PRINT);
-                break;
+    //             case PRINT_STATEMENT:
+    //                 child[0].c_print = root.c_statement->member.print;
+    //                 free_ast(child[0], NT_PRINT);
+    //             break;
 
-                case SCAN_STATEMENT:
-                    child[0].c_scan = root.c_statement->member.scan;
-                    free_ast(child[0], NT_SCAN);
-                break;
+    //             case SCAN_STATEMENT:
+    //                 child[0].c_scan = root.c_statement->member.scan;
+    //                 free_ast(child[0], NT_SCAN);
+    //             break;
 
-                case EXPRESSION_STATEMENT:
-                    child[0].c_expression = root.c_statement->member.expression;
-                    free_ast(child[0], NT_EXPRESSION);
-                break;
+    //             case EXPRESSION_STATEMENT:
+    //                 child[0].c_expression = root.c_statement->member.expression;
+    //                 free_ast(child[0], NT_EXPRESSION);
+    //             break;
 
-                case CONDITION_STATEMENT:
-                    child[0].c_condition = root.c_statement->member.condition;
-                    free_ast(child[0], NT_CONDITION);
-                break;
+    //             case CONDITION_STATEMENT:
+    //                 child[0].c_condition = root.c_statement->member.condition;
+    //                 free_ast(child[0], NT_CONDITION);
+    //             break;
 
-                case ITERATION_STATEMENT:
-                    child[0].c_iteration = root.c_statement->member.iteration;
-                    free_ast(child[0], NT_ITERATION);
-                break;
+    //             case ITERATION_STATEMENT:
+    //                 child[0].c_iteration = root.c_statement->member.iteration;
+    //                 free_ast(child[0], NT_ITERATION);
+    //             break;
 
-                case RETURN_STATEMENT:
-                    child[0].c_return = root.c_statement->member._return;
-                    free_ast(child[0], NT_RETURN);
-                break;
-            }
+    //             case RETURN_STATEMENT:
+    //                 child[0].c_return = root.c_statement->member._return;
+    //                 free_ast(child[0], NT_RETURN);
+    //             break;
+    //         }
 
-            free(root.c_statement);
-        break;
+    //         free(root.c_statement);
+    //     break;
 
-        case NT_PRINT:
-            child[1].c_expression = root.c_print->expression;
-            free_ast(child[1], NT_EXPRESSION);
+    //     case NT_PRINT:
+    //         child[1].c_expression = root.c_print->expression;
+    //         free_ast(child[1], NT_EXPRESSION);
 
-            free(root.c_print);
-        break;
+    //         free(root.c_print);
+    //     break;
 
-        case NT_SCAN:
-            child[1].string_val = root.c_scan->destiny;
-            free_ast(child[1], NT_IDENTIFIER);
+    //     case NT_SCAN:
+    //         child[1].string_val = root.c_scan->destiny;
+    //         free_ast(child[1], NT_IDENTIFIER);
 
-            free(root.c_scan);
-        break;
+    //         free(root.c_scan);
+    //     break;
 
-        case NT_RETURN:
-            if (root.c_return->expression) {
-                child[0].c_expression = root.c_return->expression;
-                free_ast(child[0], NT_EXPRESSION);
-            }
+    //     case NT_RETURN:
+    //         if (root.c_return->expression) {
+    //             child[0].c_expression = root.c_return->expression;
+    //             free_ast(child[0], NT_EXPRESSION);
+    //         }
 
-            free(root.c_return);
-        break;
+    //         free(root.c_return);
+    //     break;
 
-        case NT_EXPRESSION:
-            if (root.c_expression == NULL) return;
+    //     case NT_EXPRESSION:
+    //         if (root.c_expression == NULL) return;
 
-            child[0].c_assignment = root.c_expression->assignment;
-            free_ast(child[0], NT_ASSIGNMENT);
+    //         child[0].c_assignment = root.c_expression->assignment;
+    //         free_ast(child[0], NT_ASSIGNMENT);
 
-            free(root.c_expression);
-        break;
+    //         free(root.c_expression);
+    //     break;
 
-        case NT_CONDITION:
-            child[0].c_expression = root.c_condition->condition;
-            free_ast(child[0], NT_EXPRESSION);
+    //     case NT_CONDITION:
+    //         child[0].c_expression = root.c_condition->condition;
+    //         free_ast(child[0], NT_EXPRESSION);
 
-            child[1].c_statement = root.c_condition->body;
-            free_ast(child[1], NT_STATEMENT);
+    //         child[1].c_statement = root.c_condition->body;
+    //         free_ast(child[1], NT_STATEMENT);
 
-            if (root.c_condition->else_body) {
-                child[2].c_statement = root.c_condition->else_body;
-                free_ast(child[2], NT_STATEMENT);
-            }
+    //         if (root.c_condition->else_body) {
+    //             child[2].c_statement = root.c_condition->else_body;
+    //             free_ast(child[2], NT_STATEMENT);
+    //         }
 
-            free(root.c_condition);
-        break;
+    //         free(root.c_condition);
+    //     break;
 
-        case NT_ITERATION:
-            if (root.c_iteration->initialization) {
-                child[0].c_expression = root.c_iteration->initialization;
-                free_ast(child[0], NT_EXPRESSION);
-            }
-            if (root.c_iteration->condition) {
-                child[1].c_expression = root.c_iteration->condition;
-                free_ast(child[1], NT_EXPRESSION);
-            }
-            if (root.c_iteration->step) {
-                child[2].c_expression = root.c_iteration->step;
-                free_ast(child[2], NT_EXPRESSION);
-            }
-            child[3].c_statement = root.c_iteration->body;
-            free_ast(child[3], NT_STATEMENT);
+    //     case NT_ITERATION:
+    //         if (root.c_iteration->initialization) {
+    //             child[0].c_expression = root.c_iteration->initialization;
+    //             free_ast(child[0], NT_EXPRESSION);
+    //         }
+    //         if (root.c_iteration->condition) {
+    //             child[1].c_expression = root.c_iteration->condition;
+    //             free_ast(child[1], NT_EXPRESSION);
+    //         }
+    //         if (root.c_iteration->step) {
+    //             child[2].c_expression = root.c_iteration->step;
+    //             free_ast(child[2], NT_EXPRESSION);
+    //         }
+    //         child[3].c_statement = root.c_iteration->body;
+    //         free_ast(child[3], NT_STATEMENT);
 
-            free(root.c_iteration);
-        break;
+    //         free(root.c_iteration);
+    //     break;
 
-        case NT_ASSIGNMENT:
-            if (root.c_assignment->identifier) {
-                child[0].string_val = root.c_assignment->identifier;
-                free_ast(child[0], NT_IDENTIFIER);
-            }
+    //     case NT_ASSIGNMENT:
+    //         if (root.c_assignment->identifier) {
+    //             child[0].string_val = root.c_assignment->identifier;
+    //             free_ast(child[0], NT_IDENTIFIER);
+    //         }
 
-            child[2].c_and_expression = root.c_assignment->and_expression;
-            free_ast(child[2], NT_AND_EXPRESSION);
+    //         child[2].c_and_expression = root.c_assignment->and_expression;
+    //         free_ast(child[2], NT_AND_EXPRESSION);
 
-            free(root.c_assignment);
-        break;
+    //         free(root.c_assignment);
+    //     break;
 
-        case NT_AND_EXPRESSION:
-            if (root.c_and_expression->left) {
-                child[0].c_and_expression = root.c_and_expression->left;
-                free_ast(child[0], NT_AND_EXPRESSION);
-            }
-            child[1].c_or_expression = root.c_and_expression->right;
-            free_ast(child[1], NT_OR_EXPRESSION);
+    //     case NT_AND_EXPRESSION:
+    //         if (root.c_and_expression->left) {
+    //             child[0].c_and_expression = root.c_and_expression->left;
+    //             free_ast(child[0], NT_AND_EXPRESSION);
+    //         }
+    //         child[1].c_or_expression = root.c_and_expression->right;
+    //         free_ast(child[1], NT_OR_EXPRESSION);
 
-            free(root.c_and_expression);
-        break;
+    //         free(root.c_and_expression);
+    //     break;
 
-        case NT_OR_EXPRESSION:
+    //     case NT_OR_EXPRESSION:
 
-            if (root.c_or_expression->left) {
-                child[0].c_or_expression = root.c_or_expression->left;
-                free_ast(child[0], NT_OR_EXPRESSION);
-            }
-            child[1].c_bw_and_expression = root.c_or_expression->right;
-            free_ast(child[1], NT_BW_AND_EXPRESSION);
+    //         if (root.c_or_expression->left) {
+    //             child[0].c_or_expression = root.c_or_expression->left;
+    //             free_ast(child[0], NT_OR_EXPRESSION);
+    //         }
+    //         child[1].c_bw_and_expression = root.c_or_expression->right;
+    //         free_ast(child[1], NT_BW_AND_EXPRESSION);
             
-            free(root.c_or_expression);
-        break;
+    //         free(root.c_or_expression);
+    //     break;
 
-        case NT_BW_AND_EXPRESSION:
+    //     case NT_BW_AND_EXPRESSION:
 
-            if (root.c_bw_and_expression->left) {
-                child[0].c_bw_and_expression = root.c_bw_and_expression->left;
-                free_ast(child[0], NT_BW_AND_EXPRESSION);
-            }
-            child[1].c_bw_or_expression = root.c_bw_and_expression->right;
-            free_ast(child[1], NT_BW_OR_EXPRESSION);
+    //         if (root.c_bw_and_expression->left) {
+    //             child[0].c_bw_and_expression = root.c_bw_and_expression->left;
+    //             free_ast(child[0], NT_BW_AND_EXPRESSION);
+    //         }
+    //         child[1].c_bw_or_expression = root.c_bw_and_expression->right;
+    //         free_ast(child[1], NT_BW_OR_EXPRESSION);
             
-            free(root.c_bw_and_expression);
-        break;
+    //         free(root.c_bw_and_expression);
+    //     break;
 
-        case NT_BW_OR_EXPRESSION:
+    //     case NT_BW_OR_EXPRESSION:
 
-            if (root.c_bw_or_expression->left) {
-                child[0].c_bw_or_expression = root.c_bw_or_expression->left;
-                free_ast(child[0], NT_BW_OR_EXPRESSION);
-            }
-            child[1].c_bw_xor_expression = root.c_bw_or_expression->right;
-            free_ast(child[1], NT_BW_XOR_EXPRESSION);
+    //         if (root.c_bw_or_expression->left) {
+    //             child[0].c_bw_or_expression = root.c_bw_or_expression->left;
+    //             free_ast(child[0], NT_BW_OR_EXPRESSION);
+    //         }
+    //         child[1].c_bw_xor_expression = root.c_bw_or_expression->right;
+    //         free_ast(child[1], NT_BW_XOR_EXPRESSION);
             
-            free(root.c_bw_or_expression);
-        break;
+    //         free(root.c_bw_or_expression);
+    //     break;
 
-        case NT_BW_XOR_EXPRESSION:
+    //     case NT_BW_XOR_EXPRESSION:
 
-            if (root.c_bw_xor_expression->left) {
-                child[0].c_bw_xor_expression = root.c_bw_xor_expression->left;
-                free_ast(child[0], NT_BW_XOR_EXPRESSION);
-            }
-            child[1].c_eq_expression = root.c_bw_xor_expression->right;
-            free_ast(child[1], NT_EQ_EXPRESSION);
+    //         if (root.c_bw_xor_expression->left) {
+    //             child[0].c_bw_xor_expression = root.c_bw_xor_expression->left;
+    //             free_ast(child[0], NT_BW_XOR_EXPRESSION);
+    //         }
+    //         child[1].c_eq_expression = root.c_bw_xor_expression->right;
+    //         free_ast(child[1], NT_EQ_EXPRESSION);
             
-            free(root.c_bw_xor_expression);
-        break;
+    //         free(root.c_bw_xor_expression);
+    //     break;
 
-        case NT_EQ_EXPRESSION:
+    //     case NT_EQ_EXPRESSION:
 
-            if (root.c_eq_expression->left) {
-                child[0].c_eq_expression = root.c_eq_expression->left;
-                free_ast(child[0], NT_EQ_EXPRESSION);
-            }
-            child[1].c_rel_expression = root.c_eq_expression->right;
-            free_ast(child[1], NT_REL_EXPRESSION);
+    //         if (root.c_eq_expression->left) {
+    //             child[0].c_eq_expression = root.c_eq_expression->left;
+    //             free_ast(child[0], NT_EQ_EXPRESSION);
+    //         }
+    //         child[1].c_rel_expression = root.c_eq_expression->right;
+    //         free_ast(child[1], NT_REL_EXPRESSION);
             
-            free(root.c_eq_expression);
-        break;
+    //         free(root.c_eq_expression);
+    //     break;
 
-        case NT_REL_EXPRESSION:
+    //     case NT_REL_EXPRESSION:
 
-            if (root.c_rel_expression->left) {
-                child[0].c_rel_expression = root.c_rel_expression->left;
-                free_ast(child[0], NT_REL_EXPRESSION);
-            }
-            child[1].c_shift_expression = root.c_rel_expression->right;
-            free_ast(child[1], NT_SHIFT_EXPRESSION);
+    //         if (root.c_rel_expression->left) {
+    //             child[0].c_rel_expression = root.c_rel_expression->left;
+    //             free_ast(child[0], NT_REL_EXPRESSION);
+    //         }
+    //         child[1].c_shift_expression = root.c_rel_expression->right;
+    //         free_ast(child[1], NT_SHIFT_EXPRESSION);
             
-            free(root.c_rel_expression);
-        break;
+    //         free(root.c_rel_expression);
+    //     break;
 
-        case NT_SHIFT_EXPRESSION:
+    //     case NT_SHIFT_EXPRESSION:
 
-            if (root.c_shift_expression->left) {
-                child[0].c_shift_expression = root.c_shift_expression->left;
-                free_ast(child[0], NT_SHIFT_EXPRESSION);
-            }
-            child[1].c_set_rm_expression = root.c_shift_expression->right;
-            free_ast(child[1], NT_SET_RM_EXPRESSION);
+    //         if (root.c_shift_expression->left) {
+    //             child[0].c_shift_expression = root.c_shift_expression->left;
+    //             free_ast(child[0], NT_SHIFT_EXPRESSION);
+    //         }
+    //         child[1].c_set_rm_expression = root.c_shift_expression->right;
+    //         free_ast(child[1], NT_SET_RM_EXPRESSION);
             
-            free(root.c_shift_expression);
-        break;
+    //         free(root.c_shift_expression);
+    //     break;
 
-        case NT_SET_RM_EXPRESSION:
+    //     case NT_SET_RM_EXPRESSION:
 
-            if (root.c_set_rm_expression->left) {
-                child[0].c_set_rm_expression = root.c_set_rm_expression->left;
-                free_ast(child[0], NT_SET_RM_EXPRESSION);
-            }
-            child[1].c_add_expression = root.c_set_rm_expression->right;
-            free_ast(child[1], NT_ADD_EXPRESSION);
+    //         if (root.c_set_rm_expression->left) {
+    //             child[0].c_set_rm_expression = root.c_set_rm_expression->left;
+    //             free_ast(child[0], NT_SET_RM_EXPRESSION);
+    //         }
+    //         child[1].c_add_expression = root.c_set_rm_expression->right;
+    //         free_ast(child[1], NT_ADD_EXPRESSION);
             
-            free(root.c_set_rm_expression);
-        break;
+    //         free(root.c_set_rm_expression);
+    //     break;
 
-        case NT_ADD_EXPRESSION:
+    //     case NT_ADD_EXPRESSION:
 
-            if (root.c_add_expression->left) {
-                child[0].c_add_expression = root.c_add_expression->left;
-                free_ast(child[0], NT_ADD_EXPRESSION);
-            }
-            child[1].c_mult_expression = root.c_add_expression->right;
-            free_ast(child[1], NT_MULT_EXPRESSION);
+    //         if (root.c_add_expression->left) {
+    //             child[0].c_add_expression = root.c_add_expression->left;
+    //             free_ast(child[0], NT_ADD_EXPRESSION);
+    //         }
+    //         child[1].c_mult_expression = root.c_add_expression->right;
+    //         free_ast(child[1], NT_MULT_EXPRESSION);
             
-            free(root.c_add_expression);
-        break;
+    //         free(root.c_add_expression);
+    //     break;
 
-        case NT_MULT_EXPRESSION:
+    //     case NT_MULT_EXPRESSION:
 
-            if (root.c_mult_expression->left) {
-                child[0].c_mult_expression = root.c_mult_expression->left;
-                free_ast(child[0], NT_MULT_EXPRESSION);
-            }
-            child[2].c_cast_expression = root.c_mult_expression->right;
-            free_ast(child[2], NT_CAST_EXPRESSION);
+    //         if (root.c_mult_expression->left) {
+    //             child[0].c_mult_expression = root.c_mult_expression->left;
+    //             free_ast(child[0], NT_MULT_EXPRESSION);
+    //         }
+    //         child[2].c_cast_expression = root.c_mult_expression->right;
+    //         free_ast(child[2], NT_CAST_EXPRESSION);
             
-            free(root.c_mult_expression);
-        break;
+    //         free(root.c_mult_expression);
+    //     break;
 
-        case NT_CAST_EXPRESSION:
+    //     case NT_CAST_EXPRESSION:
 
-            if (root.c_cast_expression->left) {
-                child[0].c_cast_expression = root.c_cast_expression->left;
-                free_ast(child[0], NT_CAST_EXPRESSION);
-            }
-            child[2].c_unary_expression = root.c_cast_expression->right;
-            free_ast(child[2], NT_UNARY_EXPRESSION);
+    //         if (root.c_cast_expression->left) {
+    //             child[0].c_cast_expression = root.c_cast_expression->left;
+    //             free_ast(child[0], NT_CAST_EXPRESSION);
+    //         }
+    //         child[2].c_unary_expression = root.c_cast_expression->right;
+    //         free_ast(child[2], NT_UNARY_EXPRESSION);
             
-            free(root.c_cast_expression);
-        break;
+    //         free(root.c_cast_expression);
+    //     break;
 
-        case NT_UNARY_EXPRESSION:
+    //     case NT_UNARY_EXPRESSION:
 
-            if (root.c_unary_expression->left) {
-                child[0].c_unary_expression = root.c_unary_expression->left;
-                free_ast(child[0], NT_UNARY_EXPRESSION);
-            }
-            child[2].c_postfix_expression = root.c_unary_expression->right;
-            free_ast(child[2], NT_POSTFIX_EXPRESSION);
+    //         if (root.c_unary_expression->left) {
+    //             child[0].c_unary_expression = root.c_unary_expression->left;
+    //             free_ast(child[0], NT_UNARY_EXPRESSION);
+    //         }
+    //         child[2].c_postfix_expression = root.c_unary_expression->right;
+    //         free_ast(child[2], NT_POSTFIX_EXPRESSION);
             
-            free(root.c_unary_expression);
-        break;
+    //         free(root.c_unary_expression);
+    //     break;
 
-        case NT_POSTFIX_EXPRESSION:
+    //     case NT_POSTFIX_EXPRESSION:
 
-            if (root.c_postfix_expression->left) {
-                child[0].c_postfix_expression = root.c_postfix_expression->left;
-                free_ast(child[0], NT_POSTFIX_EXPRESSION);
+    //         if (root.c_postfix_expression->left) {
+    //             child[0].c_postfix_expression = root.c_postfix_expression->left;
+    //             free_ast(child[0], NT_POSTFIX_EXPRESSION);
                 
-                if (root.c_postfix_expression->type == ARRAY_ACCESS) {
-                    child[1].c_expression = root.c_postfix_expression->member.array_index;
-                    free_ast(child[1], NT_EXPRESSION);
-                } else {
-                    child[1].c_param_vals = root.c_postfix_expression->member.function_params;
-                    free_ast(child[1], NT_PARAM_VALS);
-                }
-            }
-            child[2].c_primary_expression = root.c_postfix_expression->primary;
-            free_ast(child[2], NT_PRIMARY_EXPRESSION);
+    //             if (root.c_postfix_expression->type == ARRAY_ACCESS) {
+    //                 child[1].c_expression = root.c_postfix_expression->member.array_index;
+    //                 free_ast(child[1], NT_EXPRESSION);
+    //             } else {
+    //                 child[1].c_param_vals = root.c_postfix_expression->member.function_params;
+    //                 free_ast(child[1], NT_PARAM_VALS);
+    //             }
+    //         }
+    //         child[2].c_primary_expression = root.c_postfix_expression->primary;
+    //         free_ast(child[2], NT_PRIMARY_EXPRESSION);
             
-            free(root.c_postfix_expression);
-        break;
+    //         free(root.c_postfix_expression);
+    //     break;
 
-        case NT_PRIMARY_EXPRESSION:
+    //     case NT_PRIMARY_EXPRESSION:
 
-            switch(root.c_primary_expression->type) {
-                case IDENTIFIER_PRIMARY_EXPRESSION:
-                child[0].string_val = root.c_primary_expression->member.identifier;
-                free_ast(child[0], NT_IDENTIFIER);
-                break;
-                case CONSTANT_PRIMARY_EXPRESSION:
-                child[0].c_constant = root.c_primary_expression->member.constant;
-                free_ast(child[0], NT_CONSTANT);
-                break;
-                case STRING_PRIMARY_EXPRESSION:
-                child[0].string_val = root.c_primary_expression->member.string;
-                free_ast(child[0], NT_STRING);
-                break;
-                case NESTED_PRIMARY_EXPRESSION:
-                child[0].c_expression = root.c_primary_expression->member.expression;
-                free_ast(child[0], NT_EXPRESSION);
-                break;
-            }
+    //         switch(root.c_primary_expression->type) {
+    //             case IDENTIFIER_PRIMARY_EXPRESSION:
+    //             child[0].string_val = root.c_primary_expression->member.identifier;
+    //             free_ast(child[0], NT_IDENTIFIER);
+    //             break;
+    //             case CONSTANT_PRIMARY_EXPRESSION:
+    //             child[0].c_constant = root.c_primary_expression->member.constant;
+    //             free_ast(child[0], NT_CONSTANT);
+    //             break;
+    //             case STRING_PRIMARY_EXPRESSION:
+    //             child[0].string_val = root.c_primary_expression->member.string;
+    //             free_ast(child[0], NT_STRING);
+    //             break;
+    //             case NESTED_PRIMARY_EXPRESSION:
+    //             child[0].c_expression = root.c_primary_expression->member.expression;
+    //             free_ast(child[0], NT_EXPRESSION);
+    //             break;
+    //         }
             
-            free(root.c_primary_expression);
-        break;
+    //         free(root.c_primary_expression);
+    //     break;
 
-        case NT_CONSTANT:
-            free(root.c_constant);
-        break;
+    //     case NT_CONSTANT:
+    //         free(root.c_constant);
+    //     break;
 
-        case NT_PARAM_VALS:
-            if (root.c_param_vals == NULL) return;
+    //     case NT_PARAM_VALS:
+    //         if (root.c_param_vals == NULL) return;
 
-            if (root.c_param_vals->cur) {
-                child[1].c_expression = root.c_param_vals->cur;
-                free_ast(child[1], NT_EXPRESSION);
-            }
+    //         if (root.c_param_vals->cur) {
+    //             child[1].c_expression = root.c_param_vals->cur;
+    //             free_ast(child[1], NT_EXPRESSION);
+    //         }
 
-            if (root.c_param_vals->prev) {
-                child[0].c_param_vals = root.c_param_vals->prev;
-                free_ast(child[0], NT_PARAM_VALS);
-            }
+    //         if (root.c_param_vals->prev) {
+    //             child[0].c_param_vals = root.c_param_vals->prev;
+    //             free_ast(child[0], NT_PARAM_VALS);
+    //         }
             
-            free(root.c_param_vals);
-        break;
+    //         free(root.c_param_vals);
+    //     break;
 
-        case NT_STRING:
-            free(root.string_val);
-        break;
+    //     case NT_STRING:
+    //         free(root.string_val);
+    //     break;
 
-        case NT_IDENTIFIER:
-            free(root.string_val);
-        break;
+    //     case NT_IDENTIFIER:
+    //         free(root.string_val);
+    //     break;
 
-        default:
-            printf("SHOULD NOT HAPPEN!\n");
-            exit(1);
+    //     default:
+    //         printf("SHOULD NOT HAPPEN!\n");
+    //         exit(1);
 
-    }
+    // }
 }

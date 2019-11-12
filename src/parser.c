@@ -211,15 +211,10 @@ union YYSTYPE
 {
 #line 53 "src/parser.y"
 
+    t_expression_type c_expression_type;
     t_primary_expression_type c_primary_expression_type;
     t_constant_type c_constant_type;
     t_postfix_expression_type c_postfix_expression_type;
-    t_unary_expression_type c_unary_expression_type;
-    t_add_expression_type c_add_expression_type;
-    t_eq_expression_type c_eq_expression_type;
-    t_shift_expression_type c_shift_expression_type;
-    t_rel_expression_type c_rel_expression_type;
-    t_mult_operator c_mult_operator;
     t_assignment_operator c_assignment_operator;
     t_primitive_type c_primitive_type;
     t_print_type c_print_type;
@@ -240,21 +235,9 @@ union YYSTYPE
     t_condition* c_condition;
     t_iteration* c_iteration;
     t_assignment* c_assignment;
-    t_and_expression* c_and_expression;
-    t_or_expression* c_or_expression;
-    t_bw_or_expression* c_bw_or_expression;
-    t_bw_xor_expression* c_bw_xor_expression;
-    t_bw_and_expression* c_bw_and_expression;
-    t_eq_expression* c_eq_expression;
-    t_rel_expression* c_rel_expression;
-    t_shift_expression* c_shift_expression;
-    t_set_rm_expression* c_set_rm_expression;
-    t_add_expression* c_add_expression;
-    t_mult_expression* c_mult_expression;
-    t_cast_expression* c_cast_expression;
-    t_unary_expression* c_unary_expression;
     t_postfix_expression* c_postfix_expression;
     t_primary_expression* c_primary_expression;
+    t_cast_expression* c_cast_expression;
     t_constant* c_constant;
     t_param_vals* c_param_vals;
     char* string_val;
@@ -262,7 +245,7 @@ union YYSTYPE
     double float_val;
     char char_val;
 
-#line 266 "src/parser.c"
+#line 249 "src/parser.c"
 
 };
 typedef union YYSTYPE YYSTYPE;
@@ -512,7 +495,7 @@ union yyalloc
 /* YYFINAL -- State number of the termination state.  */
 #define YYFINAL  3
 /* YYLAST -- Last index in YYTABLE.  */
-#define YYLAST   249
+#define YYLAST   259
 
 /* YYNTOKENS -- Number of terminals.  */
 #define YYNTOKENS  71
@@ -521,7 +504,7 @@ union yyalloc
 /* YYNRULES -- Number of rules.  */
 #define YYNRULES  112
 /* YYNSTATES -- Number of states.  */
-#define YYNSTATES  177
+#define YYNSTATES  176
 
 #define YYUNDEFTOK  2
 #define YYMAXUTOK   325
@@ -574,18 +557,18 @@ static const yytype_uint8 yytranslate[] =
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_uint16 yyrline[] =
 {
-       0,   153,   153,   164,   170,   176,   183,   193,   200,   207,
-     214,   224,   233,   245,   251,   260,   268,   274,   280,   286,
-     292,   298,   304,   310,   316,   322,   331,   340,   349,   352,
-     355,   361,   364,   367,   373,   380,   390,   398,   409,   417,
-     420,   426,   434,   441,   449,   455,   463,   469,   477,   483,
-     491,   497,   505,   511,   519,   526,   533,   541,   548,   556,
-     563,   570,   578,   584,   592,   599,   606,   614,   621,   629,
-     635,   643,   649,   655,   663,   670,   677,   685,   691,   696,
-     702,   708,   714,   720,   729,   735,   741,   750,   751,   752,
-     753,   754,   755,   759,   760,   761,   765,   766,   767,   768,
-     769,   773,   774,   775,   779,   782,   785,   788,   791,   794,
-     797,   800,   803
+       0,   136,   136,   147,   153,   159,   166,   176,   183,   190,
+     197,   207,   216,   228,   234,   243,   251,   257,   263,   269,
+     275,   281,   287,   293,   299,   305,   314,   323,   332,   335,
+     338,   344,   347,   350,   356,   363,   373,   381,   392,   400,
+     403,   409,   419,   425,   431,   438,   444,   451,   457,   464,
+     470,   477,   483,   490,   496,   503,   510,   516,   523,   529,
+     536,   543,   549,   556,   562,   569,   576,   582,   589,   595,
+     601,   610,   617,   626,   633,   640,   648,   654,   659,   665,
+     671,   677,   683,   692,   698,   704,   713,   714,   715,   716,
+     717,   718,   722,   723,   724,   725,   729,   730,   731,   732,
+     733,   737,   738,   739,   743,   746,   749,   752,   755,   758,
+     761,   764,   767
 };
 #endif
 
@@ -610,11 +593,11 @@ static const char *const yytname[] =
   "declaration-list", "declaration", "var-declaration", "fun-declaration",
   "param-decs", "scope", "statement-list", "statement", "print", "scan",
   "print-type", "scan-type", "condition", "iteration", "return",
-  "optional-expression", "expression", "assignment", "and-expression",
+  "optional-expression", "assignment", "expression", "and-expression",
   "or-expression", "bw-and-expression", "bw-or-expression",
   "bw-xor-expression", "eq-expression", "rel-expression",
   "shift-expression", "set-rm-expression", "add-expression",
-  "mult-expression", "cast-expression", "unary-expression",
+  "mult-expression", "unary-expression", "cast-expression",
   "postfix-expression", "param-vals", "primary-expression", "constant",
   "assignment-op", "unary-op", "rel-op", "mul-op", "type", YY_NULLPTR
 };
@@ -636,10 +619,10 @@ static const yytype_uint16 yytoknum[] =
 };
 # endif
 
-#define YYPACT_NINF -110
+#define YYPACT_NINF -99
 
 #define yypact_value_is_default(Yystate) \
-  (!!((Yystate) == (-110)))
+  (!!((Yystate) == (-99)))
 
 #define YYTABLE_NINF -1
 
@@ -650,24 +633,24 @@ static const yytype_uint16 yytoknum[] =
      STATE-NUM.  */
 static const yytype_int16 yypact[] =
 {
-    -110,    10,    91,  -110,  -110,  -110,  -110,  -110,  -110,  -110,
-    -110,  -110,  -110,  -110,   -12,  -110,    28,  -110,    17,    24,
-      12,    26,  -110,    27,  -110,    50,  -110,    -3,    66,  -110,
-    -110,  -110,    50,    91,    80,    57,  -110,  -110,   129,  -110,
-    -110,  -110,  -110,  -110,    -1,  -110,  -110,  -110,   188,  -110,
-    -110,  -110,  -110,  -110,  -110,    88,   108,   112,   196,    98,
-    -110,  -110,  -110,  -110,   196,   154,  -110,  -110,  -110,   121,
-    -110,   124,   126,   133,   134,   132,    56,    -7,    15,   122,
-      47,    58,  -110,  -110,    81,  -110,  -110,   188,  -110,  -110,
-    -110,  -110,  -110,  -110,   204,   153,   171,  -110,   196,  -110,
-     196,   196,   196,   150,  -110,  -110,   151,   156,  -110,   204,
-     204,   204,   204,   204,   204,   204,  -110,  -110,  -110,  -110,
-    -110,   204,   204,   204,   204,   204,   204,  -110,  -110,  -110,
-     204,   196,   196,  -110,   124,  -110,   204,   183,   184,   168,
-    -110,  -110,  -110,   126,   133,   134,   132,    56,    -7,    -7,
-      15,   122,   122,    47,    58,    58,  -110,   194,  -110,     5,
-    -110,   123,   123,   196,  -110,  -110,   196,   152,  -110,   176,
-    -110,   123,   196,  -110,   201,   123,  -110
+     -99,     4,   125,   -99,   -99,   -99,   -99,   -99,   -99,   -99,
+     -99,   -99,   -99,   -99,   -24,   -99,    20,   -99,    36,    24,
+       3,    52,   -99,    40,   -99,    21,   -99,    -8,    55,   -99,
+     -99,   -99,    21,   125,    37,    84,   -99,   -99,   211,   -99,
+     -99,   -99,   -99,   -99,    29,   -99,   -99,   -99,   -99,   -99,
+     -99,   -99,   -99,   -99,   -99,    59,    73,    76,    18,    28,
+     -99,   -99,   -99,   -99,    18,    67,   -99,   -99,   -99,   -99,
+      72,    80,    82,    89,    94,    96,    -9,    -5,    13,   102,
+      57,    19,   -99,   -99,    58,   -99,   -99,   214,   -99,   -99,
+     -99,   -99,   -99,   -99,    18,   112,   134,    18,    18,    18,
+     117,   -99,   -99,   122,   131,   -99,   214,   214,   214,   214,
+     214,   214,   214,   -99,   -99,   -99,   -99,   -99,   214,   214,
+     214,   214,   214,   214,   -99,   -99,   -99,   214,    18,    18,
+     -99,   -99,   -99,   -99,   157,   135,   155,   143,   -99,   -99,
+     -99,    82,    89,    94,    96,    -9,    -5,    -5,    13,   102,
+     102,    57,    19,    19,   -99,   169,   -99,    -7,    18,    58,
+     149,   149,    18,   -99,   -99,    18,   121,   -99,   147,   -99,
+     149,    18,   -99,   171,   149,   -99
 };
 
   /* YYDEFACT[STATE-NUM] -- Default reduction number in state STATE-NUM.
@@ -678,41 +661,41 @@ static const yytype_uint8 yydefact[] =
        4,     0,     2,     1,   104,   105,   106,   107,   108,   109,
      110,   111,   112,     3,     0,     6,     0,     5,     7,     0,
        0,     0,    10,     0,     9,     0,    14,     0,     0,     8,
-      17,    12,     0,     0,     7,     0,    11,    13,    80,    82,
-      84,    85,    86,    15,     0,    95,    93,    94,     0,    28,
+      17,    12,     0,     0,     7,     0,    11,    13,    79,    81,
+      83,    84,    85,    15,     0,    94,    92,    93,    95,    28,
       29,    30,    31,    32,    33,     0,     0,     0,    40,     0,
-      18,    16,    20,    21,     0,     0,    23,    24,    25,     0,
-      41,    43,    45,    47,    49,    51,    53,    56,    58,    61,
-      63,    66,    68,    70,    73,    76,    81,     0,    87,    88,
-      89,    90,    91,    92,     0,     0,     0,    80,     0,    72,
-       0,     0,    40,     0,    39,    19,     0,     0,    22,     0,
-       0,     0,     0,     0,     0,     0,    96,    97,    98,    99,
-     100,     0,     0,     0,     0,     0,     0,   101,   102,   103,
-       0,     0,    79,    71,    42,    83,     0,     0,     0,     0,
-      38,    26,    27,    44,    46,    48,    50,    52,    54,    55,
-      57,    59,    60,    62,    64,    65,    67,     0,    78,     0,
-      69,     0,     0,    40,    74,    75,     0,    34,    36,     0,
-      77,     0,    40,    35,     0,     0,    37
+      18,    16,    20,    21,     0,     0,    23,    24,    25,    42,
+       0,    43,    45,    47,    49,    51,    53,    56,    58,    61,
+      63,    66,    68,    70,    72,    75,    80,     0,    86,    87,
+      88,    89,    90,    91,     0,     0,     0,     0,     0,    40,
+       0,    39,    19,     0,     0,    22,     0,     0,     0,     0,
+       0,     0,     0,    96,    97,    98,    99,   100,     0,     0,
+       0,     0,     0,     0,   101,   102,   103,     0,     0,    78,
+      79,    69,    41,    82,     0,     0,     0,     0,    38,    26,
+      27,    44,    46,    48,    50,    52,    54,    55,    57,    59,
+      60,    62,    64,    65,    67,     0,    77,     0,     0,    71,
+       0,     0,    40,    73,    74,     0,    34,    36,     0,    76,
+       0,    40,    35,     0,     0,    37
 };
 
   /* YYPGOTO[NTERM-NUM].  */
 static const yytype_int8 yypgoto[] =
 {
-    -110,  -110,  -110,  -110,     2,  -110,  -110,   -10,  -110,   -78,
-    -110,  -110,  -110,  -110,  -110,  -110,  -110,  -101,   -44,  -110,
-     125,   107,   110,   111,   106,   115,    19,   102,    30,   100,
-      29,  -109,   -19,  -110,  -110,  -110,  -110,  -110,  -110,  -110,
-    -110,    11
+     -99,   -99,   -99,   -99,     6,   -99,   -99,   -20,   -99,   -50,
+     -99,   -99,   -99,   -99,   -99,   -99,   -99,   -98,   -99,   -44,
+     -99,    83,    79,    85,    81,   101,    -4,    74,    47,    70,
+     -10,   -84,   -99,    90,   -99,   -99,   -99,   -99,   -99,   -99,
+     -99,     0
 };
 
   /* YYDEFGOTO[NTERM-NUM].  */
 static const yytype_int16 yydefgoto[] =
 {
       -1,     1,     2,    13,    59,    15,    27,    60,    35,    61,
-      62,    63,    64,    65,    66,    67,    68,   103,    69,    70,
+      62,    63,    64,    65,    66,    67,    68,   100,    69,    70,
       71,    72,    73,    74,    75,    76,    77,    78,    79,    80,
-      81,    82,    83,    84,   159,    85,    86,    94,    87,   121,
-     130,    28
+      81,    82,    83,    84,   157,    85,    86,    94,    87,   118,
+     127,    28
 };
 
   /* YYTABLE[YYPACT[STATE-NUM]] -- What to do in state STATE-NUM.  If
@@ -720,60 +703,62 @@ static const yytype_int16 yydefgoto[] =
      number is the opposite.  If YYTABLE_NINF, syntax error.  */
 static const yytype_uint8 yytable[] =
 {
-      95,   139,    38,    39,    14,    40,    41,    42,   116,   117,
-       3,    32,    44,    16,   104,    31,   118,   119,    23,   165,
-     106,   156,    36,    26,    24,    17,    19,   160,    20,    99,
-      21,    18,    45,    33,    22,    37,   120,    46,    47,    29,
-      25,   166,   122,   123,    48,     4,     5,     6,     7,     8,
-       9,    10,    11,    12,    95,    96,   137,   138,   104,    30,
-      38,    39,   169,    40,    41,    42,    30,    43,   133,    34,
-      44,   174,     4,     5,     6,     7,     8,     9,    10,    11,
-      12,   114,   115,   167,   168,   125,   126,   157,   158,    19,
-      45,    20,   131,   173,   132,    46,    47,   176,   127,   128,
-     129,   100,    48,     4,     5,     6,     7,     8,     9,    10,
-      11,    12,    49,    50,    51,    52,    53,    54,    55,   104,
-      56,   101,   170,    57,    58,   102,    38,    39,   104,    40,
-      41,    42,    30,   148,   149,   105,    44,     4,     5,     6,
-       7,     8,     9,    10,    11,    12,    88,    89,    90,    91,
-      92,    93,   151,   152,   154,   155,    45,   107,   108,   109,
-     110,    46,    47,   111,   113,   112,   124,   135,    48,     4,
-       5,     6,     7,     8,     9,    10,    11,    12,    49,    50,
-      51,    52,    53,    54,    55,   136,    56,   140,   141,    57,
-      58,    97,    39,   142,    40,    41,    42,   161,   162,    38,
-      39,    98,    40,    41,    42,   163,   164,    97,    39,    44,
-      40,    41,    42,   172,   171,   175,   143,    44,   146,   134,
-     144,    45,   145,   150,   153,     0,    46,    47,   147,    45,
-       0,     0,     0,    48,    46,    47,     0,    45,     0,     0,
-       0,    48,    46,    47,     0,     0,     0,     0,     0,    48
+      95,   137,    16,   131,     3,    31,    32,   164,    14,    23,
+     113,   114,    36,    17,   101,    24,   111,   112,   115,   116,
+     103,    38,    39,    18,    40,    41,    42,    26,    33,   165,
+      30,    44,    38,    39,    22,    40,    41,    42,   117,    37,
+     119,   120,    44,   154,    96,    19,    19,    20,    20,    21,
+     132,    45,    29,   135,   136,   101,    46,    47,    34,   124,
+     125,   126,    45,    48,   168,   102,    25,    46,    47,   128,
+     104,   129,    97,   173,    48,     4,     5,     6,     7,     8,
+       9,    10,    11,    12,   155,   156,    98,    38,    39,    99,
+      40,    41,    42,    30,    43,   122,   123,    44,     4,     5,
+       6,     7,     8,     9,    10,    11,    12,   146,   147,   105,
+     166,   167,   152,   153,    95,   106,   107,    45,   101,   108,
+     172,   169,    46,    47,   175,   109,   133,   101,   110,    48,
+       4,     5,     6,     7,     8,     9,    10,    11,    12,    49,
+      50,    51,    52,    53,    54,    55,   121,    56,   134,   160,
+      57,    58,    38,    39,   138,    40,    41,    42,    30,   139,
+     130,    39,    44,    40,    41,    42,   149,   150,   140,   161,
+     158,     4,     5,     6,     7,     8,     9,    10,    11,    12,
+     162,   163,    45,   170,   171,   174,   142,    46,    47,   141,
+     144,   151,   148,   143,    48,     4,     5,     6,     7,     8,
+       9,    10,    11,    12,    49,    50,    51,    52,    53,    54,
+      55,   145,    56,     0,     0,    57,    58,   130,    39,     0,
+      40,    41,    42,     0,   159,     0,     0,    44,    88,    89,
+      90,    91,    92,    93,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,     0,     0,     0,     0,    45,     0,     0,
+       0,     0,    46,    47,     0,     0,     0,     0,     0,    48
 };
 
 static const yytype_int16 yycheck[] =
 {
-      44,   102,     3,     4,     2,     6,     7,     8,    15,    16,
-       0,    14,    13,     2,    58,    25,    23,    24,     6,    14,
-      64,   130,    32,    21,    12,    37,     9,   136,    11,    48,
-      13,     3,    33,    36,    10,    33,    43,    38,    39,    12,
-      14,    36,    27,    28,    45,    46,    47,    48,    49,    50,
-      51,    52,    53,    54,    98,    44,   100,   101,   102,     9,
-       3,     4,   163,     6,     7,     8,     9,    10,    87,     3,
-      13,   172,    46,    47,    48,    49,    50,    51,    52,    53,
-      54,    25,    26,   161,   162,    38,    39,   131,   132,     9,
-      33,    11,    11,   171,    13,    38,    39,   175,    40,    41,
-      42,    13,    45,    46,    47,    48,    49,    50,    51,    52,
-      53,    54,    55,    56,    57,    58,    59,    60,    61,   163,
-      63,    13,   166,    66,    67,    13,     3,     4,   172,     6,
-       7,     8,     9,   114,   115,    37,    13,    46,    47,    48,
-      49,    50,    51,    52,    53,    54,    17,    18,    19,    20,
-      21,    22,   122,   123,   125,   126,    33,     3,    37,    35,
-      34,    38,    39,    30,    32,    31,    44,    14,    45,    46,
-      47,    48,    49,    50,    51,    52,    53,    54,    55,    56,
-      57,    58,    59,    60,    61,    14,    63,    37,    37,    66,
-      67,     3,     4,    37,     6,     7,     8,    14,    14,     3,
-       4,    13,     6,     7,     8,    37,    12,     3,     4,    13,
-       6,     7,     8,    37,    62,    14,   109,    13,   112,    94,
-     110,    33,   111,   121,   124,    -1,    38,    39,   113,    33,
-      -1,    -1,    -1,    45,    38,    39,    -1,    33,    -1,    -1,
-      -1,    45,    38,    39,    -1,    -1,    -1,    -1,    -1,    45
+      44,    99,     2,    87,     0,    25,    14,    14,     2,     6,
+      15,    16,    32,    37,    58,    12,    25,    26,    23,    24,
+      64,     3,     4,     3,     6,     7,     8,    21,    36,    36,
+       9,    13,     3,     4,    10,     6,     7,     8,    43,    33,
+      27,    28,    13,   127,    44,     9,     9,    11,    11,    13,
+      94,    33,    12,    97,    98,    99,    38,    39,     3,    40,
+      41,    42,    33,    45,   162,    37,    14,    38,    39,    11,
+       3,    13,    13,   171,    45,    46,    47,    48,    49,    50,
+      51,    52,    53,    54,   128,   129,    13,     3,     4,    13,
+       6,     7,     8,     9,    10,    38,    39,    13,    46,    47,
+      48,    49,    50,    51,    52,    53,    54,   111,   112,    37,
+     160,   161,   122,   123,   158,    35,    34,    33,   162,    30,
+     170,   165,    38,    39,   174,    31,    14,   171,    32,    45,
+      46,    47,    48,    49,    50,    51,    52,    53,    54,    55,
+      56,    57,    58,    59,    60,    61,    44,    63,    14,    14,
+      66,    67,     3,     4,    37,     6,     7,     8,     9,    37,
+       3,     4,    13,     6,     7,     8,   119,   120,    37,    14,
+      13,    46,    47,    48,    49,    50,    51,    52,    53,    54,
+      37,    12,    33,    62,    37,    14,   107,    38,    39,   106,
+     109,   121,   118,   108,    45,    46,    47,    48,    49,    50,
+      51,    52,    53,    54,    55,    56,    57,    58,    59,    60,
+      61,   110,    63,    -1,    -1,    66,    67,     3,     4,    -1,
+       6,     7,     8,    -1,   134,    -1,    -1,    13,    17,    18,
+      19,    20,    21,    22,    -1,    -1,    -1,    -1,    -1,    -1,
+      -1,    -1,    -1,    -1,    -1,    -1,    -1,    33,    -1,    -1,
+      -1,    -1,    38,    39,    -1,    -1,    -1,    -1,    -1,    45
 };
 
   /* YYSTOS[STATE-NUM] -- The (internal number of the) accessing
@@ -789,15 +774,15 @@ static const yytype_uint8 yystos[] =
       78,    80,    81,    82,    83,    84,    85,    86,    87,    89,
       90,    91,    92,    93,    94,    95,    96,    97,    98,    99,
      100,   101,   102,   103,   104,   106,   107,   109,    17,    18,
-      19,    20,    21,    22,   108,    89,   112,     3,    13,   103,
-      13,    13,    13,    88,    89,    37,    89,     3,    37,    35,
-      34,    30,    31,    32,    25,    26,    15,    16,    23,    24,
-      43,   110,    27,    28,    44,    38,    39,    40,    41,    42,
-     111,    11,    13,   103,    91,    14,    14,    89,    89,    88,
-      37,    37,    37,    92,    93,    94,    95,    96,    97,    97,
-      98,    99,    99,   100,   101,   101,   102,    89,    89,   105,
-     102,    14,    14,    37,    12,    14,    36,    80,    80,    88,
-      89,    62,    37,    80,    88,    14,    80
+      19,    20,    21,    22,   108,    90,   112,    13,    13,    13,
+      88,    90,    37,    90,     3,    37,    35,    34,    30,    31,
+      32,    25,    26,    15,    16,    23,    24,    43,   110,    27,
+      28,    44,    38,    39,    40,    41,    42,   111,    11,    13,
+       3,   102,    90,    14,    14,    90,    90,    88,    37,    37,
+      37,    92,    93,    94,    95,    96,    97,    97,    98,    99,
+      99,   100,   101,   101,   102,    90,    90,   105,    13,   104,
+      14,    14,    37,    12,    14,    36,    80,    80,    88,    90,
+      62,    37,    80,    88,    14,    80
 };
 
   /* YYR1[YYN] -- Symbol number of symbol that rule YYN derives.  */
@@ -810,9 +795,9 @@ static const yytype_uint8 yyr1[] =
       88,    89,    90,    90,    91,    91,    92,    92,    93,    93,
       94,    94,    95,    95,    96,    96,    96,    97,    97,    98,
       98,    98,    99,    99,   100,   100,   100,   101,   101,   102,
-     102,   103,   103,   103,   104,   104,   104,   105,   105,   105,
-     106,   106,   106,   106,   107,   107,   107,   108,   108,   108,
-     108,   108,   108,   109,   109,   109,   110,   110,   110,   110,
+     102,   103,   103,   104,   104,   104,   105,   105,   105,   106,
+     106,   106,   106,   107,   107,   107,   108,   108,   108,   108,
+     108,   108,   109,   109,   109,   109,   110,   110,   110,   110,
      110,   111,   111,   111,   112,   112,   112,   112,   112,   112,
      112,   112,   112
 };
@@ -824,11 +809,11 @@ static const yytype_uint8 yyr2[] =
        4,     6,     5,     3,     1,     3,     2,     0,     1,     2,
        1,     1,     2,     1,     1,     1,     3,     3,     1,     1,
        1,     1,     1,     1,     5,     7,     5,     9,     3,     1,
-       0,     1,     3,     1,     3,     1,     3,     1,     3,     1,
+       0,     3,     1,     1,     3,     1,     3,     1,     3,     1,
        3,     1,     3,     1,     3,     3,     1,     3,     1,     3,
-       3,     1,     3,     1,     3,     3,     1,     3,     1,     4,
-       1,     2,     2,     1,     4,     4,     1,     3,     1,     0,
-       1,     1,     1,     3,     1,     1,     1,     1,     1,     1,
+       3,     1,     3,     1,     3,     3,     1,     3,     1,     2,
+       1,     4,     1,     4,     4,     1,     3,     1,     0,     1,
+       1,     1,     3,     1,     1,     1,     1,     1,     1,     1,
        1,     1,     1,     1,     1,     1,     1,     1,     1,     1,
        1,     1,     1,     1,     1,     1,     1,     1,     1,     1,
        1,     1,     1
@@ -1518,7 +1503,7 @@ yyreduce:
   switch (yyn)
     {
   case 2:
-#line 153 "src/parser.y"
+#line 136 "src/parser.y"
     {
         t_program* program = zero_allocate(t_program);
         program->declaration_list = (yyvsp[0].c_declaration_list);
@@ -1527,30 +1512,30 @@ yyreduce:
         print_symbol_table_list(sym_table);
         (yyval.c_program) = program;
     }
-#line 1531 "src/parser.c"
+#line 1516 "src/parser.c"
     break;
 
   case 3:
-#line 164 "src/parser.y"
+#line 147 "src/parser.y"
     {
         t_declaration_list* declaration_list = zero_allocate(t_declaration_list);
         declaration_list->prev = (yyvsp[-1].c_declaration_list);
         declaration_list->cur = (yyvsp[0].c_declaration);
         (yyval.c_declaration_list) = declaration_list;
     }
-#line 1542 "src/parser.c"
+#line 1527 "src/parser.c"
     break;
 
   case 4:
-#line 170 "src/parser.y"
+#line 153 "src/parser.y"
     {
         (yyval.c_declaration_list) = NULL;
     }
-#line 1550 "src/parser.c"
+#line 1535 "src/parser.c"
     break;
 
   case 5:
-#line 176 "src/parser.y"
+#line 159 "src/parser.y"
     {
         t_declaration* dec = zero_allocate(t_declaration);
         dec->type = VAR_DECLARATION;
@@ -1558,11 +1543,11 @@ yyreduce:
         append_symbol_table_node(sym_table, dec);
         (yyval.c_declaration) = dec;
     }
-#line 1562 "src/parser.c"
+#line 1547 "src/parser.c"
     break;
 
   case 6:
-#line 183 "src/parser.y"
+#line 166 "src/parser.y"
     {
         t_declaration* dec = zero_allocate(t_declaration);
         dec->type = FUN_DECLARATION;
@@ -1570,11 +1555,11 @@ yyreduce:
         append_symbol_table_node(sym_table, dec); 
         (yyval.c_declaration) = dec;  
     }
-#line 1574 "src/parser.c"
+#line 1559 "src/parser.c"
     break;
 
   case 7:
-#line 193 "src/parser.y"
+#line 176 "src/parser.y"
     {
         t_variable* var = zero_allocate(t_variable);
         var->type = (yyvsp[-1].c_primitive_type);
@@ -1582,11 +1567,11 @@ yyreduce:
         var->identifier = (yyvsp[0].string_val);
         (yyval.c_variable) = var;
     }
-#line 1586 "src/parser.c"
+#line 1571 "src/parser.c"
     break;
 
   case 8:
-#line 200 "src/parser.y"
+#line 183 "src/parser.y"
     {
         t_variable* var = zero_allocate(t_variable);
         var->type = (yyvsp[-4].c_primitive_type);
@@ -1594,11 +1579,11 @@ yyreduce:
         var->identifier = (yyvsp[-3].string_val);
         (yyval.c_variable) = var;
     }
-#line 1598 "src/parser.c"
+#line 1583 "src/parser.c"
     break;
 
   case 9:
-#line 207 "src/parser.y"
+#line 190 "src/parser.y"
     {
         t_variable* var = zero_allocate(t_variable);
         var->type = (yyvsp[-3].c_primitive_type);
@@ -1606,11 +1591,11 @@ yyreduce:
         var->identifier = (yyvsp[-2].string_val);
         (yyval.c_variable) = var;
     }
-#line 1610 "src/parser.c"
+#line 1595 "src/parser.c"
     break;
 
   case 10:
-#line 214 "src/parser.y"
+#line 197 "src/parser.y"
     {
         t_variable* var = zero_allocate(t_variable);
         var->type = (yyvsp[-3].c_primitive_type);
@@ -1618,11 +1603,11 @@ yyreduce:
         var->identifier = (yyvsp[-2].string_val);
         (yyval.c_variable) = var;
     }
-#line 1622 "src/parser.c"
+#line 1607 "src/parser.c"
     break;
 
   case 11:
-#line 224 "src/parser.y"
+#line 207 "src/parser.y"
     {
         t_function* fun = zero_allocate(t_function);
         fun->return_type = (yyvsp[-5].c_primitive_type);
@@ -1632,11 +1617,11 @@ yyreduce:
         fun->body = (yyvsp[0].c_scope);
         (yyval.c_function) = fun;
     }
-#line 1636 "src/parser.c"
+#line 1621 "src/parser.c"
     break;
 
   case 12:
-#line 233 "src/parser.y"
+#line 216 "src/parser.y"
     {
         t_function* fun = zero_allocate(t_function);
         fun->return_type = (yyvsp[-4].c_primitive_type);
@@ -1646,220 +1631,220 @@ yyreduce:
         fun->body = (yyvsp[0].c_scope);
         (yyval.c_function) = fun;
     }
-#line 1650 "src/parser.c"
+#line 1635 "src/parser.c"
     break;
 
   case 13:
-#line 245 "src/parser.y"
+#line 228 "src/parser.y"
     {
         t_function_params* fp = zero_allocate(t_function_params);
         fp->cur = (yyvsp[0].c_variable);
         fp->prev = (yyvsp[-2].c_function_params);
         (yyval.c_function_params) = fp; 
     }
-#line 1661 "src/parser.c"
+#line 1646 "src/parser.c"
     break;
 
   case 14:
-#line 251 "src/parser.y"
+#line 234 "src/parser.y"
     {
         t_function_params* fp = zero_allocate(t_function_params);
         fp->cur = (yyvsp[0].c_variable);
         fp->prev = NULL;
         (yyval.c_function_params) = fp; 
     }
-#line 1672 "src/parser.c"
+#line 1657 "src/parser.c"
     break;
 
   case 15:
-#line 260 "src/parser.y"
+#line 243 "src/parser.y"
     {
         t_scope* scope = zero_allocate(t_scope);
         scope->statements = (yyvsp[-1].c_statement_list);
         (yyval.c_scope) = scope;
     }
-#line 1682 "src/parser.c"
+#line 1667 "src/parser.c"
     break;
 
   case 16:
-#line 268 "src/parser.y"
+#line 251 "src/parser.y"
     {
         t_statement_list* fp = zero_allocate(t_statement_list);
         fp->cur = (yyvsp[0].c_statement);
         fp->prev = (yyvsp[-1].c_statement_list);
         (yyval.c_statement_list) = fp; 
     }
-#line 1693 "src/parser.c"
+#line 1678 "src/parser.c"
     break;
 
   case 17:
-#line 274 "src/parser.y"
+#line 257 "src/parser.y"
     {
     (yyval.c_statement_list) = NULL;
 }
-#line 1701 "src/parser.c"
+#line 1686 "src/parser.c"
     break;
 
   case 18:
-#line 280 "src/parser.y"
+#line 263 "src/parser.y"
     {
         t_statement* stmt = zero_allocate(t_statement);
         stmt->type = SCOPE_STATEMENT;
         stmt->member.scope = (yyvsp[0].c_scope);
         (yyval.c_statement) = stmt;
     }
-#line 1712 "src/parser.c"
+#line 1697 "src/parser.c"
     break;
 
   case 19:
-#line 286 "src/parser.y"
+#line 269 "src/parser.y"
     {
         t_statement* stmt = zero_allocate(t_statement);
         stmt->type = VAR_DECLARATION_STATEMENT;
         stmt->member.variable = (yyvsp[-1].c_variable);
         (yyval.c_statement) = stmt;
     }
-#line 1723 "src/parser.c"
+#line 1708 "src/parser.c"
     break;
 
   case 20:
-#line 292 "src/parser.y"
+#line 275 "src/parser.y"
     {
         t_statement* stmt = zero_allocate(t_statement);
         stmt->type = PRINT_STATEMENT;
         stmt->member.print = (yyvsp[0].c_print);
         (yyval.c_statement) = stmt;
     }
-#line 1734 "src/parser.c"
+#line 1719 "src/parser.c"
     break;
 
   case 21:
-#line 298 "src/parser.y"
+#line 281 "src/parser.y"
     {
         t_statement* stmt = zero_allocate(t_statement);
         stmt->type = SCAN_STATEMENT;
         stmt->member.scan = (yyvsp[0].c_scan);
         (yyval.c_statement) = stmt;
     }
-#line 1745 "src/parser.c"
+#line 1730 "src/parser.c"
     break;
 
   case 22:
-#line 304 "src/parser.y"
+#line 287 "src/parser.y"
     {
         t_statement* stmt = zero_allocate(t_statement);
         stmt->type = EXPRESSION_STATEMENT;
         stmt->member.expression = (yyvsp[-1].c_expression);
         (yyval.c_statement) = stmt;
     }
-#line 1756 "src/parser.c"
+#line 1741 "src/parser.c"
     break;
 
   case 23:
-#line 310 "src/parser.y"
+#line 293 "src/parser.y"
     {
         t_statement* stmt = zero_allocate(t_statement);
         stmt->type = CONDITION_STATEMENT;
         stmt->member.condition = (yyvsp[0].c_condition);
         (yyval.c_statement) = stmt;
     }
-#line 1767 "src/parser.c"
+#line 1752 "src/parser.c"
     break;
 
   case 24:
-#line 316 "src/parser.y"
+#line 299 "src/parser.y"
     {
         t_statement* stmt = zero_allocate(t_statement);
         stmt->type = ITERATION_STATEMENT;
         stmt->member.iteration = (yyvsp[0].c_iteration);
         (yyval.c_statement) = stmt;
     }
-#line 1778 "src/parser.c"
+#line 1763 "src/parser.c"
     break;
 
   case 25:
-#line 322 "src/parser.y"
+#line 305 "src/parser.y"
     {
         t_statement* stmt = zero_allocate(t_statement);
         stmt->type = RETURN_STATEMENT;
         stmt->member._return = (yyvsp[0].c_return);
         (yyval.c_statement) = stmt;
     }
-#line 1789 "src/parser.c"
+#line 1774 "src/parser.c"
     break;
 
   case 26:
-#line 331 "src/parser.y"
+#line 314 "src/parser.y"
     {
         t_print* print = zero_allocate(t_print);
         print->type = (yyvsp[-2].c_print_type);
         print->expression = (yyvsp[-1].c_expression);
         (yyval.c_print) = print;
     }
-#line 1800 "src/parser.c"
+#line 1785 "src/parser.c"
     break;
 
   case 27:
-#line 340 "src/parser.y"
+#line 323 "src/parser.y"
     {
         t_scan* scan = zero_allocate(t_scan);
         scan->type = (yyvsp[-2].c_scan_type);
         scan->destiny = (yyvsp[-1].string_val);
         (yyval.c_scan) = scan;
     }
-#line 1811 "src/parser.c"
+#line 1796 "src/parser.c"
     break;
 
   case 28:
-#line 349 "src/parser.y"
+#line 332 "src/parser.y"
     {
         (yyval.c_print_type) = PRINT_DEC_TYPE;
     }
-#line 1819 "src/parser.c"
+#line 1804 "src/parser.c"
     break;
 
   case 29:
-#line 352 "src/parser.y"
+#line 335 "src/parser.y"
     {
         (yyval.c_print_type) = PRINT_CHAR_TYPE;
     }
-#line 1827 "src/parser.c"
+#line 1812 "src/parser.c"
     break;
 
   case 30:
-#line 355 "src/parser.y"
+#line 338 "src/parser.y"
     {
         (yyval.c_print_type) = PRINT_HEX_TYPE;
     }
-#line 1835 "src/parser.c"
+#line 1820 "src/parser.c"
     break;
 
   case 31:
-#line 361 "src/parser.y"
+#line 344 "src/parser.y"
     {
         (yyval.c_scan_type) = SCAN_DEC_TYPE;
     }
-#line 1843 "src/parser.c"
+#line 1828 "src/parser.c"
     break;
 
   case 32:
-#line 364 "src/parser.y"
+#line 347 "src/parser.y"
     {
         (yyval.c_scan_type) = SCAN_CHAR_TYPE;
     }
-#line 1851 "src/parser.c"
+#line 1836 "src/parser.c"
     break;
 
   case 33:
-#line 367 "src/parser.y"
+#line 350 "src/parser.y"
     {
         (yyval.c_scan_type) = SCAN_FLOAT_TYPE;
     }
-#line 1859 "src/parser.c"
+#line 1844 "src/parser.c"
     break;
 
   case 34:
-#line 373 "src/parser.y"
+#line 356 "src/parser.y"
     {
         t_condition* cond = zero_allocate(t_condition);
         cond->condition = (yyvsp[-2].c_expression);
@@ -1867,11 +1852,11 @@ yyreduce:
         cond->else_body = NULL;  
         (yyval.c_condition) = cond;  
     }
-#line 1871 "src/parser.c"
+#line 1856 "src/parser.c"
     break;
 
   case 35:
-#line 380 "src/parser.y"
+#line 363 "src/parser.y"
     {   
         t_condition* cond = zero_allocate(t_condition);
         cond->condition = (yyvsp[-4].c_expression);
@@ -1879,11 +1864,11 @@ yyreduce:
         cond->else_body = (yyvsp[0].c_statement);
         (yyval.c_condition) = cond;
     }
-#line 1883 "src/parser.c"
+#line 1868 "src/parser.c"
     break;
 
   case 36:
-#line 390 "src/parser.y"
+#line 373 "src/parser.y"
     {
         t_iteration* w = zero_allocate(t_iteration);
         w->initialization = NULL;
@@ -1892,11 +1877,11 @@ yyreduce:
         w->body = (yyvsp[0].c_statement);
         (yyval.c_iteration) = w;
     }
-#line 1896 "src/parser.c"
+#line 1881 "src/parser.c"
     break;
 
   case 37:
-#line 398 "src/parser.y"
+#line 381 "src/parser.y"
     {
         t_iteration* f = zero_allocate(t_iteration);
         f->initialization = (yyvsp[-6].c_expression);
@@ -1905,394 +1890,369 @@ yyreduce:
         f->body = (yyvsp[0].c_statement);
         (yyval.c_iteration) = f;
     }
-#line 1909 "src/parser.c"
+#line 1894 "src/parser.c"
     break;
 
   case 38:
-#line 409 "src/parser.y"
+#line 392 "src/parser.y"
     {
         t_return* ret = zero_allocate(t_return);
         ret->expression = (yyvsp[-1].c_expression);
         (yyval.c_return) = ret;
     }
-#line 1919 "src/parser.c"
+#line 1904 "src/parser.c"
     break;
 
   case 39:
-#line 417 "src/parser.y"
+#line 400 "src/parser.y"
     {
         (yyval.c_expression) = (yyvsp[0].c_expression);
     }
-#line 1927 "src/parser.c"
+#line 1912 "src/parser.c"
     break;
 
   case 40:
-#line 420 "src/parser.y"
+#line 403 "src/parser.y"
     {
         (yyval.c_expression) = NULL;
     }
-#line 1935 "src/parser.c"
+#line 1920 "src/parser.c"
     break;
 
   case 41:
-#line 426 "src/parser.y"
-    {
-        t_expression* exp = zero_allocate(t_expression);
-        exp->assignment = (yyvsp[0].c_assignment);
-        (yyval.c_expression) = exp;
-    }
-#line 1945 "src/parser.c"
-    break;
-
-  case 42:
-#line 434 "src/parser.y"
+#line 409 "src/parser.y"
     {
         t_assignment* exp = zero_allocate(t_assignment);
         exp->identifier = (yyvsp[-2].string_val);
         exp->operator = (yyvsp[-1].c_assignment_operator);
-        exp->and_expression = (yyvsp[0].c_and_expression);
+        exp->expression = (yyvsp[0].c_expression);
         (yyval.c_assignment) = exp;
     }
-#line 1957 "src/parser.c"
+#line 1932 "src/parser.c"
+    break;
+
+  case 42:
+#line 419 "src/parser.y"
+    {
+        t_expression* exp = zero_allocate(t_expression);
+        exp->type = ASSIGNMENT_EXPRESSION;
+        exp->assignment = (yyvsp[0].c_assignment);
+        (yyval.c_expression) = exp;
+    }
+#line 1943 "src/parser.c"
     break;
 
   case 43:
-#line 441 "src/parser.y"
+#line 425 "src/parser.y"
     {
-        t_assignment* exp = zero_allocate(t_assignment);
-        exp->and_expression = (yyvsp[0].c_and_expression);
-        (yyval.c_assignment) = exp;
+        (yyval.c_expression) = (yyvsp[0].c_expression);
     }
-#line 1967 "src/parser.c"
+#line 1951 "src/parser.c"
     break;
 
   case 44:
-#line 449 "src/parser.y"
+#line 431 "src/parser.y"
     {
-        t_and_expression* exp = zero_allocate(t_and_expression);
-        exp->left = (yyvsp[-2].c_and_expression);
-        exp->right = (yyvsp[0].c_or_expression);
-        (yyval.c_and_expression) = exp;
+        t_expression* exp = zero_allocate(t_expression);
+        exp->left = (yyvsp[-2].c_expression);
+        exp->type = AND_EXPRESSION;
+        exp->right = (yyvsp[0].c_expression);
+        (yyval.c_expression) = exp;
     }
-#line 1978 "src/parser.c"
+#line 1963 "src/parser.c"
     break;
 
   case 45:
-#line 455 "src/parser.y"
+#line 438 "src/parser.y"
     {
-        t_and_expression* exp = zero_allocate(t_and_expression);
-        exp->right = (yyvsp[0].c_or_expression);
-        (yyval.c_and_expression) = exp;
+        (yyval.c_expression) = (yyvsp[0].c_expression);
     }
-#line 1988 "src/parser.c"
+#line 1971 "src/parser.c"
     break;
 
   case 46:
-#line 463 "src/parser.y"
+#line 444 "src/parser.y"
     {
-        t_or_expression* exp = zero_allocate(t_or_expression);
-        exp->left = (yyvsp[-2].c_or_expression);
-        exp->right = (yyvsp[0].c_bw_and_expression);
-        (yyval.c_or_expression) = exp;
+        t_expression* exp = zero_allocate(t_expression);
+        exp->left = (yyvsp[-2].c_expression);
+        exp->type = OR_EXPRESSION;
+        exp->right = (yyvsp[0].c_expression);
+        (yyval.c_expression) = exp;
     }
-#line 1999 "src/parser.c"
+#line 1983 "src/parser.c"
     break;
 
   case 47:
-#line 469 "src/parser.y"
+#line 451 "src/parser.y"
     {
-        t_or_expression* exp = zero_allocate(t_or_expression);
-        exp->right = (yyvsp[0].c_bw_and_expression);
-        (yyval.c_or_expression) = exp;
+        (yyval.c_expression) = (yyvsp[0].c_expression);
     }
-#line 2009 "src/parser.c"
+#line 1991 "src/parser.c"
     break;
 
   case 48:
-#line 477 "src/parser.y"
+#line 457 "src/parser.y"
     {
-        t_bw_and_expression* exp = zero_allocate(t_bw_and_expression);
-        exp->left = (yyvsp[-2].c_bw_and_expression);
-        exp->right = (yyvsp[0].c_bw_or_expression);
-        (yyval.c_bw_and_expression) = exp;
+        t_expression* exp = zero_allocate(t_expression);
+        exp->left = (yyvsp[-2].c_expression);
+        exp->type = BW_AND_EXPRESSION;
+        exp->right = (yyvsp[0].c_expression);
+        (yyval.c_expression) = exp;
     }
-#line 2020 "src/parser.c"
+#line 2003 "src/parser.c"
     break;
 
   case 49:
-#line 483 "src/parser.y"
+#line 464 "src/parser.y"
     {
-        t_bw_and_expression* exp = zero_allocate(t_bw_and_expression);
-        exp->right = (yyvsp[0].c_bw_or_expression);
-        (yyval.c_bw_and_expression) = exp;
+        (yyval.c_expression) = (yyvsp[0].c_expression);
     }
-#line 2030 "src/parser.c"
+#line 2011 "src/parser.c"
     break;
 
   case 50:
-#line 491 "src/parser.y"
+#line 470 "src/parser.y"
     {
-        t_bw_or_expression* exp = zero_allocate(t_bw_or_expression);
-        exp->left = (yyvsp[-2].c_bw_or_expression);
-        exp->right = (yyvsp[0].c_bw_xor_expression);
-        (yyval.c_bw_or_expression) = exp;
+        t_expression* exp = zero_allocate(t_expression);
+        exp->left = (yyvsp[-2].c_expression);
+        exp->type = BW_OR_EXPRESSION;
+        exp->right = (yyvsp[0].c_expression);
+        (yyval.c_expression) = exp;
     }
-#line 2041 "src/parser.c"
+#line 2023 "src/parser.c"
     break;
 
   case 51:
-#line 497 "src/parser.y"
+#line 477 "src/parser.y"
     {
-        t_bw_or_expression* exp = zero_allocate(t_bw_or_expression);
-        exp->right = (yyvsp[0].c_bw_xor_expression);
-        (yyval.c_bw_or_expression) = exp;
+        (yyval.c_expression) = (yyvsp[0].c_expression);
+    }
+#line 2031 "src/parser.c"
+    break;
+
+  case 52:
+#line 483 "src/parser.y"
+    {
+        t_expression* exp = zero_allocate(t_expression);
+        exp->left = (yyvsp[-2].c_expression);
+        exp->type = BW_XOR_EXPRESSION;
+        exp->right = (yyvsp[0].c_expression);
+        (yyval.c_expression) = exp;
+    }
+#line 2043 "src/parser.c"
+    break;
+
+  case 53:
+#line 490 "src/parser.y"
+    {
+        (yyval.c_expression) = (yyvsp[0].c_expression);
     }
 #line 2051 "src/parser.c"
     break;
 
-  case 52:
-#line 505 "src/parser.y"
-    {
-        t_bw_xor_expression* exp = zero_allocate(t_bw_xor_expression);
-        exp->left = (yyvsp[-2].c_bw_xor_expression);
-        exp->right = (yyvsp[0].c_eq_expression);
-        (yyval.c_bw_xor_expression) = exp;
-    }
-#line 2062 "src/parser.c"
-    break;
-
-  case 53:
-#line 511 "src/parser.y"
-    {
-        t_bw_xor_expression* exp = zero_allocate(t_bw_xor_expression);
-        exp->right = (yyvsp[0].c_eq_expression);
-        (yyval.c_bw_xor_expression) = exp;
-    }
-#line 2072 "src/parser.c"
-    break;
-
   case 54:
-#line 519 "src/parser.y"
+#line 496 "src/parser.y"
     {
-        t_eq_expression* exp = zero_allocate(t_eq_expression);
+        t_expression* exp = zero_allocate(t_expression);
         exp->type = EQ_EQ_EXPRESSION;
-        exp->left = (yyvsp[-2].c_eq_expression);
-        exp->right = (yyvsp[0].c_rel_expression);
-        (yyval.c_eq_expression) = exp;
+        exp->left = (yyvsp[-2].c_expression);
+        exp->right = (yyvsp[0].c_expression);
+        (yyval.c_expression) = exp;
     }
-#line 2084 "src/parser.c"
+#line 2063 "src/parser.c"
     break;
 
   case 55:
-#line 526 "src/parser.y"
+#line 503 "src/parser.y"
     {
-        t_eq_expression* exp = zero_allocate(t_eq_expression);
+        t_expression* exp = zero_allocate(t_expression);
         exp->type = NOT_EQ_EXPRESSION;
-        exp->left = (yyvsp[-2].c_eq_expression);
-        exp->right = (yyvsp[0].c_rel_expression);
-        (yyval.c_eq_expression) = exp;
+        exp->left = (yyvsp[-2].c_expression);
+        exp->right = (yyvsp[0].c_expression);
+        (yyval.c_expression) = exp;
     }
-#line 2096 "src/parser.c"
+#line 2075 "src/parser.c"
     break;
 
   case 56:
-#line 533 "src/parser.y"
+#line 510 "src/parser.y"
     {
-        t_eq_expression* exp = zero_allocate(t_eq_expression);
-        exp->right = (yyvsp[0].c_rel_expression);
-        (yyval.c_eq_expression) = exp;
+        (yyval.c_expression) = (yyvsp[0].c_expression);
     }
-#line 2106 "src/parser.c"
+#line 2083 "src/parser.c"
     break;
 
   case 57:
-#line 541 "src/parser.y"
+#line 516 "src/parser.y"
     {
-        t_rel_expression* exp = zero_allocate(t_rel_expression);
-        exp->left = (yyvsp[-2].c_rel_expression);
-        exp->type = (yyvsp[-1].c_rel_expression_type);
-        exp->right = (yyvsp[0].c_shift_expression);
-        (yyval.c_rel_expression) = exp;
+        t_expression* exp = zero_allocate(t_expression);
+        exp->left = (yyvsp[-2].c_expression);
+        exp->type = (yyvsp[-1].c_expression_type);
+        exp->right = (yyvsp[0].c_expression);
+        (yyval.c_expression) = exp;
     }
-#line 2118 "src/parser.c"
+#line 2095 "src/parser.c"
     break;
 
   case 58:
-#line 548 "src/parser.y"
+#line 523 "src/parser.y"
     {
-        t_rel_expression* exp = zero_allocate(t_rel_expression);
-        exp->right = (yyvsp[0].c_shift_expression);
-        (yyval.c_rel_expression) = exp;
+        (yyval.c_expression) = (yyvsp[0].c_expression);
     }
-#line 2128 "src/parser.c"
+#line 2103 "src/parser.c"
     break;
 
   case 59:
-#line 556 "src/parser.y"
+#line 529 "src/parser.y"
     {
-        t_shift_expression* exp = zero_allocate(t_shift_expression);
-        exp->left = (yyvsp[-2].c_shift_expression);
+        t_expression* exp = zero_allocate(t_expression);
+        exp->left = (yyvsp[-2].c_expression);
         exp->type = LEFT_SHIFT_EXPRESSION;
-        exp->right = (yyvsp[0].c_set_rm_expression);
-        (yyval.c_shift_expression) = exp;
+        exp->right = (yyvsp[0].c_expression);
+        (yyval.c_expression) = exp;
     }
-#line 2140 "src/parser.c"
+#line 2115 "src/parser.c"
     break;
 
   case 60:
-#line 563 "src/parser.y"
+#line 536 "src/parser.y"
     {
-        t_shift_expression* exp = zero_allocate(t_shift_expression);
-        exp->left = (yyvsp[-2].c_shift_expression);
+        t_expression* exp = zero_allocate(t_expression);
+        exp->left = (yyvsp[-2].c_expression);
         exp->type = RIGHT_SHIFT_EXPRESSION;
-        exp->right = (yyvsp[0].c_set_rm_expression);
-        (yyval.c_shift_expression) = exp;
+        exp->right = (yyvsp[0].c_expression);
+        (yyval.c_expression) = exp;
     }
-#line 2152 "src/parser.c"
+#line 2127 "src/parser.c"
     break;
 
   case 61:
-#line 570 "src/parser.y"
+#line 543 "src/parser.y"
     {
-        t_shift_expression* exp = zero_allocate(t_shift_expression);
-        exp->right = (yyvsp[0].c_set_rm_expression);
-        (yyval.c_shift_expression) = exp;
+        (yyval.c_expression) = (yyvsp[0].c_expression);
     }
-#line 2162 "src/parser.c"
+#line 2135 "src/parser.c"
     break;
 
   case 62:
-#line 578 "src/parser.y"
+#line 549 "src/parser.y"
     {
-        t_set_rm_expression* exp = zero_allocate(t_set_rm_expression);
-        exp->left = (yyvsp[-2].c_set_rm_expression);
-        exp->right = (yyvsp[0].c_add_expression);
-        (yyval.c_set_rm_expression) = exp;
+        t_expression* exp = zero_allocate(t_expression);
+        exp->left = (yyvsp[-2].c_expression);
+        exp->type = RM_EXPRESSION;
+        exp->right = (yyvsp[0].c_expression);
+        (yyval.c_expression) = exp;
     }
-#line 2173 "src/parser.c"
+#line 2147 "src/parser.c"
     break;
 
   case 63:
-#line 584 "src/parser.y"
+#line 556 "src/parser.y"
     {
-        t_set_rm_expression* exp = zero_allocate(t_set_rm_expression);
-        exp->right = (yyvsp[0].c_add_expression);
-        (yyval.c_set_rm_expression) = exp;
+        (yyval.c_expression) = (yyvsp[0].c_expression);
     }
-#line 2183 "src/parser.c"
+#line 2155 "src/parser.c"
     break;
 
   case 64:
-#line 592 "src/parser.y"
+#line 562 "src/parser.y"
     {
-        t_add_expression* exp = zero_allocate(t_add_expression);
-        exp->left = (yyvsp[-2].c_add_expression);
+        t_expression* exp = zero_allocate(t_expression);
+        exp->left = (yyvsp[-2].c_expression);
         exp->type = ADD_PLUS;
-        exp->right = (yyvsp[0].c_mult_expression);
-        (yyval.c_add_expression) = exp;
+        exp->right = (yyvsp[0].c_expression);
+        (yyval.c_expression) = exp;
     }
-#line 2195 "src/parser.c"
+#line 2167 "src/parser.c"
     break;
 
   case 65:
-#line 599 "src/parser.y"
+#line 569 "src/parser.y"
     {
-        t_add_expression* exp = zero_allocate(t_add_expression);
-        exp->left = (yyvsp[-2].c_add_expression);
+        t_expression* exp = zero_allocate(t_expression);
+        exp->left = (yyvsp[-2].c_expression);
         exp->type = ADD_MINUS;
-        exp->right = (yyvsp[0].c_mult_expression);
-        (yyval.c_add_expression) = exp;
+        exp->right = (yyvsp[0].c_expression);
+        (yyval.c_expression) = exp;
+    }
+#line 2179 "src/parser.c"
+    break;
+
+  case 66:
+#line 576 "src/parser.y"
+    {
+        (yyval.c_expression) = (yyvsp[0].c_expression);
+    }
+#line 2187 "src/parser.c"
+    break;
+
+  case 67:
+#line 582 "src/parser.y"
+    {
+        t_expression* exp = zero_allocate(t_expression);
+        exp->left = (yyvsp[-2].c_expression);
+        exp->type = (yyvsp[-1].c_expression_type);
+        exp->right = (yyvsp[0].c_expression);
+        (yyval.c_expression) = exp;
+    }
+#line 2199 "src/parser.c"
+    break;
+
+  case 68:
+#line 589 "src/parser.y"
+    {
+        (yyval.c_expression) = (yyvsp[0].c_expression);
     }
 #line 2207 "src/parser.c"
     break;
 
-  case 66:
-#line 606 "src/parser.y"
+  case 69:
+#line 595 "src/parser.y"
     {
-        t_add_expression* exp = zero_allocate(t_add_expression);
-        exp->right = (yyvsp[0].c_mult_expression);
-        (yyval.c_add_expression) = exp;
+        t_expression* exp = zero_allocate(t_expression);
+        exp->type = (yyvsp[-1].c_expression_type);
+        exp->right = (yyvsp[0].c_expression);
+        (yyval.c_expression) = exp;
     }
-#line 2217 "src/parser.c"
+#line 2218 "src/parser.c"
     break;
 
-  case 67:
-#line 614 "src/parser.y"
+  case 70:
+#line 601 "src/parser.y"
     {
-        t_mult_expression* exp = zero_allocate(t_mult_expression);
-        exp->left = (yyvsp[-2].c_mult_expression);
-        exp->type = (yyvsp[-1].c_mult_operator);
-        exp->right = (yyvsp[0].c_cast_expression);
-        (yyval.c_mult_expression) = exp;
+        t_expression* exp = zero_allocate(t_expression);
+        exp->type = CAST_EXPRESSION;
+        exp->value = (yyvsp[0].c_cast_expression);
+        (yyval.c_expression) = exp;
     }
 #line 2229 "src/parser.c"
     break;
 
-  case 68:
-#line 621 "src/parser.y"
-    {
-        t_mult_expression* exp = zero_allocate(t_mult_expression);
-        exp->right = (yyvsp[0].c_cast_expression);
-        (yyval.c_mult_expression) = exp;
-    }
-#line 2239 "src/parser.c"
-    break;
-
-  case 69:
-#line 629 "src/parser.y"
-    {
-        t_cast_expression* exp = zero_allocate(t_cast_expression);
-        exp->type = (yyvsp[-2].c_primitive_type);
-        exp->left = (yyvsp[0].c_cast_expression);
-        (yyval.c_cast_expression) = exp;
-    }
-#line 2250 "src/parser.c"
-    break;
-
-  case 70:
-#line 635 "src/parser.y"
-    {
-        t_cast_expression* exp = zero_allocate(t_cast_expression);
-        exp->right = (yyvsp[0].c_unary_expression);
-        (yyval.c_cast_expression) = exp;
-    }
-#line 2260 "src/parser.c"
-    break;
-
   case 71:
-#line 643 "src/parser.y"
+#line 610 "src/parser.y"
     {
-        t_unary_expression* exp = zero_allocate(t_unary_expression);
-        exp->type = (yyvsp[-1].c_unary_expression_type);
-        exp->left = (yyvsp[0].c_unary_expression);
-        (yyval.c_unary_expression) = exp;
+        t_cast_expression* exp = zero_allocate(t_cast_expression);
+        exp->cast = 1;
+        exp->cast_type = (yyvsp[-2].c_primitive_type);
+        exp->right = (yyvsp[0].c_postfix_expression);
+        (yyval.c_cast_expression) = exp;
     }
-#line 2271 "src/parser.c"
+#line 2241 "src/parser.c"
     break;
 
   case 72:
-#line 649 "src/parser.y"
+#line 617 "src/parser.y"
     {
-        t_unary_expression* exp = zero_allocate(t_unary_expression);
-        exp->type = UNARY_SIZEOF;
-        exp->left = (yyvsp[0].c_unary_expression);
-        (yyval.c_unary_expression) = exp;
+        t_cast_expression* exp = zero_allocate(t_cast_expression);
+        exp->cast = 0;
+        exp->right = (yyvsp[0].c_postfix_expression);
+        (yyval.c_cast_expression) = exp;
     }
-#line 2282 "src/parser.c"
+#line 2252 "src/parser.c"
     break;
 
   case 73:
-#line 655 "src/parser.y"
-    {
-        t_unary_expression* exp = zero_allocate(t_unary_expression);
-        exp->right = (yyvsp[0].c_postfix_expression);
-        (yyval.c_unary_expression) = exp;
-    }
-#line 2292 "src/parser.c"
-    break;
-
-  case 74:
-#line 663 "src/parser.y"
+#line 626 "src/parser.y"
     {
         t_postfix_expression* exp = zero_allocate(t_postfix_expression);
         exp->type = ARRAY_ACCESS;
@@ -2300,11 +2260,11 @@ yyreduce:
         exp->member.array_index = (yyvsp[-1].c_expression);
         (yyval.c_postfix_expression) = exp;
     }
-#line 2304 "src/parser.c"
+#line 2264 "src/parser.c"
     break;
 
-  case 75:
-#line 670 "src/parser.y"
+  case 74:
+#line 633 "src/parser.y"
     {
         t_postfix_expression* exp = zero_allocate(t_postfix_expression);
         exp->type = FUNCTION_CALL;
@@ -2312,301 +2272,307 @@ yyreduce:
         exp->member.function_params = (yyvsp[-1].c_param_vals);
         (yyval.c_postfix_expression) = exp;
     }
-#line 2316 "src/parser.c"
+#line 2276 "src/parser.c"
     break;
 
-  case 76:
-#line 677 "src/parser.y"
+  case 75:
+#line 640 "src/parser.y"
     {
         t_postfix_expression* exp = zero_allocate(t_postfix_expression);
         exp->primary = (yyvsp[0].c_primary_expression);
         (yyval.c_postfix_expression) = exp;
     }
-#line 2326 "src/parser.c"
+#line 2286 "src/parser.c"
     break;
 
-  case 77:
-#line 685 "src/parser.y"
+  case 76:
+#line 648 "src/parser.y"
     {
         t_param_vals* pv = zero_allocate(t_param_vals);
         pv->prev = (yyvsp[-2].c_param_vals);
         pv->cur = (yyvsp[0].c_expression);
         (yyval.c_param_vals) = pv;
     }
-#line 2337 "src/parser.c"
+#line 2297 "src/parser.c"
     break;
 
-  case 78:
-#line 691 "src/parser.y"
+  case 77:
+#line 654 "src/parser.y"
     {
         t_param_vals* pv = zero_allocate(t_param_vals);
         pv->cur = (yyvsp[0].c_expression);
         (yyval.c_param_vals) = pv;
     }
-#line 2347 "src/parser.c"
+#line 2307 "src/parser.c"
     break;
 
-  case 79:
-#line 696 "src/parser.y"
+  case 78:
+#line 659 "src/parser.y"
     {
         (yyval.c_param_vals) = NULL;
     }
-#line 2355 "src/parser.c"
+#line 2315 "src/parser.c"
     break;
 
-  case 80:
-#line 702 "src/parser.y"
+  case 79:
+#line 665 "src/parser.y"
     {
         t_primary_expression* exp = zero_allocate(t_primary_expression);
         exp->type = IDENTIFIER_PRIMARY_EXPRESSION;
         exp->member.identifier = (yyvsp[0].string_val);
         (yyval.c_primary_expression) = exp;
     }
-#line 2366 "src/parser.c"
+#line 2326 "src/parser.c"
     break;
 
-  case 81:
-#line 708 "src/parser.y"
+  case 80:
+#line 671 "src/parser.y"
     {
         t_primary_expression* exp = zero_allocate(t_primary_expression);
         exp->type = CONSTANT_PRIMARY_EXPRESSION;
         exp->member.constant = (yyvsp[0].c_constant);
         (yyval.c_primary_expression) = exp;
     }
-#line 2377 "src/parser.c"
+#line 2337 "src/parser.c"
     break;
 
-  case 82:
-#line 714 "src/parser.y"
+  case 81:
+#line 677 "src/parser.y"
     {
         t_primary_expression* exp = zero_allocate(t_primary_expression);
         exp->type = STRING_PRIMARY_EXPRESSION;
         exp->member.string = (yyvsp[0].string_val);
         (yyval.c_primary_expression) = exp;
     }
-#line 2388 "src/parser.c"
+#line 2348 "src/parser.c"
     break;
 
-  case 83:
-#line 720 "src/parser.y"
+  case 82:
+#line 683 "src/parser.y"
     {
         t_primary_expression* exp = zero_allocate(t_primary_expression);
         exp->type = NESTED_PRIMARY_EXPRESSION;
         exp->member.expression = (yyvsp[-1].c_expression);
         (yyval.c_primary_expression) = exp;
     }
-#line 2399 "src/parser.c"
+#line 2359 "src/parser.c"
     break;
 
-  case 84:
-#line 729 "src/parser.y"
+  case 83:
+#line 692 "src/parser.y"
     {
         t_constant* c = zero_allocate(t_constant);
         c->type = INTEGER_CONSTANT;
         c->member.integer_val = (yyvsp[0].integer_val);
         (yyval.c_constant) = c;
     }
-#line 2410 "src/parser.c"
+#line 2370 "src/parser.c"
     break;
 
-  case 85:
-#line 735 "src/parser.y"
+  case 84:
+#line 698 "src/parser.y"
     {
         t_constant* c = zero_allocate(t_constant);
         c->type = CHAR_CONSTANT;
         c->member.char_val = (yyvsp[0].char_val);
         (yyval.c_constant) = c;
     }
-#line 2421 "src/parser.c"
+#line 2381 "src/parser.c"
     break;
 
-  case 86:
-#line 741 "src/parser.y"
+  case 85:
+#line 704 "src/parser.y"
     {
         t_constant* c = zero_allocate(t_constant);
         c->type = REAL_CONSTANT;
         c->member.float_val = (yyvsp[0].float_val);
         (yyval.c_constant) = c;
     }
-#line 2432 "src/parser.c"
+#line 2392 "src/parser.c"
+    break;
+
+  case 86:
+#line 713 "src/parser.y"
+    { (yyval.c_assignment_operator) = EQUAL_OPERATOR; }
+#line 2398 "src/parser.c"
     break;
 
   case 87:
-#line 750 "src/parser.y"
-    { (yyval.c_assignment_operator) = EQUAL_OPERATOR; }
-#line 2438 "src/parser.c"
+#line 714 "src/parser.y"
+    { (yyval.c_assignment_operator) = PLUS_EQUAL_OPERATOR; }
+#line 2404 "src/parser.c"
     break;
 
   case 88:
-#line 751 "src/parser.y"
-    { (yyval.c_assignment_operator) = PLUS_EQUAL_OPERATOR; }
-#line 2444 "src/parser.c"
+#line 715 "src/parser.y"
+    { (yyval.c_assignment_operator) = MINUS_EQUAL_OPERATOR; }
+#line 2410 "src/parser.c"
     break;
 
   case 89:
-#line 752 "src/parser.y"
-    { (yyval.c_assignment_operator) = MINUS_EQUAL_OPERATOR; }
-#line 2450 "src/parser.c"
+#line 716 "src/parser.y"
+    { (yyval.c_assignment_operator) = ASTERISK_EQUAL_OPERATOR; }
+#line 2416 "src/parser.c"
     break;
 
   case 90:
-#line 753 "src/parser.y"
-    { (yyval.c_assignment_operator) = ASTERISK_EQUAL_OPERATOR; }
-#line 2456 "src/parser.c"
+#line 717 "src/parser.y"
+    { (yyval.c_assignment_operator) = SLASH_EQUAL_OPERATOR; }
+#line 2422 "src/parser.c"
     break;
 
   case 91:
-#line 754 "src/parser.y"
-    { (yyval.c_assignment_operator) = SLASH_EQUAL_OPERATOR; }
-#line 2462 "src/parser.c"
+#line 718 "src/parser.y"
+    { (yyval.c_assignment_operator) = PERCENT_EQUAL_OPERATOR; }
+#line 2428 "src/parser.c"
     break;
 
   case 92:
-#line 755 "src/parser.y"
-    { (yyval.c_assignment_operator) = PERCENT_EQUAL_OPERATOR; }
-#line 2468 "src/parser.c"
+#line 722 "src/parser.y"
+    { (yyval.c_expression_type) = UNARY_PLUS; }
+#line 2434 "src/parser.c"
     break;
 
   case 93:
-#line 759 "src/parser.y"
-    { (yyval.c_unary_expression_type) = UNARY_PLUS; }
-#line 2474 "src/parser.c"
+#line 723 "src/parser.y"
+    { (yyval.c_expression_type) = UNARY_MINUS; }
+#line 2440 "src/parser.c"
     break;
 
   case 94:
-#line 760 "src/parser.y"
-    { (yyval.c_unary_expression_type) = UNARY_MINUS; }
-#line 2480 "src/parser.c"
+#line 724 "src/parser.y"
+    { (yyval.c_expression_type) = UNARY_EXCL; }
+#line 2446 "src/parser.c"
     break;
 
   case 95:
-#line 761 "src/parser.y"
-    { (yyval.c_unary_expression_type) = UNARY_EXCL; }
-#line 2486 "src/parser.c"
+#line 725 "src/parser.y"
+    { (yyval.c_expression_type) = UNARY_SIZEOF; }
+#line 2452 "src/parser.c"
     break;
 
   case 96:
-#line 765 "src/parser.y"
-    { (yyval.c_rel_expression_type) = LESS_THAN; }
-#line 2492 "src/parser.c"
+#line 729 "src/parser.y"
+    { (yyval.c_expression_type) = LESS_THAN; }
+#line 2458 "src/parser.c"
     break;
 
   case 97:
-#line 766 "src/parser.y"
-    { (yyval.c_rel_expression_type) = GREATER_THAN; }
-#line 2498 "src/parser.c"
+#line 730 "src/parser.y"
+    { (yyval.c_expression_type) = GREATER_THAN; }
+#line 2464 "src/parser.c"
     break;
 
   case 98:
-#line 767 "src/parser.y"
-    { (yyval.c_rel_expression_type) = LESS_THAN_OR_EQUAL; }
-#line 2504 "src/parser.c"
+#line 731 "src/parser.y"
+    { (yyval.c_expression_type) = LESS_THAN_OR_EQUAL; }
+#line 2470 "src/parser.c"
     break;
 
   case 99:
-#line 768 "src/parser.y"
-    { (yyval.c_rel_expression_type) = GREATER_THAN_OR_EQUAL; }
-#line 2510 "src/parser.c"
+#line 732 "src/parser.y"
+    { (yyval.c_expression_type) = GREATER_THAN_OR_EQUAL; }
+#line 2476 "src/parser.c"
     break;
 
   case 100:
-#line 769 "src/parser.y"
-    { (yyval.c_rel_expression_type) = IS_IN; }
-#line 2516 "src/parser.c"
+#line 733 "src/parser.y"
+    { (yyval.c_expression_type) = IS_IN; }
+#line 2482 "src/parser.c"
     break;
 
   case 101:
-#line 773 "src/parser.y"
-    { (yyval.c_mult_operator) = ASTERISK_OPERATOR; }
-#line 2522 "src/parser.c"
+#line 737 "src/parser.y"
+    { (yyval.c_expression_type) = ASTERISK_OPERATOR; }
+#line 2488 "src/parser.c"
     break;
 
   case 102:
-#line 774 "src/parser.y"
-    { (yyval.c_mult_operator) = SLASH_OPERATOR; }
-#line 2528 "src/parser.c"
+#line 738 "src/parser.y"
+    { (yyval.c_expression_type) = SLASH_OPERATOR; }
+#line 2494 "src/parser.c"
     break;
 
   case 103:
-#line 775 "src/parser.y"
-    { (yyval.c_mult_operator) = PERCENT_OPERATOR; }
-#line 2534 "src/parser.c"
+#line 739 "src/parser.y"
+    { (yyval.c_expression_type) = PERCENT_OPERATOR; }
+#line 2500 "src/parser.c"
     break;
 
   case 104:
-#line 779 "src/parser.y"
+#line 743 "src/parser.y"
     {
         (yyval.c_primitive_type) = VOID_TYPE;
     }
-#line 2542 "src/parser.c"
+#line 2508 "src/parser.c"
     break;
 
   case 105:
-#line 782 "src/parser.y"
+#line 746 "src/parser.y"
     {
         (yyval.c_primitive_type) = BYTE_TYPE;
     }
-#line 2550 "src/parser.c"
+#line 2516 "src/parser.c"
     break;
 
   case 106:
-#line 785 "src/parser.y"
+#line 749 "src/parser.y"
     {
         (yyval.c_primitive_type) = BYTE_TYPE;
     }
-#line 2558 "src/parser.c"
+#line 2524 "src/parser.c"
     break;
 
   case 107:
-#line 788 "src/parser.y"
+#line 752 "src/parser.y"
     {
         (yyval.c_primitive_type) = BYTE_TYPE;
     }
-#line 2566 "src/parser.c"
+#line 2532 "src/parser.c"
     break;
 
   case 108:
-#line 791 "src/parser.y"
+#line 755 "src/parser.y"
     {
         (yyval.c_primitive_type) = SHORT_TYPE;
     }
-#line 2574 "src/parser.c"
+#line 2540 "src/parser.c"
     break;
 
   case 109:
-#line 794 "src/parser.y"
+#line 758 "src/parser.y"
     {
         (yyval.c_primitive_type) = INT_TYPE;
     }
-#line 2582 "src/parser.c"
+#line 2548 "src/parser.c"
     break;
 
   case 110:
-#line 797 "src/parser.y"
+#line 761 "src/parser.y"
     {
         (yyval.c_primitive_type) = LONG_TYPE;
     }
-#line 2590 "src/parser.c"
+#line 2556 "src/parser.c"
     break;
 
   case 111:
-#line 800 "src/parser.y"
+#line 764 "src/parser.y"
     {
         (yyval.c_primitive_type) = FLOAT_TYPE;
     }
-#line 2598 "src/parser.c"
+#line 2564 "src/parser.c"
     break;
 
   case 112:
-#line 803 "src/parser.y"
+#line 767 "src/parser.y"
     {
         (yyval.c_primitive_type) = DOUBLE_TYPE;
     }
-#line 2606 "src/parser.c"
+#line 2572 "src/parser.c"
     break;
 
 
-#line 2610 "src/parser.c"
+#line 2576 "src/parser.c"
 
       default: break;
     }
@@ -2838,7 +2804,7 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 807 "src/parser.y"
+#line 771 "src/parser.y"
 
 
 void spaces(int n) {
@@ -2849,1098 +2815,1098 @@ void print_ast(node root, node_type type, int cur_level) {
     node child[10];
     memset(child, 0, sizeof child);
 
-    switch(type) {
-        case NT_UNARY_EXPRESSION_TYPE:
-            spaces(cur_level);
-            printf("Unary operator\n");
-            spaces(cur_level+1);
-            switch(root.c_unary_expression_type) {
-                case UNARY_PLUS: printf("+\n"); break;
-                case UNARY_MINUS: printf("-\n"); break;
-                case UNARY_EXCL: printf("!\n"); break;
-                case UNARY_SIZEOF: printf("sizeof\n"); break;
-            }
-        break;
+    // switch(type) {
+    //     case NT_UNARY_EXPRESSION_TYPE:
+    //         spaces(cur_level);
+    //         printf("Unary operator\n");
+    //         spaces(cur_level+1);
+    //         switch(root.c_unary_expression_type) {
+    //             case UNARY_PLUS: printf("+\n"); break;
+    //             case UNARY_MINUS: printf("-\n"); break;
+    //             case UNARY_EXCL: printf("!\n"); break;
+    //             case UNARY_SIZEOF: printf("sizeof\n"); break;
+    //         }
+    //     break;
 
-        case NT_REL_EXPRESSION_TYPE:
-            spaces(cur_level);
-            printf("Relational operator\n");
-            spaces(cur_level+1);
-            switch(root.c_rel_expression_type) {
-                case LESS_THAN: printf("<\n"); break;
-                case GREATER_THAN: printf(">\n"); break;
-                case LESS_THAN_OR_EQUAL: printf("<=\n"); break;
-                case GREATER_THAN_OR_EQUAL: printf(">=\n"); break;
-                case IS_IN: printf("in\n"); break;
-            }
-        break;
+    //     case NT_REL_EXPRESSION_TYPE:
+    //         spaces(cur_level);
+    //         printf("Relational operator\n");
+    //         spaces(cur_level+1);
+    //         switch(root.c_rel_expression_type) {
+    //             case LESS_THAN: printf("<\n"); break;
+    //             case GREATER_THAN: printf(">\n"); break;
+    //             case LESS_THAN_OR_EQUAL: printf("<=\n"); break;
+    //             case GREATER_THAN_OR_EQUAL: printf(">=\n"); break;
+    //             case IS_IN: printf("in\n"); break;
+    //         }
+    //     break;
 
-        case NT_MULT_OPERATOR:
-            spaces(cur_level);
-            printf("Mult Operator\n");
-            spaces(cur_level+1);
-            switch(root.c_mult_operator) {
-                case ASTERISK_OPERATOR:
-                printf("*\n");
-                break;
-                case SLASH_OPERATOR:
-                printf("/\n");
-                break;
-                case PERCENT_OPERATOR:
-                printf("%%\n");
-                break;
-            }
-        break;
+    //     case NT_MULT_OPERATOR:
+    //         spaces(cur_level);
+    //         printf("Mult Operator\n");
+    //         spaces(cur_level+1);
+    //         switch(root.c_mult_operator) {
+    //             case ASTERISK_OPERATOR:
+    //             printf("*\n");
+    //             break;
+    //             case SLASH_OPERATOR:
+    //             printf("/\n");
+    //             break;
+    //             case PERCENT_OPERATOR:
+    //             printf("%%\n");
+    //             break;
+    //         }
+    //     break;
 
-        case NT_ASSIGNMENT_OPERATOR:
-            spaces(cur_level);
-            printf("Assignment Operator\n");
-            spaces(cur_level+1);
-            switch(root.c_assignment_operator) {
-                case EQUAL_OPERATOR:
-                printf("=\n");
-                break;
-                case PLUS_EQUAL_OPERATOR:
-                printf("+=\n");
-                break;
-                case MINUS_EQUAL_OPERATOR:
-                printf("-=\n");
-                break;
-                case ASTERISK_EQUAL_OPERATOR:
-                printf("*=\n");
-                break;
-                case SLASH_EQUAL_OPERATOR:
-                printf("/=\n");
-                break;
-                case PERCENT_EQUAL_OPERATOR:
-                printf("%%=\n");
-                break;
-            }
-        break;
+    //     case NT_ASSIGNMENT_OPERATOR:
+    //         spaces(cur_level);
+    //         printf("Assignment Operator\n");
+    //         spaces(cur_level+1);
+    //         switch(root.c_assignment_operator) {
+    //             case EQUAL_OPERATOR:
+    //             printf("=\n");
+    //             break;
+    //             case PLUS_EQUAL_OPERATOR:
+    //             printf("+=\n");
+    //             break;
+    //             case MINUS_EQUAL_OPERATOR:
+    //             printf("-=\n");
+    //             break;
+    //             case ASTERISK_EQUAL_OPERATOR:
+    //             printf("*=\n");
+    //             break;
+    //             case SLASH_EQUAL_OPERATOR:
+    //             printf("/=\n");
+    //             break;
+    //             case PERCENT_EQUAL_OPERATOR:
+    //             printf("%%=\n");
+    //             break;
+    //         }
+    //     break;
 
-        case NT_PRIMITIVE_TYPE:
-            spaces(cur_level);
-            printf("Type\n");
-            spaces(cur_level+1);
-            switch(root.c_primitive_type) {
-                case BYTE_TYPE:
-                printf("byte\n");
-                break;
-                case SHORT_TYPE:
-                printf("short\n");
-                break;
-                case INT_TYPE:
-                printf("int\n");
-                break;
-                case LONG_TYPE:
-                printf("long\n");
-                break;
-                case FLOAT_TYPE:
-                printf("float\n");
-                break;
-                case DOUBLE_TYPE:
-                printf("double\n");
-                break;
-                case VOID_TYPE:
-                printf("void\n");
-                break;
-            }
-        break;
+    //     case NT_PRIMITIVE_TYPE:
+    //         spaces(cur_level);
+    //         printf("Type\n");
+    //         spaces(cur_level+1);
+    //         switch(root.c_primitive_type) {
+    //             case BYTE_TYPE:
+    //             printf("byte\n");
+    //             break;
+    //             case SHORT_TYPE:
+    //             printf("short\n");
+    //             break;
+    //             case INT_TYPE:
+    //             printf("int\n");
+    //             break;
+    //             case LONG_TYPE:
+    //             printf("long\n");
+    //             break;
+    //             case FLOAT_TYPE:
+    //             printf("float\n");
+    //             break;
+    //             case DOUBLE_TYPE:
+    //             printf("double\n");
+    //             break;
+    //             case VOID_TYPE:
+    //             printf("void\n");
+    //             break;
+    //         }
+    //     break;
 
-        case NT_PRINT_TYPE:
-        break;
+    //     case NT_PRINT_TYPE:
+    //     break;
 
-        case NT_SCAN_TYPE:
-        break;
+    //     case NT_SCAN_TYPE:
+    //     break;
 
-        case NT_PROGRAM:
-            spaces(cur_level);
-            printf("Program\n");
-            child[0].c_declaration_list = root.c_program->declaration_list;
-            print_ast(child[0], NT_DECLARATION_LIST, cur_level+1);
-        break;
+    //     case NT_PROGRAM:
+    //         spaces(cur_level);
+    //         printf("Program\n");
+    //         child[0].c_declaration_list = root.c_program->declaration_list;
+    //         print_ast(child[0], NT_DECLARATION_LIST, cur_level+1);
+    //     break;
 
-        case NT_DECLARATION_LIST:
-            if (root.c_declaration_list->prev) {
-                child[0].c_declaration_list = root.c_declaration_list->prev;
-                print_ast(child[0], NT_DECLARATION_LIST, cur_level);
-            } else {
-                // print only at beginning of declaration list
-                spaces(cur_level);
-                printf("Declaration List\n");
-            }
+    //     case NT_DECLARATION_LIST:
+    //         if (root.c_declaration_list->prev) {
+    //             child[0].c_declaration_list = root.c_declaration_list->prev;
+    //             print_ast(child[0], NT_DECLARATION_LIST, cur_level);
+    //         } else {
+    //             // print only at beginning of declaration list
+    //             spaces(cur_level);
+    //             printf("Declaration List\n");
+    //         }
 
-            if (root.c_declaration_list->cur) {
-                child[1].c_declaration = root.c_declaration_list->cur;
-                print_ast(child[1], NT_DECLARATION, cur_level+1);
-            }
-        break;
+    //         if (root.c_declaration_list->cur) {
+    //             child[1].c_declaration = root.c_declaration_list->cur;
+    //             print_ast(child[1], NT_DECLARATION, cur_level+1);
+    //         }
+    //     break;
 
-        case NT_DECLARATION:
-            spaces(cur_level);
-            printf("Declaration\n");
-            if (root.c_declaration->type == VAR_DECLARATION) {
-                child[0].c_variable = root.c_declaration->member.variable;
-                print_ast(child[0], NT_VARIABLE, cur_level+1);
-            } else if (root.c_declaration->type == FUN_DECLARATION) {
-                child[0].c_function = root.c_declaration->member.function;
-                print_ast(child[0], NT_FUNCTION, cur_level+1);
-            } 
-        break;
+    //     case NT_DECLARATION:
+    //         spaces(cur_level);
+    //         printf("Declaration\n");
+    //         if (root.c_declaration->type == VAR_DECLARATION) {
+    //             child[0].c_variable = root.c_declaration->member.variable;
+    //             print_ast(child[0], NT_VARIABLE, cur_level+1);
+    //         } else if (root.c_declaration->type == FUN_DECLARATION) {
+    //             child[0].c_function = root.c_declaration->member.function;
+    //             print_ast(child[0], NT_FUNCTION, cur_level+1);
+    //         } 
+    //     break;
 
-        case NT_VARIABLE:
-            spaces(cur_level);
-            printf("Variable");
-            switch(root.c_variable->structure) {
-                case ARRAY_TYPE: printf(" (array)"); break;
-                case SET_TYPE: printf(" (set)"); break;
-                case PRIMITIVE_TYPE: printf(" (primitive)"); break;
-            }
-            printf("\n");
-            child[0].c_primitive_type = root.c_variable->type;
-            print_ast(child[0], NT_PRIMITIVE_TYPE, cur_level+1);
-            child[1].string_val = root.c_variable->identifier;
-            print_ast(child[1], NT_IDENTIFIER, cur_level+1);
-        break;
+    //     case NT_VARIABLE:
+    //         spaces(cur_level);
+    //         printf("Variable");
+    //         switch(root.c_variable->structure) {
+    //             case ARRAY_TYPE: printf(" (array)"); break;
+    //             case SET_TYPE: printf(" (set)"); break;
+    //             case PRIMITIVE_TYPE: printf(" (primitive)"); break;
+    //         }
+    //         printf("\n");
+    //         child[0].c_primitive_type = root.c_variable->type;
+    //         print_ast(child[0], NT_PRIMITIVE_TYPE, cur_level+1);
+    //         child[1].string_val = root.c_variable->identifier;
+    //         print_ast(child[1], NT_IDENTIFIER, cur_level+1);
+    //     break;
 
-        case NT_FUNCTION:
-            spaces(cur_level);
-            printf("Function\n");
-            child[0].c_primitive_type = root.c_function->return_type;
-            print_ast(child[0], NT_PRIMITIVE_TYPE, cur_level+1);
-            child[1].string_val = root.c_function->identifier;
-            print_ast(child[1], NT_IDENTIFIER, cur_level+1);   
-            child[2].c_function_params = root.c_function->params;
-            print_ast(child[2], NT_FUNCTION_PARAMS, cur_level+1);
-            child[3].c_scope = root.c_function->body;
-            print_ast(child[3], NT_SCOPE, cur_level+1);
-            printf("\n");
-        break;
+    //     case NT_FUNCTION:
+    //         spaces(cur_level);
+    //         printf("Function\n");
+    //         child[0].c_primitive_type = root.c_function->return_type;
+    //         print_ast(child[0], NT_PRIMITIVE_TYPE, cur_level+1);
+    //         child[1].string_val = root.c_function->identifier;
+    //         print_ast(child[1], NT_IDENTIFIER, cur_level+1);   
+    //         child[2].c_function_params = root.c_function->params;
+    //         print_ast(child[2], NT_FUNCTION_PARAMS, cur_level+1);
+    //         child[3].c_scope = root.c_function->body;
+    //         print_ast(child[3], NT_SCOPE, cur_level+1);
+    //         printf("\n");
+    //     break;
 
-        case NT_FUNCTION_PARAMS:
-            if (root.c_function_params == NULL) return;
+    //     case NT_FUNCTION_PARAMS:
+    //         if (root.c_function_params == NULL) return;
             
-            if (root.c_function_params->prev) {
-                child[0].c_function_params = root.c_function_params->prev;
-                print_ast(child[0], NT_FUNCTION_PARAMS, cur_level);
-            } else {
-                spaces(cur_level);
-                printf("Parameters\n");
-            }
+    //         if (root.c_function_params->prev) {
+    //             child[0].c_function_params = root.c_function_params->prev;
+    //             print_ast(child[0], NT_FUNCTION_PARAMS, cur_level);
+    //         } else {
+    //             spaces(cur_level);
+    //             printf("Parameters\n");
+    //         }
 
-            if (root.c_function_params->cur) {
-                child[1].c_variable = root.c_function_params->cur;
-                print_ast(child[1], NT_VARIABLE, cur_level+1);
-            }
-        break;
+    //         if (root.c_function_params->cur) {
+    //             child[1].c_variable = root.c_function_params->cur;
+    //             print_ast(child[1], NT_VARIABLE, cur_level+1);
+    //         }
+    //     break;
 
-        case NT_SCOPE:
-            spaces(cur_level);
-            printf("Scope\n");
-            child[0].c_statement_list = root.c_scope->statements;
-            print_ast(child[0], NT_STATEMENT_LIST, cur_level+1);
-        break;
+    //     case NT_SCOPE:
+    //         spaces(cur_level);
+    //         printf("Scope\n");
+    //         child[0].c_statement_list = root.c_scope->statements;
+    //         print_ast(child[0], NT_STATEMENT_LIST, cur_level+1);
+    //     break;
 
-        case NT_STATEMENT_LIST:
-            if (root.c_statement_list == NULL) return;
+    //     case NT_STATEMENT_LIST:
+    //         if (root.c_statement_list == NULL) return;
             
-            if (root.c_statement_list->prev) {
-                child[0].c_statement_list = root.c_statement_list->prev;
-                print_ast(child[0], NT_STATEMENT_LIST, cur_level);
-            } else {
-                spaces(cur_level);
-                printf("Statements\n");
-            }
+    //         if (root.c_statement_list->prev) {
+    //             child[0].c_statement_list = root.c_statement_list->prev;
+    //             print_ast(child[0], NT_STATEMENT_LIST, cur_level);
+    //         } else {
+    //             spaces(cur_level);
+    //             printf("Statements\n");
+    //         }
 
-            if (root.c_statement_list->cur) {
-                child[1].c_statement = root.c_statement_list->cur;
-                print_ast(child[1], NT_STATEMENT, cur_level+1);
-            }
-        break;
+    //         if (root.c_statement_list->cur) {
+    //             child[1].c_statement = root.c_statement_list->cur;
+    //             print_ast(child[1], NT_STATEMENT, cur_level+1);
+    //         }
+    //     break;
 
-        case NT_STATEMENT:
-            spaces(cur_level);
-            printf("Statement\n");
-            switch (root.c_statement->type) {
-                case SCOPE_STATEMENT:
-                    child[0].c_scope = root.c_statement->member.scope;
-                    print_ast(child[0], NT_SCOPE, cur_level+1);
-                break;
+    //     case NT_STATEMENT:
+    //         spaces(cur_level);
+    //         printf("Statement\n");
+    //         switch (root.c_statement->type) {
+    //             case SCOPE_STATEMENT:
+    //                 child[0].c_scope = root.c_statement->member.scope;
+    //                 print_ast(child[0], NT_SCOPE, cur_level+1);
+    //             break;
 
-                case VAR_DECLARATION_STATEMENT:
-                    child[0].c_variable = root.c_statement->member.variable;
-                    print_ast(child[0], NT_DECLARATION, cur_level+1);
-                break;
+    //             case VAR_DECLARATION_STATEMENT:
+    //                 child[0].c_variable = root.c_statement->member.variable;
+    //                 print_ast(child[0], NT_DECLARATION, cur_level+1);
+    //             break;
 
-                case PRINT_STATEMENT:
-                    child[0].c_print = root.c_statement->member.print;
-                    print_ast(child[0], NT_PRINT, cur_level+1);
-                break;
+    //             case PRINT_STATEMENT:
+    //                 child[0].c_print = root.c_statement->member.print;
+    //                 print_ast(child[0], NT_PRINT, cur_level+1);
+    //             break;
 
-                case SCAN_STATEMENT:
-                    child[0].c_scan = root.c_statement->member.scan;
-                    print_ast(child[0], NT_SCAN, cur_level+1);
-                break;
+    //             case SCAN_STATEMENT:
+    //                 child[0].c_scan = root.c_statement->member.scan;
+    //                 print_ast(child[0], NT_SCAN, cur_level+1);
+    //             break;
 
-                case EXPRESSION_STATEMENT:
-                    child[0].c_expression = root.c_statement->member.expression;
-                    print_ast(child[0], NT_EXPRESSION, cur_level+1);
-                break;
+    //             case EXPRESSION_STATEMENT:
+    //                 child[0].c_expression = root.c_statement->member.expression;
+    //                 print_ast(child[0], NT_EXPRESSION, cur_level+1);
+    //             break;
 
-                case CONDITION_STATEMENT:
-                    child[0].c_condition = root.c_statement->member.condition;
-                    print_ast(child[0], NT_CONDITION, cur_level+1);
-                break;
+    //             case CONDITION_STATEMENT:
+    //                 child[0].c_condition = root.c_statement->member.condition;
+    //                 print_ast(child[0], NT_CONDITION, cur_level+1);
+    //             break;
 
-                case ITERATION_STATEMENT:
-                    child[0].c_iteration = root.c_statement->member.iteration;
-                    print_ast(child[0], NT_ITERATION, cur_level+1);
-                break;
+    //             case ITERATION_STATEMENT:
+    //                 child[0].c_iteration = root.c_statement->member.iteration;
+    //                 print_ast(child[0], NT_ITERATION, cur_level+1);
+    //             break;
 
-                case RETURN_STATEMENT:
-                    child[0].c_return = root.c_statement->member._return;
-                    print_ast(child[0], NT_RETURN, cur_level+1);
-                break;
+    //             case RETURN_STATEMENT:
+    //                 child[0].c_return = root.c_statement->member._return;
+    //                 print_ast(child[0], NT_RETURN, cur_level+1);
+    //             break;
 
-            }
-        break;
+    //         }
+    //     break;
 
-        case NT_PRINT:
-            spaces(cur_level);
-            printf("Print\n");
-            child[0].c_print_type = root.c_print->type;
-            print_ast(child[0], NT_PRINT_TYPE, cur_level+1);
-            child[1].c_expression = root.c_print->expression;
-            print_ast(child[1], NT_EXPRESSION, cur_level+1);
-        break;
+    //     case NT_PRINT:
+    //         spaces(cur_level);
+    //         printf("Print\n");
+    //         child[0].c_print_type = root.c_print->type;
+    //         print_ast(child[0], NT_PRINT_TYPE, cur_level+1);
+    //         child[1].c_expression = root.c_print->expression;
+    //         print_ast(child[1], NT_EXPRESSION, cur_level+1);
+    //     break;
 
-        case NT_SCAN:
-            spaces(cur_level);
-            printf("Scan\n");
-            child[0].c_scan_type = root.c_scan->type;
-            print_ast(child[0], NT_SCAN_TYPE, cur_level+1);
-            child[1].string_val = root.c_scan->destiny;
-            print_ast(child[1], NT_IDENTIFIER, cur_level+1);
-        break;
+    //     case NT_SCAN:
+    //         spaces(cur_level);
+    //         printf("Scan\n");
+    //         child[0].c_scan_type = root.c_scan->type;
+    //         print_ast(child[0], NT_SCAN_TYPE, cur_level+1);
+    //         child[1].string_val = root.c_scan->destiny;
+    //         print_ast(child[1], NT_IDENTIFIER, cur_level+1);
+    //     break;
 
-        case NT_RETURN:
-            spaces(cur_level);
-            printf("Return\n");
-            if (root.c_return->expression) {
-                child[0].c_expression = root.c_return->expression;
-                print_ast(child[0], NT_EXPRESSION, cur_level+1);
-            }
-        break;
+    //     case NT_RETURN:
+    //         spaces(cur_level);
+    //         printf("Return\n");
+    //         if (root.c_return->expression) {
+    //             child[0].c_expression = root.c_return->expression;
+    //             print_ast(child[0], NT_EXPRESSION, cur_level+1);
+    //         }
+    //     break;
 
-        case NT_EXPRESSION:
-            if (root.c_expression == NULL) return;
+    //     case NT_EXPRESSION:
+    //         if (root.c_expression == NULL) return;
 
-            spaces(cur_level);
-            printf("Expression\n");
+    //         spaces(cur_level);
+    //         printf("Expression\n");
 
-            child[0].c_assignment = root.c_expression->assignment;
-            print_ast(child[0], NT_ASSIGNMENT, cur_level+1);
-        break;
+    //         child[0].c_assignment = root.c_expression->assignment;
+    //         print_ast(child[0], NT_ASSIGNMENT, cur_level+1);
+    //     break;
 
-        case NT_CONDITION:
-            spaces(cur_level);
-            printf("Condition\n");
-            child[0].c_expression = root.c_condition->condition;
-            print_ast(child[0], NT_EXPRESSION, cur_level+1);
-            child[1].c_statement = root.c_condition->body;
-            print_ast(child[1], NT_STATEMENT, cur_level+1);
-            if (root.c_condition->else_body) {
-                child[2].c_statement = root.c_condition->else_body;
-                print_ast(child[2], NT_STATEMENT, cur_level+1);
-            }
-        break;
+    //     case NT_CONDITION:
+    //         spaces(cur_level);
+    //         printf("Condition\n");
+    //         child[0].c_expression = root.c_condition->condition;
+    //         print_ast(child[0], NT_EXPRESSION, cur_level+1);
+    //         child[1].c_statement = root.c_condition->body;
+    //         print_ast(child[1], NT_STATEMENT, cur_level+1);
+    //         if (root.c_condition->else_body) {
+    //             child[2].c_statement = root.c_condition->else_body;
+    //             print_ast(child[2], NT_STATEMENT, cur_level+1);
+    //         }
+    //     break;
 
-        case NT_ITERATION:
-            spaces(cur_level);
-            printf("Iteration\n");
-            if (root.c_iteration->initialization) {
-                child[0].c_expression = root.c_iteration->initialization;
-                print_ast(child[0], NT_EXPRESSION, cur_level+1);
-            }
-            if (root.c_iteration->condition) {
-                child[1].c_expression = root.c_iteration->condition;
-                print_ast(child[1], NT_EXPRESSION, cur_level+1);
-            }
-            if (root.c_iteration->step) {
-                child[2].c_expression = root.c_iteration->step;
-                print_ast(child[2], NT_EXPRESSION, cur_level+1);
-            }
-            child[3].c_statement = root.c_iteration->body;
-            print_ast(child[3], NT_STATEMENT, cur_level+1);
-        break;
+    //     case NT_ITERATION:
+    //         spaces(cur_level);
+    //         printf("Iteration\n");
+    //         if (root.c_iteration->initialization) {
+    //             child[0].c_expression = root.c_iteration->initialization;
+    //             print_ast(child[0], NT_EXPRESSION, cur_level+1);
+    //         }
+    //         if (root.c_iteration->condition) {
+    //             child[1].c_expression = root.c_iteration->condition;
+    //             print_ast(child[1], NT_EXPRESSION, cur_level+1);
+    //         }
+    //         if (root.c_iteration->step) {
+    //             child[2].c_expression = root.c_iteration->step;
+    //             print_ast(child[2], NT_EXPRESSION, cur_level+1);
+    //         }
+    //         child[3].c_statement = root.c_iteration->body;
+    //         print_ast(child[3], NT_STATEMENT, cur_level+1);
+    //     break;
 
-        case NT_ASSIGNMENT:
-            spaces(cur_level);
-            printf("Assignment\n");
+    //     case NT_ASSIGNMENT:
+    //         spaces(cur_level);
+    //         printf("Assignment\n");
 
-            if (root.c_assignment->identifier) {
-                child[0].string_val = root.c_assignment->identifier;
-                print_ast(child[0], NT_IDENTIFIER, cur_level+1);
-                child[1].c_assignment_operator = root.c_assignment->operator;
-                print_ast(child[1], NT_ASSIGNMENT_OPERATOR, cur_level+1);
-            }
-            child[2].c_and_expression = root.c_assignment->and_expression;
-            print_ast(child[2], NT_AND_EXPRESSION, cur_level+1);
-        break;
+    //         if (root.c_assignment->identifier) {
+    //             child[0].string_val = root.c_assignment->identifier;
+    //             print_ast(child[0], NT_IDENTIFIER, cur_level+1);
+    //             child[1].c_assignment_operator = root.c_assignment->operator;
+    //             print_ast(child[1], NT_ASSIGNMENT_OPERATOR, cur_level+1);
+    //         }
+    //         child[2].c_and_expression = root.c_assignment->and_expression;
+    //         print_ast(child[2], NT_AND_EXPRESSION, cur_level+1);
+    //     break;
 
-        case NT_AND_EXPRESSION:
-            spaces(cur_level);
-            printf("And Expression\n");
+    //     case NT_AND_EXPRESSION:
+    //         spaces(cur_level);
+    //         printf("And Expression\n");
 
-            if (root.c_and_expression->left) {
-                child[0].c_and_expression = root.c_and_expression->left;
-                print_ast(child[0], NT_AND_EXPRESSION, cur_level+1);
-                spaces(cur_level+1);
-                printf("&&\n");
-            }
-            child[1].c_or_expression = root.c_and_expression->right;
-            print_ast(child[1], NT_OR_EXPRESSION, cur_level+1);
-        break;
+    //         if (root.c_and_expression->left) {
+    //             child[0].c_and_expression = root.c_and_expression->left;
+    //             print_ast(child[0], NT_AND_EXPRESSION, cur_level+1);
+    //             spaces(cur_level+1);
+    //             printf("&&\n");
+    //         }
+    //         child[1].c_or_expression = root.c_and_expression->right;
+    //         print_ast(child[1], NT_OR_EXPRESSION, cur_level+1);
+    //     break;
 
-        case NT_OR_EXPRESSION:
-            spaces(cur_level);
-            printf("Or Expression\n");
+    //     case NT_OR_EXPRESSION:
+    //         spaces(cur_level);
+    //         printf("Or Expression\n");
 
-            if (root.c_or_expression->left) {
-                child[0].c_or_expression = root.c_or_expression->left;
-                print_ast(child[0], NT_OR_EXPRESSION, cur_level+1);
-                spaces(cur_level+1);
-                printf("||\n");
-            }
-            child[1].c_bw_and_expression = root.c_or_expression->right;
-            print_ast(child[1], NT_BW_AND_EXPRESSION, cur_level+1);
-        break;
+    //         if (root.c_or_expression->left) {
+    //             child[0].c_or_expression = root.c_or_expression->left;
+    //             print_ast(child[0], NT_OR_EXPRESSION, cur_level+1);
+    //             spaces(cur_level+1);
+    //             printf("||\n");
+    //         }
+    //         child[1].c_bw_and_expression = root.c_or_expression->right;
+    //         print_ast(child[1], NT_BW_AND_EXPRESSION, cur_level+1);
+    //     break;
 
-        case NT_BW_AND_EXPRESSION:
-            spaces(cur_level);
-            printf("Bitwise And Expression\n");
+    //     case NT_BW_AND_EXPRESSION:
+    //         spaces(cur_level);
+    //         printf("Bitwise And Expression\n");
 
-            if (root.c_bw_and_expression->left) {
-                child[0].c_bw_and_expression = root.c_bw_and_expression->left;
-                print_ast(child[0], NT_BW_AND_EXPRESSION, cur_level+1);
-                spaces(cur_level+1);
-                printf("&\n");
-            }
-            child[1].c_bw_or_expression = root.c_bw_and_expression->right;
-            print_ast(child[1], NT_BW_OR_EXPRESSION, cur_level+1);
-        break;
+    //         if (root.c_bw_and_expression->left) {
+    //             child[0].c_bw_and_expression = root.c_bw_and_expression->left;
+    //             print_ast(child[0], NT_BW_AND_EXPRESSION, cur_level+1);
+    //             spaces(cur_level+1);
+    //             printf("&\n");
+    //         }
+    //         child[1].c_bw_or_expression = root.c_bw_and_expression->right;
+    //         print_ast(child[1], NT_BW_OR_EXPRESSION, cur_level+1);
+    //     break;
 
-        case NT_BW_OR_EXPRESSION:
-            spaces(cur_level);
-            printf("Bitwise Or Expression\n");
+    //     case NT_BW_OR_EXPRESSION:
+    //         spaces(cur_level);
+    //         printf("Bitwise Or Expression\n");
 
-            if (root.c_bw_or_expression->left) {
-                child[0].c_bw_or_expression = root.c_bw_or_expression->left;
-                print_ast(child[0], NT_BW_OR_EXPRESSION, cur_level+1);
-                spaces(cur_level+1);
-                printf("&\n");
-            }
-            child[1].c_bw_xor_expression = root.c_bw_or_expression->right;
-            print_ast(child[1], NT_BW_XOR_EXPRESSION, cur_level+1);
-        break;
+    //         if (root.c_bw_or_expression->left) {
+    //             child[0].c_bw_or_expression = root.c_bw_or_expression->left;
+    //             print_ast(child[0], NT_BW_OR_EXPRESSION, cur_level+1);
+    //             spaces(cur_level+1);
+    //             printf("&\n");
+    //         }
+    //         child[1].c_bw_xor_expression = root.c_bw_or_expression->right;
+    //         print_ast(child[1], NT_BW_XOR_EXPRESSION, cur_level+1);
+    //     break;
 
-        case NT_BW_XOR_EXPRESSION:
-            spaces(cur_level);
-            printf("Bitwise Xor Expression\n");
+    //     case NT_BW_XOR_EXPRESSION:
+    //         spaces(cur_level);
+    //         printf("Bitwise Xor Expression\n");
 
-            if (root.c_bw_xor_expression->left) {
-                child[0].c_bw_xor_expression = root.c_bw_xor_expression->left;
-                print_ast(child[0], NT_BW_XOR_EXPRESSION, cur_level+1);
-                spaces(cur_level+1);
-                printf("&\n");
-            }
-            child[1].c_eq_expression = root.c_bw_xor_expression->right;
-            print_ast(child[1], NT_EQ_EXPRESSION, cur_level+1);
-        break;
+    //         if (root.c_bw_xor_expression->left) {
+    //             child[0].c_bw_xor_expression = root.c_bw_xor_expression->left;
+    //             print_ast(child[0], NT_BW_XOR_EXPRESSION, cur_level+1);
+    //             spaces(cur_level+1);
+    //             printf("&\n");
+    //         }
+    //         child[1].c_eq_expression = root.c_bw_xor_expression->right;
+    //         print_ast(child[1], NT_EQ_EXPRESSION, cur_level+1);
+    //     break;
 
-        case NT_EQ_EXPRESSION:
-            spaces(cur_level);
-            printf("Eq Expression\n");
+    //     case NT_EQ_EXPRESSION:
+    //         spaces(cur_level);
+    //         printf("Eq Expression\n");
 
-            if (root.c_eq_expression->left) {
-                child[0].c_eq_expression = root.c_eq_expression->left;
-                print_ast(child[0], NT_EQ_EXPRESSION, cur_level+1);
+    //         if (root.c_eq_expression->left) {
+    //             child[0].c_eq_expression = root.c_eq_expression->left;
+    //             print_ast(child[0], NT_EQ_EXPRESSION, cur_level+1);
 
-                spaces(cur_level+1);
-                if (root.c_eq_expression->type == EQ_EQ_EXPRESSION) {
-                    printf("==\n");
-                } else {
-                    printf("!=\n");
-                }
-            }
-            child[1].c_rel_expression = root.c_eq_expression->right;
-            print_ast(child[1], NT_REL_EXPRESSION, cur_level+1);
-        break;
+    //             spaces(cur_level+1);
+    //             if (root.c_eq_expression->type == EQ_EQ_EXPRESSION) {
+    //                 printf("==\n");
+    //             } else {
+    //                 printf("!=\n");
+    //             }
+    //         }
+    //         child[1].c_rel_expression = root.c_eq_expression->right;
+    //         print_ast(child[1], NT_REL_EXPRESSION, cur_level+1);
+    //     break;
 
-        case NT_REL_EXPRESSION:
-            spaces(cur_level);
-            printf("Rel Expression\n");
+    //     case NT_REL_EXPRESSION:
+    //         spaces(cur_level);
+    //         printf("Rel Expression\n");
 
-            if (root.c_rel_expression->left) {
-                child[0].c_rel_expression = root.c_rel_expression->left;
-                print_ast(child[0], NT_REL_EXPRESSION, cur_level+1);
+    //         if (root.c_rel_expression->left) {
+    //             child[0].c_rel_expression = root.c_rel_expression->left;
+    //             print_ast(child[0], NT_REL_EXPRESSION, cur_level+1);
 
-                child[0].c_rel_expression_type = root.c_rel_expression->type;
-                print_ast(child[0], NT_REL_EXPRESSION_TYPE, cur_level+1);
-            }
-            child[1].c_shift_expression = root.c_rel_expression->right;
-            print_ast(child[1], NT_SHIFT_EXPRESSION, cur_level+1);
-        break;
+    //             child[0].c_rel_expression_type = root.c_rel_expression->type;
+    //             print_ast(child[0], NT_REL_EXPRESSION_TYPE, cur_level+1);
+    //         }
+    //         child[1].c_shift_expression = root.c_rel_expression->right;
+    //         print_ast(child[1], NT_SHIFT_EXPRESSION, cur_level+1);
+    //     break;
 
-        case NT_SHIFT_EXPRESSION:
-            spaces(cur_level);
-            printf("Shift Expression\n");
+    //     case NT_SHIFT_EXPRESSION:
+    //         spaces(cur_level);
+    //         printf("Shift Expression\n");
 
-            if (root.c_shift_expression->left) {
-                child[0].c_shift_expression = root.c_shift_expression->left;
-                print_ast(child[0], NT_SHIFT_EXPRESSION, cur_level+1);
+    //         if (root.c_shift_expression->left) {
+    //             child[0].c_shift_expression = root.c_shift_expression->left;
+    //             print_ast(child[0], NT_SHIFT_EXPRESSION, cur_level+1);
 
-                spaces(cur_level+1);
-                if (root.c_shift_expression->type == LEFT_SHIFT_EXPRESSION) {
-                    printf("<<\n");
-                } else {
-                    printf(">>\n");
-                }    
-            }
-            child[1].c_set_rm_expression = root.c_shift_expression->right;
-            print_ast(child[1], NT_SET_RM_EXPRESSION, cur_level+1);
-        break;
+    //             spaces(cur_level+1);
+    //             if (root.c_shift_expression->type == LEFT_SHIFT_EXPRESSION) {
+    //                 printf("<<\n");
+    //             } else {
+    //                 printf(">>\n");
+    //             }    
+    //         }
+    //         child[1].c_set_rm_expression = root.c_shift_expression->right;
+    //         print_ast(child[1], NT_SET_RM_EXPRESSION, cur_level+1);
+    //     break;
 
-        case NT_SET_RM_EXPRESSION:
-            spaces(cur_level);
-            printf("Set Rm Expression\n");
+    //     case NT_SET_RM_EXPRESSION:
+    //         spaces(cur_level);
+    //         printf("Set Rm Expression\n");
 
-            if (root.c_set_rm_expression->left) {
-                child[0].c_set_rm_expression = root.c_set_rm_expression->left;
-                print_ast(child[0], NT_SET_RM_EXPRESSION, cur_level+1);
-                spaces(cur_level+1);
-                printf("rm\n");
-            }
-            child[1].c_add_expression = root.c_set_rm_expression->right;
-            print_ast(child[1], NT_ADD_EXPRESSION, cur_level+1);
-        break;
+    //         if (root.c_set_rm_expression->left) {
+    //             child[0].c_set_rm_expression = root.c_set_rm_expression->left;
+    //             print_ast(child[0], NT_SET_RM_EXPRESSION, cur_level+1);
+    //             spaces(cur_level+1);
+    //             printf("rm\n");
+    //         }
+    //         child[1].c_add_expression = root.c_set_rm_expression->right;
+    //         print_ast(child[1], NT_ADD_EXPRESSION, cur_level+1);
+    //     break;
 
-        case NT_ADD_EXPRESSION:
-            spaces(cur_level);
-            printf("Add Expression\n");
+    //     case NT_ADD_EXPRESSION:
+    //         spaces(cur_level);
+    //         printf("Add Expression\n");
 
-            if (root.c_add_expression->left) {
-                child[0].c_add_expression = root.c_add_expression->left;
-                print_ast(child[0], NT_ADD_EXPRESSION, cur_level+1);
+    //         if (root.c_add_expression->left) {
+    //             child[0].c_add_expression = root.c_add_expression->left;
+    //             print_ast(child[0], NT_ADD_EXPRESSION, cur_level+1);
 
-                spaces(cur_level+1);
-                if (root.c_add_expression->type == ADD_PLUS) {
-                    printf("+\n");
-                } else {
-                    printf("-\n");
-                }    
-            }
-            child[1].c_mult_expression = root.c_add_expression->right;
-            print_ast(child[1], NT_MULT_EXPRESSION, cur_level+1);
-        break;
+    //             spaces(cur_level+1);
+    //             if (root.c_add_expression->type == ADD_PLUS) {
+    //                 printf("+\n");
+    //             } else {
+    //                 printf("-\n");
+    //             }    
+    //         }
+    //         child[1].c_mult_expression = root.c_add_expression->right;
+    //         print_ast(child[1], NT_MULT_EXPRESSION, cur_level+1);
+    //     break;
 
-        case NT_MULT_EXPRESSION:
-            spaces(cur_level);
-            printf("Mult Expression\n");
+    //     case NT_MULT_EXPRESSION:
+    //         spaces(cur_level);
+    //         printf("Mult Expression\n");
 
-            if (root.c_mult_expression->left) {
-                child[0].c_mult_expression = root.c_mult_expression->left;
-                print_ast(child[0], NT_MULT_EXPRESSION, cur_level+1);
+    //         if (root.c_mult_expression->left) {
+    //             child[0].c_mult_expression = root.c_mult_expression->left;
+    //             print_ast(child[0], NT_MULT_EXPRESSION, cur_level+1);
 
-                child[1].c_mult_operator = root.c_mult_expression->type;
-                print_ast(child[1], NT_MULT_OPERATOR, cur_level+1);
-            }
-            child[2].c_cast_expression = root.c_mult_expression->right;
-            print_ast(child[2], NT_CAST_EXPRESSION, cur_level+1);
-        break;
+    //             child[1].c_mult_operator = root.c_mult_expression->type;
+    //             print_ast(child[1], NT_MULT_OPERATOR, cur_level+1);
+    //         }
+    //         child[2].c_cast_expression = root.c_mult_expression->right;
+    //         print_ast(child[2], NT_CAST_EXPRESSION, cur_level+1);
+    //     break;
 
-        case NT_CAST_EXPRESSION:
-            spaces(cur_level);
-            printf("Cast Expression\n");
+    //     case NT_CAST_EXPRESSION:
+    //         spaces(cur_level);
+    //         printf("Cast Expression\n");
 
-            if (root.c_cast_expression->left) {
-                child[0].c_cast_expression = root.c_cast_expression->left;
-                print_ast(child[0], NT_CAST_EXPRESSION, cur_level+1);
+    //         if (root.c_cast_expression->left) {
+    //             child[0].c_cast_expression = root.c_cast_expression->left;
+    //             print_ast(child[0], NT_CAST_EXPRESSION, cur_level+1);
 
-                child[1].c_primitive_type = root.c_cast_expression->type;
-                print_ast(child[1], NT_PRIMITIVE_TYPE, cur_level+1);
-            }
-            child[2].c_unary_expression = root.c_cast_expression->right;
-            print_ast(child[2], NT_UNARY_EXPRESSION, cur_level+1);
-        break;
+    //             child[1].c_primitive_type = root.c_cast_expression->type;
+    //             print_ast(child[1], NT_PRIMITIVE_TYPE, cur_level+1);
+    //         }
+    //         child[2].c_unary_expression = root.c_cast_expression->right;
+    //         print_ast(child[2], NT_UNARY_EXPRESSION, cur_level+1);
+    //     break;
 
-        case NT_UNARY_EXPRESSION:
-            spaces(cur_level);
-            printf("Unary Expression\n");
+    //     case NT_UNARY_EXPRESSION:
+    //         spaces(cur_level);
+    //         printf("Unary Expression\n");
 
-            if (root.c_unary_expression->left) {
-                child[0].c_unary_expression = root.c_unary_expression->left;
-                print_ast(child[0], NT_UNARY_EXPRESSION, cur_level+1);
+    //         if (root.c_unary_expression->left) {
+    //             child[0].c_unary_expression = root.c_unary_expression->left;
+    //             print_ast(child[0], NT_UNARY_EXPRESSION, cur_level+1);
 
-                child[1].c_unary_expression_type = root.c_unary_expression->type;
-                print_ast(child[1], NT_UNARY_EXPRESSION_TYPE, cur_level+1);
-            }
-            child[2].c_postfix_expression = root.c_unary_expression->right;
-            print_ast(child[2], NT_POSTFIX_EXPRESSION, cur_level+1);
-        break;
+    //             child[1].c_unary_expression_type = root.c_unary_expression->type;
+    //             print_ast(child[1], NT_UNARY_EXPRESSION_TYPE, cur_level+1);
+    //         }
+    //         child[2].c_postfix_expression = root.c_unary_expression->right;
+    //         print_ast(child[2], NT_POSTFIX_EXPRESSION, cur_level+1);
+    //     break;
 
-        case NT_POSTFIX_EXPRESSION:
-            spaces(cur_level);
-            printf("Postfix Expression\n");
+    //     case NT_POSTFIX_EXPRESSION:
+    //         spaces(cur_level);
+    //         printf("Postfix Expression\n");
 
-            if (root.c_postfix_expression->left) {
-                child[0].c_postfix_expression = root.c_postfix_expression->left;
-                print_ast(child[0], NT_POSTFIX_EXPRESSION, cur_level+1);
+    //         if (root.c_postfix_expression->left) {
+    //             child[0].c_postfix_expression = root.c_postfix_expression->left;
+    //             print_ast(child[0], NT_POSTFIX_EXPRESSION, cur_level+1);
                 
-                spaces(cur_level+1);
-                if (root.c_postfix_expression->type == ARRAY_ACCESS) {
-                    child[1].c_expression = root.c_postfix_expression->member.array_index;
-                    print_ast(child[1], NT_EXPRESSION, cur_level+1);
-                } else {
-                    child[1].c_param_vals = root.c_postfix_expression->member.function_params;
-                    print_ast(child[1], NT_PARAM_VALS, cur_level+1);
-                }    
-            }
-            child[2].c_primary_expression = root.c_postfix_expression->primary;
-            print_ast(child[2], NT_PRIMARY_EXPRESSION, cur_level+1);
-        break;
+    //             spaces(cur_level+1);
+    //             if (root.c_postfix_expression->type == ARRAY_ACCESS) {
+    //                 child[1].c_expression = root.c_postfix_expression->member.array_index;
+    //                 print_ast(child[1], NT_EXPRESSION, cur_level+1);
+    //             } else {
+    //                 child[1].c_param_vals = root.c_postfix_expression->member.function_params;
+    //                 print_ast(child[1], NT_PARAM_VALS, cur_level+1);
+    //             }    
+    //         }
+    //         child[2].c_primary_expression = root.c_postfix_expression->primary;
+    //         print_ast(child[2], NT_PRIMARY_EXPRESSION, cur_level+1);
+    //     break;
 
-        case NT_PRIMARY_EXPRESSION:
-            spaces(cur_level);
-            printf("Primary expression\n");
+    //     case NT_PRIMARY_EXPRESSION:
+    //         spaces(cur_level);
+    //         printf("Primary expression\n");
 
-            switch(root.c_primary_expression->type) {
-                case IDENTIFIER_PRIMARY_EXPRESSION:
-                child[0].string_val = root.c_primary_expression->member.identifier;
-                print_ast(child[0], NT_IDENTIFIER, cur_level+1);
-                break;
-                case CONSTANT_PRIMARY_EXPRESSION:
-                child[0].c_constant = root.c_primary_expression->member.constant;
-                print_ast(child[0], NT_CONSTANT, cur_level+1);
-                break;
-                case STRING_PRIMARY_EXPRESSION:
-                child[0].string_val = root.c_primary_expression->member.string;
-                print_ast(child[0], NT_STRING, cur_level+1);
-                break;
-                case NESTED_PRIMARY_EXPRESSION:
-                child[0].c_expression = root.c_primary_expression->member.expression;
-                print_ast(child[0], NT_EXPRESSION, cur_level+1);
-                break;
-            }
-        break;
+    //         switch(root.c_primary_expression->type) {
+    //             case IDENTIFIER_PRIMARY_EXPRESSION:
+    //             child[0].string_val = root.c_primary_expression->member.identifier;
+    //             print_ast(child[0], NT_IDENTIFIER, cur_level+1);
+    //             break;
+    //             case CONSTANT_PRIMARY_EXPRESSION:
+    //             child[0].c_constant = root.c_primary_expression->member.constant;
+    //             print_ast(child[0], NT_CONSTANT, cur_level+1);
+    //             break;
+    //             case STRING_PRIMARY_EXPRESSION:
+    //             child[0].string_val = root.c_primary_expression->member.string;
+    //             print_ast(child[0], NT_STRING, cur_level+1);
+    //             break;
+    //             case NESTED_PRIMARY_EXPRESSION:
+    //             child[0].c_expression = root.c_primary_expression->member.expression;
+    //             print_ast(child[0], NT_EXPRESSION, cur_level+1);
+    //             break;
+    //         }
+    //     break;
 
-        case NT_CONSTANT:
-            spaces(cur_level);
-            printf("Constant\n");
+    //     case NT_CONSTANT:
+    //         spaces(cur_level);
+    //         printf("Constant\n");
 
-            switch(root.c_constant->type) {
-                case INTEGER_CONSTANT:
-                    spaces(cur_level+1);
-                    printf("Integer %lld\n", (long long)root.c_constant->member.integer_val);
-                break;
+    //         switch(root.c_constant->type) {
+    //             case INTEGER_CONSTANT:
+    //                 spaces(cur_level+1);
+    //                 printf("Integer %lld\n", (long long)root.c_constant->member.integer_val);
+    //             break;
 
-                case CHAR_CONSTANT:
-                    spaces(cur_level+1);
-                    printf("Char %c\n", root.c_constant->member.char_val);
-                break;
+    //             case CHAR_CONSTANT:
+    //                 spaces(cur_level+1);
+    //                 printf("Char %c\n", root.c_constant->member.char_val);
+    //             break;
 
-                case REAL_CONSTANT:
-                    spaces(cur_level+1);
-                    printf("Real %lf\n", root.c_constant->member.float_val);
-                break;
-            }
-        break;
+    //             case REAL_CONSTANT:
+    //                 spaces(cur_level+1);
+    //                 printf("Real %lf\n", root.c_constant->member.float_val);
+    //             break;
+    //         }
+    //     break;
 
-        case NT_PARAM_VALS:
-            if (root.c_param_vals == NULL) return;
+    //     case NT_PARAM_VALS:
+    //         if (root.c_param_vals == NULL) return;
 
-            if (root.c_param_vals->prev) {
-                child[0].c_param_vals = root.c_param_vals->prev;
-                print_ast(child[0], NT_PARAM_VALS, cur_level);
-            } else {
-                // print only at beginning of declaration list
-                spaces(cur_level);
-                printf("Parameter Values\n");
-            }
+    //         if (root.c_param_vals->prev) {
+    //             child[0].c_param_vals = root.c_param_vals->prev;
+    //             print_ast(child[0], NT_PARAM_VALS, cur_level);
+    //         } else {
+    //             // print only at beginning of declaration list
+    //             spaces(cur_level);
+    //             printf("Parameter Values\n");
+    //         }
 
-            if (root.c_param_vals->cur) {
-                child[1].c_expression = root.c_param_vals->cur;
-                print_ast(child[1], NT_EXPRESSION, cur_level+1);
-            }
-        break;
+    //         if (root.c_param_vals->cur) {
+    //             child[1].c_expression = root.c_param_vals->cur;
+    //             print_ast(child[1], NT_EXPRESSION, cur_level+1);
+    //         }
+    //     break;
 
-        case NT_STRING:
-            spaces(cur_level);
-            printf("String %s\n", root.string_val);
-        break;
+    //     case NT_STRING:
+    //         spaces(cur_level);
+    //         printf("String %s\n", root.string_val);
+    //     break;
 
-        case NT_IDENTIFIER:
-            spaces(cur_level);
-            printf("Identifier %s\n", root.string_val);
-        break;
+    //     case NT_IDENTIFIER:
+    //         spaces(cur_level);
+    //         printf("Identifier %s\n", root.string_val);
+    //     break;
 
-        default:
-            printf("SHOULD NOT HAPPEN!\n");
-            exit(1);
+    //     default:
+    //         printf("SHOULD NOT HAPPEN!\n");
+    //         exit(1);
 
-    }
+    // }
 }
 
 void free_ast(node root, node_type type) {
     node child[10];
     memset(child, 0, sizeof child);
 
-    switch(type) {
-         case NT_PROGRAM:
-            child[0].c_declaration_list = root.c_program->declaration_list;
-            free_ast(child[0], NT_DECLARATION_LIST);
-            free(root.c_program);
-        break;
+    // switch(type) {
+    //      case NT_PROGRAM:
+    //         child[0].c_declaration_list = root.c_program->declaration_list;
+    //         free_ast(child[0], NT_DECLARATION_LIST);
+    //         free(root.c_program);
+    //     break;
 
-        case NT_DECLARATION_LIST:
-            if (root.c_declaration_list->cur) {
-                child[1].c_declaration = root.c_declaration_list->cur;
-                free_ast(child[1], NT_DECLARATION);
-            }
+    //     case NT_DECLARATION_LIST:
+    //         if (root.c_declaration_list->cur) {
+    //             child[1].c_declaration = root.c_declaration_list->cur;
+    //             free_ast(child[1], NT_DECLARATION);
+    //         }
 
-            if (root.c_declaration_list->prev) {
-                child[0].c_declaration_list = root.c_declaration_list->prev;
-                free_ast(child[0], NT_DECLARATION_LIST);
-            }
+    //         if (root.c_declaration_list->prev) {
+    //             child[0].c_declaration_list = root.c_declaration_list->prev;
+    //             free_ast(child[0], NT_DECLARATION_LIST);
+    //         }
 
-            free(root.c_declaration_list);
-        break;
+    //         free(root.c_declaration_list);
+    //     break;
 
-        case NT_DECLARATION:
-            if (root.c_declaration->type == VAR_DECLARATION) {
-                child[0].c_variable = root.c_declaration->member.variable;
-                free_ast(child[0], NT_VARIABLE);
-            } else if (root.c_declaration->type == FUN_DECLARATION) {
-                child[0].c_function = root.c_declaration->member.function;
-                free_ast(child[0], NT_FUNCTION);
-            }
+    //     case NT_DECLARATION:
+    //         if (root.c_declaration->type == VAR_DECLARATION) {
+    //             child[0].c_variable = root.c_declaration->member.variable;
+    //             free_ast(child[0], NT_VARIABLE);
+    //         } else if (root.c_declaration->type == FUN_DECLARATION) {
+    //             child[0].c_function = root.c_declaration->member.function;
+    //             free_ast(child[0], NT_FUNCTION);
+    //         }
 
-            free(root.c_declaration);
-        break;
+    //         free(root.c_declaration);
+    //     break;
 
-        case NT_VARIABLE:
-            child[1].string_val = root.c_variable->identifier;
-            free_ast(child[1], NT_IDENTIFIER);
+    //     case NT_VARIABLE:
+    //         child[1].string_val = root.c_variable->identifier;
+    //         free_ast(child[1], NT_IDENTIFIER);
 
-            free(root.c_variable);
-        break;
+    //         free(root.c_variable);
+    //     break;
 
-        case NT_FUNCTION:
-            child[1].string_val = root.c_function->identifier;
-            free_ast(child[1], NT_IDENTIFIER);   
+    //     case NT_FUNCTION:
+    //         child[1].string_val = root.c_function->identifier;
+    //         free_ast(child[1], NT_IDENTIFIER);   
 
-            child[2].c_function_params = root.c_function->params;
-            free_ast(child[2], NT_FUNCTION_PARAMS);
+    //         child[2].c_function_params = root.c_function->params;
+    //         free_ast(child[2], NT_FUNCTION_PARAMS);
 
-            child[3].c_scope = root.c_function->body;
-            free_ast(child[3], NT_SCOPE);
+    //         child[3].c_scope = root.c_function->body;
+    //         free_ast(child[3], NT_SCOPE);
             
-            free(root.c_function);
-        break;
+    //         free(root.c_function);
+    //     break;
 
-        case NT_FUNCTION_PARAMS:
-            if (root.c_function_params == NULL) return;
+    //     case NT_FUNCTION_PARAMS:
+    //         if (root.c_function_params == NULL) return;
 
-            if (root.c_function_params->cur) {
-                child[1].c_variable = root.c_function_params->cur;
-                free_ast(child[1], NT_VARIABLE);
-            }
+    //         if (root.c_function_params->cur) {
+    //             child[1].c_variable = root.c_function_params->cur;
+    //             free_ast(child[1], NT_VARIABLE);
+    //         }
             
-            if (root.c_function_params->prev) {
-                child[0].c_function_params = root.c_function_params->prev;
-                free_ast(child[0], NT_FUNCTION_PARAMS);
-            }
+    //         if (root.c_function_params->prev) {
+    //             child[0].c_function_params = root.c_function_params->prev;
+    //             free_ast(child[0], NT_FUNCTION_PARAMS);
+    //         }
             
-            free(root.c_function_params);
-        break;
+    //         free(root.c_function_params);
+    //     break;
 
-        case NT_SCOPE:
-            child[0].c_statement_list = root.c_scope->statements;
-            free_ast(child[0], NT_STATEMENT_LIST);
+    //     case NT_SCOPE:
+    //         child[0].c_statement_list = root.c_scope->statements;
+    //         free_ast(child[0], NT_STATEMENT_LIST);
 
-            free(root.c_scope);
-        break;
+    //         free(root.c_scope);
+    //     break;
 
-        case NT_STATEMENT_LIST:
-            if (root.c_statement_list == NULL) return;
+    //     case NT_STATEMENT_LIST:
+    //         if (root.c_statement_list == NULL) return;
 
-            if (root.c_statement_list->cur) {
-                child[1].c_statement = root.c_statement_list->cur;
-                free_ast(child[1], NT_STATEMENT);
-            }
+    //         if (root.c_statement_list->cur) {
+    //             child[1].c_statement = root.c_statement_list->cur;
+    //             free_ast(child[1], NT_STATEMENT);
+    //         }
             
-            if (root.c_statement_list->prev) {
-                child[0].c_statement_list = root.c_statement_list->prev;
-                free_ast(child[0], NT_STATEMENT_LIST);
-            }
+    //         if (root.c_statement_list->prev) {
+    //             child[0].c_statement_list = root.c_statement_list->prev;
+    //             free_ast(child[0], NT_STATEMENT_LIST);
+    //         }
 
-            free(root.c_statement_list);
-        break;
+    //         free(root.c_statement_list);
+    //     break;
 
-        case NT_STATEMENT:
-            switch (root.c_statement->type) {
-                case SCOPE_STATEMENT:
-                    child[0].c_scope = root.c_statement->member.scope;
-                    free_ast(child[0], NT_SCOPE);
-                break;
+    //     case NT_STATEMENT:
+    //         switch (root.c_statement->type) {
+    //             case SCOPE_STATEMENT:
+    //                 child[0].c_scope = root.c_statement->member.scope;
+    //                 free_ast(child[0], NT_SCOPE);
+    //             break;
 
-                case VAR_DECLARATION_STATEMENT:
-                    child[0].c_variable = root.c_statement->member.variable;
-                    free_ast(child[0], NT_DECLARATION);
-                break;
+    //             case VAR_DECLARATION_STATEMENT:
+    //                 child[0].c_variable = root.c_statement->member.variable;
+    //                 free_ast(child[0], NT_DECLARATION);
+    //             break;
 
-                case PRINT_STATEMENT:
-                    child[0].c_print = root.c_statement->member.print;
-                    free_ast(child[0], NT_PRINT);
-                break;
+    //             case PRINT_STATEMENT:
+    //                 child[0].c_print = root.c_statement->member.print;
+    //                 free_ast(child[0], NT_PRINT);
+    //             break;
 
-                case SCAN_STATEMENT:
-                    child[0].c_scan = root.c_statement->member.scan;
-                    free_ast(child[0], NT_SCAN);
-                break;
+    //             case SCAN_STATEMENT:
+    //                 child[0].c_scan = root.c_statement->member.scan;
+    //                 free_ast(child[0], NT_SCAN);
+    //             break;
 
-                case EXPRESSION_STATEMENT:
-                    child[0].c_expression = root.c_statement->member.expression;
-                    free_ast(child[0], NT_EXPRESSION);
-                break;
+    //             case EXPRESSION_STATEMENT:
+    //                 child[0].c_expression = root.c_statement->member.expression;
+    //                 free_ast(child[0], NT_EXPRESSION);
+    //             break;
 
-                case CONDITION_STATEMENT:
-                    child[0].c_condition = root.c_statement->member.condition;
-                    free_ast(child[0], NT_CONDITION);
-                break;
+    //             case CONDITION_STATEMENT:
+    //                 child[0].c_condition = root.c_statement->member.condition;
+    //                 free_ast(child[0], NT_CONDITION);
+    //             break;
 
-                case ITERATION_STATEMENT:
-                    child[0].c_iteration = root.c_statement->member.iteration;
-                    free_ast(child[0], NT_ITERATION);
-                break;
+    //             case ITERATION_STATEMENT:
+    //                 child[0].c_iteration = root.c_statement->member.iteration;
+    //                 free_ast(child[0], NT_ITERATION);
+    //             break;
 
-                case RETURN_STATEMENT:
-                    child[0].c_return = root.c_statement->member._return;
-                    free_ast(child[0], NT_RETURN);
-                break;
-            }
+    //             case RETURN_STATEMENT:
+    //                 child[0].c_return = root.c_statement->member._return;
+    //                 free_ast(child[0], NT_RETURN);
+    //             break;
+    //         }
 
-            free(root.c_statement);
-        break;
+    //         free(root.c_statement);
+    //     break;
 
-        case NT_PRINT:
-            child[1].c_expression = root.c_print->expression;
-            free_ast(child[1], NT_EXPRESSION);
+    //     case NT_PRINT:
+    //         child[1].c_expression = root.c_print->expression;
+    //         free_ast(child[1], NT_EXPRESSION);
 
-            free(root.c_print);
-        break;
+    //         free(root.c_print);
+    //     break;
 
-        case NT_SCAN:
-            child[1].string_val = root.c_scan->destiny;
-            free_ast(child[1], NT_IDENTIFIER);
+    //     case NT_SCAN:
+    //         child[1].string_val = root.c_scan->destiny;
+    //         free_ast(child[1], NT_IDENTIFIER);
 
-            free(root.c_scan);
-        break;
+    //         free(root.c_scan);
+    //     break;
 
-        case NT_RETURN:
-            if (root.c_return->expression) {
-                child[0].c_expression = root.c_return->expression;
-                free_ast(child[0], NT_EXPRESSION);
-            }
+    //     case NT_RETURN:
+    //         if (root.c_return->expression) {
+    //             child[0].c_expression = root.c_return->expression;
+    //             free_ast(child[0], NT_EXPRESSION);
+    //         }
 
-            free(root.c_return);
-        break;
+    //         free(root.c_return);
+    //     break;
 
-        case NT_EXPRESSION:
-            if (root.c_expression == NULL) return;
+    //     case NT_EXPRESSION:
+    //         if (root.c_expression == NULL) return;
 
-            child[0].c_assignment = root.c_expression->assignment;
-            free_ast(child[0], NT_ASSIGNMENT);
+    //         child[0].c_assignment = root.c_expression->assignment;
+    //         free_ast(child[0], NT_ASSIGNMENT);
 
-            free(root.c_expression);
-        break;
+    //         free(root.c_expression);
+    //     break;
 
-        case NT_CONDITION:
-            child[0].c_expression = root.c_condition->condition;
-            free_ast(child[0], NT_EXPRESSION);
+    //     case NT_CONDITION:
+    //         child[0].c_expression = root.c_condition->condition;
+    //         free_ast(child[0], NT_EXPRESSION);
 
-            child[1].c_statement = root.c_condition->body;
-            free_ast(child[1], NT_STATEMENT);
+    //         child[1].c_statement = root.c_condition->body;
+    //         free_ast(child[1], NT_STATEMENT);
 
-            if (root.c_condition->else_body) {
-                child[2].c_statement = root.c_condition->else_body;
-                free_ast(child[2], NT_STATEMENT);
-            }
+    //         if (root.c_condition->else_body) {
+    //             child[2].c_statement = root.c_condition->else_body;
+    //             free_ast(child[2], NT_STATEMENT);
+    //         }
 
-            free(root.c_condition);
-        break;
+    //         free(root.c_condition);
+    //     break;
 
-        case NT_ITERATION:
-            if (root.c_iteration->initialization) {
-                child[0].c_expression = root.c_iteration->initialization;
-                free_ast(child[0], NT_EXPRESSION);
-            }
-            if (root.c_iteration->condition) {
-                child[1].c_expression = root.c_iteration->condition;
-                free_ast(child[1], NT_EXPRESSION);
-            }
-            if (root.c_iteration->step) {
-                child[2].c_expression = root.c_iteration->step;
-                free_ast(child[2], NT_EXPRESSION);
-            }
-            child[3].c_statement = root.c_iteration->body;
-            free_ast(child[3], NT_STATEMENT);
+    //     case NT_ITERATION:
+    //         if (root.c_iteration->initialization) {
+    //             child[0].c_expression = root.c_iteration->initialization;
+    //             free_ast(child[0], NT_EXPRESSION);
+    //         }
+    //         if (root.c_iteration->condition) {
+    //             child[1].c_expression = root.c_iteration->condition;
+    //             free_ast(child[1], NT_EXPRESSION);
+    //         }
+    //         if (root.c_iteration->step) {
+    //             child[2].c_expression = root.c_iteration->step;
+    //             free_ast(child[2], NT_EXPRESSION);
+    //         }
+    //         child[3].c_statement = root.c_iteration->body;
+    //         free_ast(child[3], NT_STATEMENT);
 
-            free(root.c_iteration);
-        break;
+    //         free(root.c_iteration);
+    //     break;
 
-        case NT_ASSIGNMENT:
-            if (root.c_assignment->identifier) {
-                child[0].string_val = root.c_assignment->identifier;
-                free_ast(child[0], NT_IDENTIFIER);
-            }
+    //     case NT_ASSIGNMENT:
+    //         if (root.c_assignment->identifier) {
+    //             child[0].string_val = root.c_assignment->identifier;
+    //             free_ast(child[0], NT_IDENTIFIER);
+    //         }
 
-            child[2].c_and_expression = root.c_assignment->and_expression;
-            free_ast(child[2], NT_AND_EXPRESSION);
+    //         child[2].c_and_expression = root.c_assignment->and_expression;
+    //         free_ast(child[2], NT_AND_EXPRESSION);
 
-            free(root.c_assignment);
-        break;
+    //         free(root.c_assignment);
+    //     break;
 
-        case NT_AND_EXPRESSION:
-            if (root.c_and_expression->left) {
-                child[0].c_and_expression = root.c_and_expression->left;
-                free_ast(child[0], NT_AND_EXPRESSION);
-            }
-            child[1].c_or_expression = root.c_and_expression->right;
-            free_ast(child[1], NT_OR_EXPRESSION);
+    //     case NT_AND_EXPRESSION:
+    //         if (root.c_and_expression->left) {
+    //             child[0].c_and_expression = root.c_and_expression->left;
+    //             free_ast(child[0], NT_AND_EXPRESSION);
+    //         }
+    //         child[1].c_or_expression = root.c_and_expression->right;
+    //         free_ast(child[1], NT_OR_EXPRESSION);
 
-            free(root.c_and_expression);
-        break;
+    //         free(root.c_and_expression);
+    //     break;
 
-        case NT_OR_EXPRESSION:
+    //     case NT_OR_EXPRESSION:
 
-            if (root.c_or_expression->left) {
-                child[0].c_or_expression = root.c_or_expression->left;
-                free_ast(child[0], NT_OR_EXPRESSION);
-            }
-            child[1].c_bw_and_expression = root.c_or_expression->right;
-            free_ast(child[1], NT_BW_AND_EXPRESSION);
+    //         if (root.c_or_expression->left) {
+    //             child[0].c_or_expression = root.c_or_expression->left;
+    //             free_ast(child[0], NT_OR_EXPRESSION);
+    //         }
+    //         child[1].c_bw_and_expression = root.c_or_expression->right;
+    //         free_ast(child[1], NT_BW_AND_EXPRESSION);
             
-            free(root.c_or_expression);
-        break;
+    //         free(root.c_or_expression);
+    //     break;
 
-        case NT_BW_AND_EXPRESSION:
+    //     case NT_BW_AND_EXPRESSION:
 
-            if (root.c_bw_and_expression->left) {
-                child[0].c_bw_and_expression = root.c_bw_and_expression->left;
-                free_ast(child[0], NT_BW_AND_EXPRESSION);
-            }
-            child[1].c_bw_or_expression = root.c_bw_and_expression->right;
-            free_ast(child[1], NT_BW_OR_EXPRESSION);
+    //         if (root.c_bw_and_expression->left) {
+    //             child[0].c_bw_and_expression = root.c_bw_and_expression->left;
+    //             free_ast(child[0], NT_BW_AND_EXPRESSION);
+    //         }
+    //         child[1].c_bw_or_expression = root.c_bw_and_expression->right;
+    //         free_ast(child[1], NT_BW_OR_EXPRESSION);
             
-            free(root.c_bw_and_expression);
-        break;
+    //         free(root.c_bw_and_expression);
+    //     break;
 
-        case NT_BW_OR_EXPRESSION:
+    //     case NT_BW_OR_EXPRESSION:
 
-            if (root.c_bw_or_expression->left) {
-                child[0].c_bw_or_expression = root.c_bw_or_expression->left;
-                free_ast(child[0], NT_BW_OR_EXPRESSION);
-            }
-            child[1].c_bw_xor_expression = root.c_bw_or_expression->right;
-            free_ast(child[1], NT_BW_XOR_EXPRESSION);
+    //         if (root.c_bw_or_expression->left) {
+    //             child[0].c_bw_or_expression = root.c_bw_or_expression->left;
+    //             free_ast(child[0], NT_BW_OR_EXPRESSION);
+    //         }
+    //         child[1].c_bw_xor_expression = root.c_bw_or_expression->right;
+    //         free_ast(child[1], NT_BW_XOR_EXPRESSION);
             
-            free(root.c_bw_or_expression);
-        break;
+    //         free(root.c_bw_or_expression);
+    //     break;
 
-        case NT_BW_XOR_EXPRESSION:
+    //     case NT_BW_XOR_EXPRESSION:
 
-            if (root.c_bw_xor_expression->left) {
-                child[0].c_bw_xor_expression = root.c_bw_xor_expression->left;
-                free_ast(child[0], NT_BW_XOR_EXPRESSION);
-            }
-            child[1].c_eq_expression = root.c_bw_xor_expression->right;
-            free_ast(child[1], NT_EQ_EXPRESSION);
+    //         if (root.c_bw_xor_expression->left) {
+    //             child[0].c_bw_xor_expression = root.c_bw_xor_expression->left;
+    //             free_ast(child[0], NT_BW_XOR_EXPRESSION);
+    //         }
+    //         child[1].c_eq_expression = root.c_bw_xor_expression->right;
+    //         free_ast(child[1], NT_EQ_EXPRESSION);
             
-            free(root.c_bw_xor_expression);
-        break;
+    //         free(root.c_bw_xor_expression);
+    //     break;
 
-        case NT_EQ_EXPRESSION:
+    //     case NT_EQ_EXPRESSION:
 
-            if (root.c_eq_expression->left) {
-                child[0].c_eq_expression = root.c_eq_expression->left;
-                free_ast(child[0], NT_EQ_EXPRESSION);
-            }
-            child[1].c_rel_expression = root.c_eq_expression->right;
-            free_ast(child[1], NT_REL_EXPRESSION);
+    //         if (root.c_eq_expression->left) {
+    //             child[0].c_eq_expression = root.c_eq_expression->left;
+    //             free_ast(child[0], NT_EQ_EXPRESSION);
+    //         }
+    //         child[1].c_rel_expression = root.c_eq_expression->right;
+    //         free_ast(child[1], NT_REL_EXPRESSION);
             
-            free(root.c_eq_expression);
-        break;
+    //         free(root.c_eq_expression);
+    //     break;
 
-        case NT_REL_EXPRESSION:
+    //     case NT_REL_EXPRESSION:
 
-            if (root.c_rel_expression->left) {
-                child[0].c_rel_expression = root.c_rel_expression->left;
-                free_ast(child[0], NT_REL_EXPRESSION);
-            }
-            child[1].c_shift_expression = root.c_rel_expression->right;
-            free_ast(child[1], NT_SHIFT_EXPRESSION);
+    //         if (root.c_rel_expression->left) {
+    //             child[0].c_rel_expression = root.c_rel_expression->left;
+    //             free_ast(child[0], NT_REL_EXPRESSION);
+    //         }
+    //         child[1].c_shift_expression = root.c_rel_expression->right;
+    //         free_ast(child[1], NT_SHIFT_EXPRESSION);
             
-            free(root.c_rel_expression);
-        break;
+    //         free(root.c_rel_expression);
+    //     break;
 
-        case NT_SHIFT_EXPRESSION:
+    //     case NT_SHIFT_EXPRESSION:
 
-            if (root.c_shift_expression->left) {
-                child[0].c_shift_expression = root.c_shift_expression->left;
-                free_ast(child[0], NT_SHIFT_EXPRESSION);
-            }
-            child[1].c_set_rm_expression = root.c_shift_expression->right;
-            free_ast(child[1], NT_SET_RM_EXPRESSION);
+    //         if (root.c_shift_expression->left) {
+    //             child[0].c_shift_expression = root.c_shift_expression->left;
+    //             free_ast(child[0], NT_SHIFT_EXPRESSION);
+    //         }
+    //         child[1].c_set_rm_expression = root.c_shift_expression->right;
+    //         free_ast(child[1], NT_SET_RM_EXPRESSION);
             
-            free(root.c_shift_expression);
-        break;
+    //         free(root.c_shift_expression);
+    //     break;
 
-        case NT_SET_RM_EXPRESSION:
+    //     case NT_SET_RM_EXPRESSION:
 
-            if (root.c_set_rm_expression->left) {
-                child[0].c_set_rm_expression = root.c_set_rm_expression->left;
-                free_ast(child[0], NT_SET_RM_EXPRESSION);
-            }
-            child[1].c_add_expression = root.c_set_rm_expression->right;
-            free_ast(child[1], NT_ADD_EXPRESSION);
+    //         if (root.c_set_rm_expression->left) {
+    //             child[0].c_set_rm_expression = root.c_set_rm_expression->left;
+    //             free_ast(child[0], NT_SET_RM_EXPRESSION);
+    //         }
+    //         child[1].c_add_expression = root.c_set_rm_expression->right;
+    //         free_ast(child[1], NT_ADD_EXPRESSION);
             
-            free(root.c_set_rm_expression);
-        break;
+    //         free(root.c_set_rm_expression);
+    //     break;
 
-        case NT_ADD_EXPRESSION:
+    //     case NT_ADD_EXPRESSION:
 
-            if (root.c_add_expression->left) {
-                child[0].c_add_expression = root.c_add_expression->left;
-                free_ast(child[0], NT_ADD_EXPRESSION);
-            }
-            child[1].c_mult_expression = root.c_add_expression->right;
-            free_ast(child[1], NT_MULT_EXPRESSION);
+    //         if (root.c_add_expression->left) {
+    //             child[0].c_add_expression = root.c_add_expression->left;
+    //             free_ast(child[0], NT_ADD_EXPRESSION);
+    //         }
+    //         child[1].c_mult_expression = root.c_add_expression->right;
+    //         free_ast(child[1], NT_MULT_EXPRESSION);
             
-            free(root.c_add_expression);
-        break;
+    //         free(root.c_add_expression);
+    //     break;
 
-        case NT_MULT_EXPRESSION:
+    //     case NT_MULT_EXPRESSION:
 
-            if (root.c_mult_expression->left) {
-                child[0].c_mult_expression = root.c_mult_expression->left;
-                free_ast(child[0], NT_MULT_EXPRESSION);
-            }
-            child[2].c_cast_expression = root.c_mult_expression->right;
-            free_ast(child[2], NT_CAST_EXPRESSION);
+    //         if (root.c_mult_expression->left) {
+    //             child[0].c_mult_expression = root.c_mult_expression->left;
+    //             free_ast(child[0], NT_MULT_EXPRESSION);
+    //         }
+    //         child[2].c_cast_expression = root.c_mult_expression->right;
+    //         free_ast(child[2], NT_CAST_EXPRESSION);
             
-            free(root.c_mult_expression);
-        break;
+    //         free(root.c_mult_expression);
+    //     break;
 
-        case NT_CAST_EXPRESSION:
+    //     case NT_CAST_EXPRESSION:
 
-            if (root.c_cast_expression->left) {
-                child[0].c_cast_expression = root.c_cast_expression->left;
-                free_ast(child[0], NT_CAST_EXPRESSION);
-            }
-            child[2].c_unary_expression = root.c_cast_expression->right;
-            free_ast(child[2], NT_UNARY_EXPRESSION);
+    //         if (root.c_cast_expression->left) {
+    //             child[0].c_cast_expression = root.c_cast_expression->left;
+    //             free_ast(child[0], NT_CAST_EXPRESSION);
+    //         }
+    //         child[2].c_unary_expression = root.c_cast_expression->right;
+    //         free_ast(child[2], NT_UNARY_EXPRESSION);
             
-            free(root.c_cast_expression);
-        break;
+    //         free(root.c_cast_expression);
+    //     break;
 
-        case NT_UNARY_EXPRESSION:
+    //     case NT_UNARY_EXPRESSION:
 
-            if (root.c_unary_expression->left) {
-                child[0].c_unary_expression = root.c_unary_expression->left;
-                free_ast(child[0], NT_UNARY_EXPRESSION);
-            }
-            child[2].c_postfix_expression = root.c_unary_expression->right;
-            free_ast(child[2], NT_POSTFIX_EXPRESSION);
+    //         if (root.c_unary_expression->left) {
+    //             child[0].c_unary_expression = root.c_unary_expression->left;
+    //             free_ast(child[0], NT_UNARY_EXPRESSION);
+    //         }
+    //         child[2].c_postfix_expression = root.c_unary_expression->right;
+    //         free_ast(child[2], NT_POSTFIX_EXPRESSION);
             
-            free(root.c_unary_expression);
-        break;
+    //         free(root.c_unary_expression);
+    //     break;
 
-        case NT_POSTFIX_EXPRESSION:
+    //     case NT_POSTFIX_EXPRESSION:
 
-            if (root.c_postfix_expression->left) {
-                child[0].c_postfix_expression = root.c_postfix_expression->left;
-                free_ast(child[0], NT_POSTFIX_EXPRESSION);
+    //         if (root.c_postfix_expression->left) {
+    //             child[0].c_postfix_expression = root.c_postfix_expression->left;
+    //             free_ast(child[0], NT_POSTFIX_EXPRESSION);
                 
-                if (root.c_postfix_expression->type == ARRAY_ACCESS) {
-                    child[1].c_expression = root.c_postfix_expression->member.array_index;
-                    free_ast(child[1], NT_EXPRESSION);
-                } else {
-                    child[1].c_param_vals = root.c_postfix_expression->member.function_params;
-                    free_ast(child[1], NT_PARAM_VALS);
-                }
-            }
-            child[2].c_primary_expression = root.c_postfix_expression->primary;
-            free_ast(child[2], NT_PRIMARY_EXPRESSION);
+    //             if (root.c_postfix_expression->type == ARRAY_ACCESS) {
+    //                 child[1].c_expression = root.c_postfix_expression->member.array_index;
+    //                 free_ast(child[1], NT_EXPRESSION);
+    //             } else {
+    //                 child[1].c_param_vals = root.c_postfix_expression->member.function_params;
+    //                 free_ast(child[1], NT_PARAM_VALS);
+    //             }
+    //         }
+    //         child[2].c_primary_expression = root.c_postfix_expression->primary;
+    //         free_ast(child[2], NT_PRIMARY_EXPRESSION);
             
-            free(root.c_postfix_expression);
-        break;
+    //         free(root.c_postfix_expression);
+    //     break;
 
-        case NT_PRIMARY_EXPRESSION:
+    //     case NT_PRIMARY_EXPRESSION:
 
-            switch(root.c_primary_expression->type) {
-                case IDENTIFIER_PRIMARY_EXPRESSION:
-                child[0].string_val = root.c_primary_expression->member.identifier;
-                free_ast(child[0], NT_IDENTIFIER);
-                break;
-                case CONSTANT_PRIMARY_EXPRESSION:
-                child[0].c_constant = root.c_primary_expression->member.constant;
-                free_ast(child[0], NT_CONSTANT);
-                break;
-                case STRING_PRIMARY_EXPRESSION:
-                child[0].string_val = root.c_primary_expression->member.string;
-                free_ast(child[0], NT_STRING);
-                break;
-                case NESTED_PRIMARY_EXPRESSION:
-                child[0].c_expression = root.c_primary_expression->member.expression;
-                free_ast(child[0], NT_EXPRESSION);
-                break;
-            }
+    //         switch(root.c_primary_expression->type) {
+    //             case IDENTIFIER_PRIMARY_EXPRESSION:
+    //             child[0].string_val = root.c_primary_expression->member.identifier;
+    //             free_ast(child[0], NT_IDENTIFIER);
+    //             break;
+    //             case CONSTANT_PRIMARY_EXPRESSION:
+    //             child[0].c_constant = root.c_primary_expression->member.constant;
+    //             free_ast(child[0], NT_CONSTANT);
+    //             break;
+    //             case STRING_PRIMARY_EXPRESSION:
+    //             child[0].string_val = root.c_primary_expression->member.string;
+    //             free_ast(child[0], NT_STRING);
+    //             break;
+    //             case NESTED_PRIMARY_EXPRESSION:
+    //             child[0].c_expression = root.c_primary_expression->member.expression;
+    //             free_ast(child[0], NT_EXPRESSION);
+    //             break;
+    //         }
             
-            free(root.c_primary_expression);
-        break;
+    //         free(root.c_primary_expression);
+    //     break;
 
-        case NT_CONSTANT:
-            free(root.c_constant);
-        break;
+    //     case NT_CONSTANT:
+    //         free(root.c_constant);
+    //     break;
 
-        case NT_PARAM_VALS:
-            if (root.c_param_vals == NULL) return;
+    //     case NT_PARAM_VALS:
+    //         if (root.c_param_vals == NULL) return;
 
-            if (root.c_param_vals->cur) {
-                child[1].c_expression = root.c_param_vals->cur;
-                free_ast(child[1], NT_EXPRESSION);
-            }
+    //         if (root.c_param_vals->cur) {
+    //             child[1].c_expression = root.c_param_vals->cur;
+    //             free_ast(child[1], NT_EXPRESSION);
+    //         }
 
-            if (root.c_param_vals->prev) {
-                child[0].c_param_vals = root.c_param_vals->prev;
-                free_ast(child[0], NT_PARAM_VALS);
-            }
+    //         if (root.c_param_vals->prev) {
+    //             child[0].c_param_vals = root.c_param_vals->prev;
+    //             free_ast(child[0], NT_PARAM_VALS);
+    //         }
             
-            free(root.c_param_vals);
-        break;
+    //         free(root.c_param_vals);
+    //     break;
 
-        case NT_STRING:
-            free(root.string_val);
-        break;
+    //     case NT_STRING:
+    //         free(root.string_val);
+    //     break;
 
-        case NT_IDENTIFIER:
-            free(root.string_val);
-        break;
+    //     case NT_IDENTIFIER:
+    //         free(root.string_val);
+    //     break;
 
-        default:
-            printf("SHOULD NOT HAPPEN!\n");
-            exit(1);
+    //     default:
+    //         printf("SHOULD NOT HAPPEN!\n");
+    //         exit(1);
 
-    }
+    // }
 }
