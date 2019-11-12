@@ -113,7 +113,6 @@ void free_ast(node root, node_type type);
 %type <c_variable> var-declaration;
 %type <c_function> fun-declaration;
 %type <c_function_params> param-decs;
-%type <c_function_param> param-dec;
 %type <c_scope> scope;
 %type <c_primitive_type> type;
 %type <c_statement_list> statement-list;
@@ -159,7 +158,7 @@ void free_ast(node root, node_type type);
 program:
     declaration-list {
         t_program* program = zero_allocate(t_program);
-        program->declarations = $1;
+        program->declaration_list = $1;
         ast_root.c_program = program;
         print_ast(ast_root, NT_PROGRAM, 0);
         print_symbol_table_list(sym_table);
@@ -180,7 +179,7 @@ declaration-list:
 ;
 
 declaration:
-    var-declaration {
+    var-declaration SEMICOLON {
         t_declaration* dec = zero_allocate(t_declaration);
         dec->type = VAR_DECLARATION;
         dec->member.variable = $1;
@@ -197,28 +196,28 @@ declaration:
 ;
 
 var-declaration:
-    type IDENTIFIER SEMICOLON {
+    type IDENTIFIER {
         t_variable* var = zero_allocate(t_variable);
         var->type = $1;
         var->structure = PRIMITIVE_TYPE;
         var->identifier = $2;
         $$ = var;
     }
-|   type IDENTIFIER LEFT_BRACKET INTEGER RIGHT_BRACKET SEMICOLON {
+|   type IDENTIFIER LEFT_BRACKET INTEGER RIGHT_BRACKET {
         t_variable* var = zero_allocate(t_variable);
         var->type = $1;
         var->structure = ARRAY_TYPE;
         var->identifier = $2;
         $$ = var;
     }
-|   type IDENTIFIER LEFT_BRACKET RIGHT_BRACKET SEMICOLON {
+|   type IDENTIFIER LEFT_BRACKET RIGHT_BRACKET {
         t_variable* var = zero_allocate(t_variable);
         var->type = $1;
         var->structure = ARRAY_TYPE;
         var->identifier = $2;
         $$ = var;
     }
-|   type IDENTIFIER LEFT_BRACE RIGHT_BRACE SEMICOLON {
+|   type IDENTIFIER LEFT_BRACE RIGHT_BRACE {
         t_variable* var = zero_allocate(t_variable);
         var->type = $1;
         var->structure = SET_TYPE;
@@ -249,49 +248,17 @@ fun-declaration:
 ;
 
 param-decs:
-    param-decs COMMA param-dec {
+    param-decs COMMA var-declaration {
         t_function_params* fp = zero_allocate(t_function_params);
         fp->cur = $3;
         fp->prev = $1;
         $$ = fp; 
     }
-|   param-dec {
+|   var-declaration {
         t_function_params* fp = zero_allocate(t_function_params);
         fp->cur = $1;
         fp->prev = NULL;
         $$ = fp; 
-    }
-;
-
-
-param-dec:
-    type IDENTIFIER {
-        t_function_param* var = zero_allocate(t_function_param);
-        var->type = $1;
-        var->structure = PRIMITIVE_TYPE;
-        var->identifier = $2;
-        $$ = var;
-    }
-|   type IDENTIFIER LEFT_BRACKET INTEGER RIGHT_BRACKET {
-        t_function_param* var = zero_allocate(t_function_param);
-        var->type = $1;
-        var->structure = ARRAY_TYPE;
-        var->identifier = $2;
-        $$ = var;
-    }
-|   type IDENTIFIER LEFT_BRACKET RIGHT_BRACKET {
-        t_function_param* var = zero_allocate(t_function_param);
-        var->type = $1;
-        var->structure = ARRAY_TYPE;
-        var->identifier = $2;
-        $$ = var;
-    }
-|   type IDENTIFIER LEFT_BRACE RIGHT_BRACE {
-        t_function_param* var = zero_allocate(t_function_param);
-        var->type = $1;
-        var->structure = SET_TYPE;
-        var->identifier = $2;
-        $$ = var;
     }
 ;
 
@@ -976,7 +943,7 @@ void print_ast(node root, node_type type, int cur_level) {
         case NT_PROGRAM:
             spaces(cur_level);
             printf("Program\n");
-            child[0].c_declaration_list = root.c_program->declarations;
+            child[0].c_declaration_list = root.c_program->declaration_list;
             print_ast(child[0], NT_DECLARATION_LIST, cur_level+1);
         break;
 
@@ -1040,15 +1007,15 @@ void print_ast(node root, node_type type, int cur_level) {
         case NT_FUNCTION_PARAM:
             spaces(cur_level);
             printf("Parameter");
-            switch(root.c_function_param->structure) {
+            switch(root.c_variable->structure) {
                 case ARRAY_TYPE: printf(" (array)"); break;
                 case SET_TYPE: printf(" (set)"); break;
                 case PRIMITIVE_TYPE: printf(" (primitive)"); break;
             }
             printf("\n");
-            child[0].c_primitive_type = root.c_function_param->type;
+            child[0].c_primitive_type = root.c_variable->type;
             print_ast(child[0], NT_PRIMITIVE_TYPE, cur_level+1);
-            child[1].string_val = root.c_function_param->identifier;
+            child[1].string_val = root.c_variable->identifier;
             print_ast(child[1], NT_IDENTIFIER, cur_level+1); 
         break;
 
@@ -1064,8 +1031,8 @@ void print_ast(node root, node_type type, int cur_level) {
             }
 
             if (root.c_function_params->cur) {
-                child[1].c_function_param = root.c_function_params->cur;
-                print_ast(child[1], NT_FUNCTION_PARAM, cur_level+1);
+                child[1].c_variable = root.c_function_params->cur;
+                print_ast(child[1], NT_VARIABLE, cur_level+1);
             }
         break;
 
@@ -1553,7 +1520,7 @@ void free_ast(node root, node_type type) {
 
     switch(type) {
          case NT_PROGRAM:
-            child[0].c_declaration_list = root.c_program->declarations;
+            child[0].c_declaration_list = root.c_program->declaration_list;
             free_ast(child[0], NT_DECLARATION_LIST);
             free(root.c_program);
         break;
@@ -1604,19 +1571,12 @@ void free_ast(node root, node_type type) {
             free(root.c_function);
         break;
 
-        case NT_FUNCTION_PARAM:
-            child[1].string_val = root.c_function_param->identifier;
-            free_ast(child[1], NT_IDENTIFIER); 
-
-            free(root.c_function_param);
-        break;
-
         case NT_FUNCTION_PARAMS:
             if (root.c_function_params == NULL) return;
 
             if (root.c_function_params->cur) {
-                child[1].c_function_param = root.c_function_params->cur;
-                free_ast(child[1], NT_FUNCTION_PARAM);
+                child[1].c_variable = root.c_function_params->cur;
+                free_ast(child[1], NT_VARIABLE);
             }
             
             if (root.c_function_params->prev) {

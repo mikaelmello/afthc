@@ -422,7 +422,7 @@ enum t_structure_type {
 };
 
 struct t_program {
-  t_declaration_list* declarations;
+  t_declaration_list* declaration_list;
 };
 
 struct t_declaration_list {
@@ -467,7 +467,7 @@ struct t_function {
 };
 
 struct t_function_params {
-  t_function_param* cur;
+  t_variable* cur;
   t_function_params* prev;
 };
 
@@ -520,7 +520,6 @@ typedef union node {
   t_declaration* c_declaration;
   t_variable* c_variable;
   t_function* c_function;
-  t_function_param* c_function_param;
   t_function_params* c_function_params;
   t_scope* c_scope;
   t_statement_list* c_statement_list;
