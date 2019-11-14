@@ -27,6 +27,6 @@ int main(int argc, char* argv[]) {
 
   sym_table = create_symbol_table_list();
   yyparse();
-  free_ast(ast_root, NT_PROGRAM);
+  // free_ast(ast_root, NT_PROGRAM);
   free_symbol_table_list(sym_table);
 }

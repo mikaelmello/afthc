@@ -140,7 +140,7 @@ union YYSTYPE
     t_variable* c_variable;
     t_function* c_function;
     t_function_params* c_function_params;
-    t_scope* c_scope;
+    t_brace_enclosed_scope* c_brace_enclosed_scope;
     t_statement_list* c_statement_list;
     t_statement* c_statement;
     t_print* c_print;

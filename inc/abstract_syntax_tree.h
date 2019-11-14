@@ -10,7 +10,7 @@ typedef struct t_function t_function;
 typedef struct t_function_params t_function_params;
 typedef struct t_set t_set;
 typedef struct t_variable t_variable;
-typedef struct t_scope t_scope;
+typedef struct t_brace_enclosed_scope t_brace_enclosed_scope;
 typedef struct t_statement_list t_statement_list;
 typedef struct t_statement t_statement;
 typedef struct t_print t_print;
@@ -51,7 +51,7 @@ typedef enum node_type {
   NT_VARIABLE,
   NT_FUNCTION,
   NT_FUNCTION_PARAMS,
-  NT_SCOPE,
+  NT_BRACE_ENCLOSED_SCOPE,
   NT_STATEMENT_LIST,
   NT_STATEMENT,
   NT_PRINT,
@@ -240,7 +240,7 @@ struct t_scan {
 };
 
 enum t_statement_type {
-  SCOPE_STATEMENT,
+  BRACE_ENCLOSED_SCOPE_STATEMENT,
   VAR_DECLARATION_STATEMENT,
   PRINT_STATEMENT,
   SCAN_STATEMENT,
@@ -254,7 +254,7 @@ struct t_statement {
   t_statement_type type;
 
   union {
-    t_scope* scope;
+    t_brace_enclosed_scope* scope;
     t_variable* variable;
     t_print* print;
     t_scan* scan;
@@ -265,7 +265,7 @@ struct t_statement {
   } member;
 };
 
-struct t_scope {
+struct t_brace_enclosed_scope {
   t_statement_list* statements;
 };
 
@@ -310,7 +310,7 @@ struct t_function {
   t_structure_type return_structure;
   char* identifier;
   t_function_params* params;
-  t_scope* body;
+  t_brace_enclosed_scope* body;
 
   union {
     int8_t (*byte_function)();
@@ -378,7 +378,7 @@ typedef union node {
   t_variable* c_variable;
   t_function* c_function;
   t_function_params* c_function_params;
-  t_scope* c_scope;
+  t_brace_enclosed_scope* c_brace_enclosed_scope;
   t_statement_list* c_statement_list;
   t_statement* c_statement;
   t_print* c_print;
