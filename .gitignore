@@ -279,3 +279,4 @@ TSWLatexianTemp*
 *tokenizer
 *.o
 *.output
+vgcore*

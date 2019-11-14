@@ -3,6 +3,7 @@
 
 #include <stdlib.h>
 #include "my_string.h"
+#include "symbol_table.h"
 
 typedef struct lexical_error {
   t_string* token;

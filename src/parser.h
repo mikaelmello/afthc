@@ -124,7 +124,7 @@ extern int yydebug;
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 53 "src/parser.y"
+#line 56 "src/parser.y"
 
     t_expression_type c_expression_type;
     t_primary_expression_type c_primary_expression_type;
@@ -153,6 +153,7 @@ union YYSTYPE
     t_postfix_expression* c_postfix_expression;
     t_primary_expression* c_primary_expression;
     t_cast_expression* c_cast_expression;
+    st_element_t* c_st_element;
     t_constant* c_constant;
     t_param_vals* c_param_vals;
     char* string_val;
@@ -160,7 +161,7 @@ union YYSTYPE
     double float_val;
     char char_val;
 
-#line 164 "src/parser.h"
+#line 165 "src/parser.h"
 
 };
 typedef union YYSTYPE YYSTYPE;

@@ -3,32 +3,41 @@
 
 #include "abstract_syntax_tree.h"
 
-typedef struct t_symbol_table_node t_symbol_table_node;
-typedef struct t_symbol_table_list t_symbol_table_list;
+typedef struct st_element_list_t st_element_list_t;
+typedef struct st_t st_t;
+typedef struct scope_t scope_t;
 
-struct t_symbol_table_node {
-  t_declaration* declaration;
-  t_symbol_table_node* next;
-  t_symbol_table_node* prev;
-};
-
-struct t_symbol_table_list {
-  t_symbol_table_node* head;
-  t_symbol_table_node* tail;
+struct st_element_list_t {
+  st_element_t* head;
+  st_element_t* tail;
   int size;
 };
 
-t_symbol_table_list* create_symbol_table_list();
+struct st_t {
+  st_element_list_t* list;
+};
 
-t_symbol_table_node* append_symbol_table_node(t_symbol_table_list* list,
-                                              t_declaration* declaration);
+st_element_t* st_element_create(t_declaration* declaration);
 
-void free_symbol_table_list(t_symbol_table_list* list);
+void st_element_free(st_element_t* element);
 
-void free_symbol_table_node(t_symbol_table_node* node);
+int st_element_compare(st_element_t* element, char* label);
 
-void print_symbol_table_list(t_symbol_table_list* list);
+st_element_list_t* st_element_list_create();
 
-void print_symbol_table_node(t_symbol_table_node* node);
+void st_element_list_free(st_element_list_t* list);
+
+st_element_t* st_element_list_add(st_element_list_t* list,
+                                  t_declaration* declaration);
+
+st_element_t* st_element_list_find(st_element_list_t* list, char* label);
+
+st_t* st_create();
+
+void st_free(st_t* symbol_table);
+
+st_element_t* st_add(st_t* symbol_table, t_declaration* declaration);
+
+st_element_t* st_find(st_t* symbol_table, char* label);
 
 #endif

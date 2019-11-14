@@ -3,6 +3,7 @@
 
 #include <stdint.h>
 
+typedef struct st_element_t st_element_t;
 typedef struct t_program t_program;
 typedef struct t_declaration_list t_declaration_list;
 typedef struct t_declaration t_declaration;
@@ -18,11 +19,13 @@ typedef struct t_scan t_scan;
 typedef struct t_return t_return;
 typedef struct t_condition t_condition;
 typedef struct t_iteration t_iteration;
+typedef struct t_type_info t_type_info;
 typedef struct t_expression t_expression;
 typedef struct t_assignment t_assignment;
 typedef struct t_cast_expression t_cast_expression;
 typedef struct t_postfix_expression t_postfix_expression;
 typedef struct t_primary_expression t_primary_expression;
+typedef struct t_identifier t_identifier;
 typedef struct t_constant t_constant;
 typedef struct t_param_vals t_param_vals;
 typedef enum t_expression_type t_expression_type;
@@ -75,12 +78,26 @@ typedef enum node_type {
 
 enum t_primitive_type {
   BYTE_TYPE,
+  CHAR_TYPE,
   SHORT_TYPE,
   INT_TYPE,
   LONG_TYPE,
   FLOAT_TYPE,
   DOUBLE_TYPE,
   VOID_TYPE,
+  STRING_TYPE,
+};
+
+enum t_structure_type {
+  PRIMITIVE,
+  ARRAY,
+  SET,
+  FUNCTION,
+};
+
+struct t_type_info {
+  t_primitive_type primitive_type;
+  t_structure_type data_structure;
 };
 
 enum t_primary_expression_type {
@@ -97,7 +114,7 @@ enum t_constant_type {
 };
 
 struct t_constant {
-  t_constant_type type;
+  t_type_info type_info;
 
   union {
     char* string_val;
@@ -108,11 +125,12 @@ struct t_constant {
 };
 
 struct t_primary_expression {
-  t_primary_expression_type type;
+  t_primary_expression_type exp_type;
+  t_type_info type_info;
 
   union {
     t_assignment* assignment;
-    char* identifier;
+    st_element_t* identifier;
     t_constant* constant;
     char* string;
     t_expression* expression;
@@ -127,14 +145,15 @@ struct t_param_vals {
 enum t_postfix_expression_type { ARRAY_ACCESS, FUNCTION_CALL };
 
 struct t_postfix_expression {
-  t_postfix_expression_type type;
+  t_postfix_expression_type exp_type;
+  t_type_info type_info;
 
   union {
     t_expression* array_index;
     t_param_vals* function_params;
   } member;
 
-  t_postfix_expression* left;
+  st_element_t* left;
   t_primary_expression* primary;
 };
 
@@ -148,7 +167,8 @@ enum t_assignment_operator {
 };
 
 struct t_assignment {
-  char* identifier;
+  st_element_t* identifier;
+  t_type_info type_info;
   t_assignment_operator operator;
   t_expression* expression;
 };
@@ -184,6 +204,7 @@ enum t_expression_type {
 
 struct t_expression {
   t_expression_type type;
+  t_type_info type_info;
   t_expression* left;
   t_expression* right;
 
@@ -194,6 +215,7 @@ struct t_expression {
 
 struct t_cast_expression {
   int cast;
+  t_type_info type_info;
   t_primitive_type cast_type;
   t_postfix_expression* right;
 };
@@ -236,7 +258,7 @@ enum t_scan_type {
 
 struct t_scan {
   t_scan_type type;
-  char* destiny;
+  st_element_t* destiny;
 };
 
 enum t_statement_type {
@@ -255,7 +277,7 @@ struct t_statement {
 
   union {
     t_brace_enclosed_scope* scope;
-    t_variable* variable;
+    st_element_t* variable;
     t_print* print;
     t_scan* scan;
     t_return* _return;
@@ -279,20 +301,16 @@ enum t_declaration_type {
   FUN_DECLARATION,
 };
 
-enum t_structure_type {
-  PRIMITIVE_TYPE,
-  ARRAY_TYPE,
-  SET_TYPE,
-};
-
 struct t_program {
   t_declaration_list* declaration_list;
 };
 
 struct t_declaration_list {
   t_declaration_list* prev;
-  t_declaration* cur;
+  st_element_t* cur;
 };
+
+char* declaration_get_label(t_declaration* declaration);
 
 struct t_declaration {
   t_declaration_type type;
@@ -306,8 +324,7 @@ struct t_declaration {
 struct t_set {};
 
 struct t_function {
-  t_primitive_type return_type;
-  t_structure_type return_structure;
+  t_type_info type_info;
   char* identifier;
   t_function_params* params;
   t_brace_enclosed_scope* body;
@@ -331,7 +348,7 @@ struct t_function {
 };
 
 struct t_function_params {
-  t_variable* cur;
+  st_element_t* cur;
   t_function_params* prev;
 };
 
@@ -342,8 +359,7 @@ struct t_function_param {
 };
 
 struct t_variable {
-  t_primitive_type type;
-  t_structure_type structure;
+  t_type_info type_info;
   char* identifier;
 
   union {
@@ -393,11 +409,21 @@ typedef union node {
   t_cast_expression* c_cast_expression;
   t_constant* c_constant;
   t_param_vals* c_param_vals;
+  t_identifier* c_identifier;
   t_expression_type c_expression_type;
   char* string_val;
   int64_t integer_val;
   double float_val;
   char char_val;
 } node;
+
+struct st_element_t {
+  t_declaration* declaration;
+  st_element_t* next;
+};
+
+int is_structure_equivalent(t_declaration* dec, t_structure_type type);
+int is_type_equivalent(t_primitive_type type1, t_primitive_type type2);
+t_type_info get_type_info(st_element_t* dec);
 
 #endif

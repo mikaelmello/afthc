@@ -1,9 +1,15 @@
 void test() { return; }
 
+int xd() {
+  kk;
+}
+
 int main() {
   int myset{};
   int iterator;
   int i;
+  int mikael;
+  int x;
   3 >> myset;
   4 >> myset;
   3 >> myset;

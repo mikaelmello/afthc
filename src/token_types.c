@@ -1,4 +1,3 @@
-
 #include "token_types.h"
 #include <stdio.h>
 #include "lexical_error_handler.h"
