@@ -11,13 +11,13 @@ int main() {
   int mikael;
   int x;
   3 >> myset;
-  myset << 3;
-  myset >> 3;
+  myset << 3
+  myset >> 3
   4 >> myset;
   3 >> myset;
   7 >> myset;
 
-  if (x) {
+  if () {
     
   }
 
@@ -31,7 +31,7 @@ int main() {
   //     }
   // }
 
-  for (iterator = i; i <= 10; i += 1) {
+  for (iteratdwdqwdqor-123-13-12-31-3112-312- = i; i <= 10; i += 1) {
     if (x) {
       mikael;
     }

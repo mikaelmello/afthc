@@ -22,7 +22,7 @@ t_program* program;
 
 void yyerror (char const *s)
 {
-  fprintf (stderr, "%s\n", s);
+  fprintf (stderr, "Location %d:%d - %s\n", line, column, s);
 }
 
 %}
@@ -318,6 +318,14 @@ statement:
         stmt->member.variable = $1;
         $$ = stmt;
     }
+|   var-declaration error {
+        yyerrok;
+        t_statement* stmt = zero_allocate(t_statement);
+        assert($1->declaration->type == VAR_DECLARATION);
+        stmt->type = VAR_DECLARATION_STATEMENT;
+        stmt->member.variable = $1;
+        $$ = stmt;
+    }
 |   print {
         t_statement* stmt = zero_allocate(t_statement);
         stmt->type = PRINT_STATEMENT;
@@ -331,6 +339,13 @@ statement:
         $$ = stmt;
     }
 |   expression SEMICOLON {
+        t_statement* stmt = zero_allocate(t_statement);
+        stmt->type = EXPRESSION_STATEMENT;
+        stmt->member.expression = $1;
+        $$ = stmt;
+    }
+|   expression error {
+        yyerrok;
         t_statement* stmt = zero_allocate(t_statement);
         stmt->type = EXPRESSION_STATEMENT;
         stmt->member.expression = $1;
@@ -354,6 +369,9 @@ statement:
         stmt->member._return = $1;
         $$ = stmt;
     }
+|   error {
+        $$ = NULL;
+    }
 ;
 
 print:
@@ -375,10 +393,63 @@ print:
             );
         }
     }
+|   print-type expression error {
+        yyerrok;
+        t_print* print = zero_allocate(t_print);
+        print->type = $1;
+        print->expression = $2;
+        $$ = print;
+
+        if ($2->type_info.data_structure != PRIMITIVE) {
+            printf("Location %d:%d - You can only print primitive values, no sets, arrays or functions\n", line, column);
+        }
+
+        if ($1 == PRINT_CHAR_TYPE) {
+            assert(is_type_equivalent(
+                LONG_TYPE, 
+                $2->type_info.primitive_type
+                )
+            );
+        }
+    }
 ;
 
 scan:
     scan-type identifier SEMICOLON {
+        t_scan* scan = zero_allocate(t_scan);
+        scan->type = $1;
+
+        if ($2 != NULL) {
+            char* label = declaration_get_label($2->declaration);
+            if ($2->declaration->type != VAR_DECLARATION) {
+                printf("Location %d:%d - %s is not a variable and you can't scan to it.\n", line, column, label);
+            }
+            if ($2->declaration->member.variable->type_info.data_structure != PRIMITIVE) {
+                printf("Location %d:%d - Variable %s is not primitive.\n", line, column, label);
+            }
+
+            if ($1 == SCAN_DEC_TYPE || $1 == SCAN_CHAR_TYPE) {
+                if (!is_type_equivalent(
+                    LONG_TYPE, 
+                    $2->declaration->member.variable->type_info.primitive_type
+                )) {
+                    printf("Location %d:%d - Variable %s is not an integer or char.\n", line, column, label);
+                }
+            } else {
+                if (!is_type_equivalent(
+                    FLOAT_TYPE, 
+                    $2->declaration->member.variable->type_info.primitive_type
+                )) {
+                    printf("Location %d:%d - scanf can't scan to variable that is not a float or double.\n", line, column);
+                }
+            }
+        }
+        
+        scan->destiny = $2;
+        $$ = scan;
+    }
+|   scan-type identifier error {
+        yyerrok;
         t_scan* scan = zero_allocate(t_scan);
         scan->type = $1;
 
@@ -466,6 +537,14 @@ condition:
 
         $$ = cond;
     }
+|   IF_RW LEFT_PAREN error RIGHT_PAREN statement %prec REDUCE {
+        yyerrok;
+
+        t_condition* cond = zero_allocate(t_condition);
+        cond->body = $5;
+
+        $$ = cond;
+    }
 ;
 
 iteration:
@@ -508,6 +587,10 @@ iteration:
         f->step = $7;
         f->body = $9;
         $$ = f;
+    }
+|   FOR_RW LEFT_PAREN error {
+        $$ = NULL;
+        yyerrok;   
     }
 ;
 
