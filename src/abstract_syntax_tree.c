@@ -625,3 +625,259 @@ void print_program(t_program* program, int cur_level) {
   printf("Program\n");
   print_declaration_list(program->declaration_list, cur_level + 1);
 }
+
+void free_fun_params(t_function_params* params) {
+  if (params == NULL) return;
+
+  if (params->prev != NULL) {
+    free_fun_params(params->prev);
+  }
+
+  free_declaration(params->cur);
+  free(params);
+}
+
+void free_brace_enclosed_scope(t_brace_enclosed_scope* scope) {
+  if (scope == NULL) return;
+  free_statement_list(scope->statements);
+  free(scope);
+}
+
+void free_statement_list(t_statement_list* list) {
+  if (list == NULL) return;
+
+  if (list->prev != NULL) {
+    free_statement_list(list->prev);
+  }
+
+  free_statement(list->cur);
+  free(list);
+}
+
+void free_statement(t_statement* statement) {
+  if (statement == NULL) return;
+
+  switch (statement->type) {
+    case BRACE_ENCLOSED_SCOPE_STATEMENT:
+      free_brace_enclosed_scope(statement->member.scope);
+      break;
+    case VAR_DECLARATION_STATEMENT:
+      free_declaration(statement->member.variable);
+      break;
+    case PRINT_STATEMENT:
+      free_print(statement->member.print);
+      break;
+    case SCAN_STATEMENT:
+      free_scan(statement->member.scan);
+      break;
+    case EXPRESSION_STATEMENT:
+      free_expression(statement->member.expression);
+      break;
+    case CONDITION_STATEMENT:
+      free_condition(statement->member.condition);
+      break;
+    case ITERATION_STATEMENT:
+      free_iteration(statement->member.iteration);
+      break;
+    case RETURN_STATEMENT:
+      free_return(statement->member._return);
+      break;
+  }
+
+  free(statement);
+}
+
+void free_function_call_params(t_param_vals* params) {
+  if (params == NULL) return;
+
+  if (params->prev != NULL) {
+    free_function_call_params(params->prev);
+  }
+
+  free_expression(params->cur);
+  free(params);
+}
+
+void free_array_access(t_postfix_expression* expression) {
+  if (expression == NULL) return;
+
+  free_declaration(expression->left);
+  free_expression(expression->member.array_index);
+}
+
+void free_function_call(t_postfix_expression* expression) {
+  if (expression == NULL) return;
+
+  free_declaration(expression->left);
+  free_function_call_params(expression->member.function_params);
+}
+
+void free_constant(t_constant* constant) {
+  if (constant == NULL) return;
+
+  switch (constant->type_info.primitive_type) {
+    case LONG_TYPE:
+    case CHAR_TYPE:
+    case DOUBLE_TYPE:
+      break;
+    case BYTE_TYPE:
+    case SHORT_TYPE:
+    case INT_TYPE:
+    case FLOAT_TYPE:
+    case VOID_TYPE:
+    case STRING_TYPE:
+      printf("Should not appear!\n");
+      break;
+  }
+
+  free(constant);
+}
+
+void free_primary_expression(t_primary_expression* expression) {
+  if (expression == NULL) return;
+
+  switch (expression->type) {
+    case IDENTIFIER_PRIMARY_EXPRESSION:
+      free_declaration(expression->member.identifier);
+      break;
+    case CONSTANT_PRIMARY_EXPRESSION:
+      free_constant(expression->member.constant);
+      break;
+    case STRING_PRIMARY_EXPRESSION:
+      free(expression->member.string);
+      break;
+    case NESTED_PRIMARY_EXPRESSION:
+      free_expression(expression->member.expression);
+      break;
+    default:
+      printf("SHOOOULD NOT HAPPEN!\n");
+      exit(99);
+  }
+  free(expression);
+}
+
+void free_postfix_expression(t_postfix_expression* expression) {
+  if (expression == NULL) return;
+
+  if (expression->primary) {
+    free_primary_expression(expression->primary);
+    free(expression);
+    return;
+  }
+
+  switch (expression->type) {
+    case ARRAY_ACCESS:
+      free_array_access(expression);
+      break;
+    case FUNCTION_CALL:
+      free_function_call(expression);
+      break;
+    default:
+      printf("SHOULD NOT HAPPEN\n");
+      exit(5);
+  }
+  free(expression);
+}
+
+void free_cast_expression(t_cast_expression* cast) {
+  if (cast == NULL) return;
+
+  if (cast->type == CAST_EXPRESSION) {
+    free_expression(cast->right);
+    free(cast);
+    return;
+  }
+
+  free_postfix_expression(cast->left);
+  free(cast);
+}
+
+void free_assignment(t_assignment* assignment) {
+  if (assignment == NULL) return;
+
+  free_declaration(assignment->identifier);
+  free_expression(assignment->expression);
+  free(assignment);
+}
+
+void free_expression(t_expression* expression) {
+  if (expression == NULL) return;
+
+  switch (expression->type) {
+    case ARRAY_ACCESS:
+    case FUNCTION_CALL:
+    case IDENTIFIER_PRIMARY_EXPRESSION:
+    case CONSTANT_PRIMARY_EXPRESSION:
+    case STRING_PRIMARY_EXPRESSION:
+    case NESTED_PRIMARY_EXPRESSION:
+    case CAST_EXPRESSION:
+      free_cast_expression(expression->value);
+      break;
+    case ASSIGNMENT_EXPRESSION:
+      free_assignment(expression->assignment);
+      break;
+    default:
+      free_expression(expression->left);
+      free_expression(expression->right);
+  }
+  free(expression);
+}
+
+void free_condition(t_condition* condition) {
+  if (condition == NULL) return;
+
+  free_expression(condition->condition);
+  free_statement(condition->body);
+  free_statement(condition->else_body);
+
+  free(condition);
+}
+
+void free_iteration(t_iteration* it) {
+  if (it == NULL) return;
+
+  free_expression(it->initialization);
+  free_expression(it->condition);
+  free_expression(it->step);
+  free_statement(it->body);
+  free(it);
+}
+
+void free_return(t_return* ret) {
+  if (ret == NULL) return;
+  free_expression(ret->expression);
+  free(ret);
+}
+
+void free_print(t_print* print) {
+  if (print == NULL) return;
+
+  free_expression(print->expression);
+  free(print);
+}
+
+void free_scan(t_scan* scan) {
+  if (scan == NULL) return;
+
+  free_declaration(scan->destiny);
+  free(scan);
+}
+
+void free_declaration(st_element_t* declaration) { return; }
+
+void free_declaration_list(t_declaration_list* list) {
+  if (list == NULL) return;
+  if (list->prev != NULL) {
+    free_declaration_list(list->prev);
+  }
+
+  free_declaration(list->cur);
+  free(list);
+}
+
+void free_program(t_program* program) {
+  if (program == NULL) return;
+
+  free_declaration_list(program->declaration_list);
+  free(program);
+}

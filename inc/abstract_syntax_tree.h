@@ -413,4 +413,25 @@ void print_declaration(st_element_t* declaration, int cur_level);
 void print_declaration_list(t_declaration_list* list, int cur_level);
 void print_program(t_program* program, int cur_level);
 
+void free_fun_params(t_function_params* params);
+void free_brace_enclosed_scope(t_brace_enclosed_scope* scope);
+void free_statement_list(t_statement_list* list);
+void free_statement(t_statement* statement);
+void free_array_access(t_postfix_expression* expression);
+void free_function_call_params(t_param_vals* params);
+void free_function_call(t_postfix_expression* expression);
+void free_constant(t_constant* constant);
+void free_primary_expression(t_primary_expression* expression);
+void free_postfix_expression(t_postfix_expression* expression);
+void free_cast_expression(t_cast_expression* cast);
+void free_expression(t_expression* expression);
+void free_condition(t_condition* condition);
+void free_iteration(t_iteration* it);
+void free_return(t_return* ret);
+void free_print(t_print* print);
+void free_scan(t_scan* scan);
+void free_declaration(st_element_t* declaration);
+void free_declaration_list(t_declaration_list* list);
+void free_program(t_program* program);
+
 #endif

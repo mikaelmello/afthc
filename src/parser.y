@@ -137,6 +137,7 @@ program:
         t_program* program = zero_allocate(t_program);
         program->declaration_list = $1;
         print_program(program, 0);
+        free_program(program);
         $$ = program;
 
         scope_destroy(current_scope);
@@ -1045,7 +1046,6 @@ constant:
         c->type_info.primitive_type = LONG_TYPE;
         c->type_info.data_structure = PRIMITIVE;
         c->member.integer_val = $1;
-    printf("uai %d\n", $1);
         $$ = c;
     }
 |   CHAR {
