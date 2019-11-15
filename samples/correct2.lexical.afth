@@ -25,18 +25,22 @@ int main() {
   i <= 10;
   i += 1;
 
-  // for (iterator = 0; i <= 10; i += 1) {
+  // for (iterator = myset; i <= 10; i += 1) {
   //     if (iterator in myset) {
   //         print iterator;
   //     }
   // }
 
-  for (iterator = 3; i <= 10; i += 1) {
+  for (iterator = i; i <= 10; i += 1) {
     if (x) {
       mikael;
     }
   }
 
+  wow;
+  print wow+3+5+wow;
+  wow = wow(3);
+  scan wow;
   myset rm 5;
   myset rm 3;
   myset rm 4;

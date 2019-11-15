@@ -382,32 +382,32 @@ scan:
         t_scan* scan = zero_allocate(t_scan);
         scan->type = $1;
 
-        assert($2 != NULL);
-        assert($2->declaration != NULL);
-
-        char* label = declaration_get_label($2->declaration);
-        if ($2->declaration->type != VAR_DECLARATION) {
-            printf("Location %d:%d - %s is not a variable and you can't scan to it.\n", line, column, label);
-        }
-        if ($2->declaration->member.variable->type_info.data_structure != PRIMITIVE) {
-            printf("Location %d:%d - Variable %s is not primitive.\n", line, column, label);
-        }
-
-        if ($1 == SCAN_DEC_TYPE || $1 == SCAN_CHAR_TYPE) {
-            if (!is_type_equivalent(
-                LONG_TYPE, 
-                $2->declaration->member.variable->type_info.primitive_type
-            )) {
-                printf("Location %d:%d - Variable %s is not an integer or char.\n", line, column, label);
+        if ($2 != NULL) {
+            char* label = declaration_get_label($2->declaration);
+            if ($2->declaration->type != VAR_DECLARATION) {
+                printf("Location %d:%d - %s is not a variable and you can't scan to it.\n", line, column, label);
             }
-        } else {
-            if (!is_type_equivalent(
-                FLOAT_TYPE, 
-                $2->declaration->member.variable->type_info.primitive_type
-            )) {
-                printf("Location %d:%d - scanf can't scan to variable that is not a float or double.\n", line, column);
+            if ($2->declaration->member.variable->type_info.data_structure != PRIMITIVE) {
+                printf("Location %d:%d - Variable %s is not primitive.\n", line, column, label);
+            }
+
+            if ($1 == SCAN_DEC_TYPE || $1 == SCAN_CHAR_TYPE) {
+                if (!is_type_equivalent(
+                    LONG_TYPE, 
+                    $2->declaration->member.variable->type_info.primitive_type
+                )) {
+                    printf("Location %d:%d - Variable %s is not an integer or char.\n", line, column, label);
+                }
+            } else {
+                if (!is_type_equivalent(
+                    FLOAT_TYPE, 
+                    $2->declaration->member.variable->type_info.primitive_type
+                )) {
+                    printf("Location %d:%d - scanf can't scan to variable that is not a float or double.\n", line, column);
+                }
             }
         }
+        
         scan->destiny = $2;
         $$ = scan;
     }
@@ -530,17 +530,23 @@ optional-expression:
 
 assignment:
     identifier assignment-op expression {
-        t_type_info info = get_type_info($1);
-        char* label = declaration_get_label($1->declaration);
-        if (info.data_structure != PRIMITIVE) {
-            printf("Location %d:%d - Identifier %s must have primitive type\n", line, column, label);
-        }
         if ($3->type_info.data_structure != PRIMITIVE) {
             printf("Location %d:%d - Expression must have primitive type\n", line, column);
         } else if ($3->type_info.primitive_type == VOID_TYPE || $3->type_info.primitive_type == STRING_TYPE) {
             printf("Location %d:%d - Expression must have a numeric value type\n", line, column);
-        } else if (!is_type_equivalent($3->type_info.primitive_type, info.primitive_type)) {
-            printf("Location %d:%d - Expression and variable must have equivalent types\n", line, column);
+        }
+
+        t_type_info info = $3->type_info;
+
+        if ($1 != NULL) {
+            info = get_type_info($1);
+            char* label = declaration_get_label($1->declaration);
+            if (info.data_structure != PRIMITIVE) {
+                printf("Location %d:%d - Identifier %s must have primitive type\n", line, column, label);
+            }
+            if (!is_type_equivalent($3->type_info.primitive_type, info.primitive_type)) {
+                printf("Location %d:%d - Expression and variable must have equivalent types\n", line, column);
+            }
         }
 
         t_assignment* exp = zero_allocate(t_assignment);
@@ -980,17 +986,21 @@ postfix-expression:
         if ($3->type_info.data_structure != PRIMITIVE || $3->type_info.primitive_type == VOID_TYPE || $3->type_info.primitive_type == STRING_TYPE) {
             printf("Location %d:%d - Index expression must return a primitive and integer type\n", line, column);
         };
-        t_type_info id = get_type_info($1);
-        if (id.data_structure != ARRAY) {
-            printf("Location %d:%d - Identifier must be array\n", line, column);
-        };
+        t_type_info id = $3->type_info;
+        
+        if ($1 != NULL) {
+            id = get_type_info($1);
+            if (id.data_structure != ARRAY) {
+                printf("Location %d:%d - Identifier must be array\n", line, column);
+            };
+        }
 
         t_postfix_expression* exp = zero_allocate(t_postfix_expression);
         exp->type = ARRAY_ACCESS;
         exp->left = $1;
         exp->member.array_index = $3;
 
-        exp->type_info.primitive_type = get_type_info($1).primitive_type;
+        exp->type_info.primitive_type = id.primitive_type;
         exp->type_info.data_structure = PRIMITIVE;
         $$ = exp;
     }
@@ -1002,12 +1012,17 @@ postfix-expression:
         
         // TODO: assert param-vals
 
-        t_type_info id = get_type_info($1);
-        if (id.data_structure != FUNCTION) {
-            printf("Location %d:%d - Identifier must be function\n", line, column);
-        };
+        t_type_info id;
+        id.primitive_type = LONG_TYPE; // default
 
-        exp->type_info.primitive_type = get_type_info($1).primitive_type;
+        if ($1 != NULL) {
+            id = get_type_info($1);
+            if (id.data_structure != FUNCTION) {
+                printf("Location %d:%d - Identifier must be function\n", line, column);
+            };
+        }
+
+        exp->type_info.primitive_type = id.primitive_type;
         exp->type_info.data_structure = PRIMITIVE;
         $$ = exp;
     }
@@ -1056,6 +1071,7 @@ primary-expression:
         if ($1 != NULL) {
             exp->type_info = get_type_info($1);
         } else {
+            // default
             exp->type_info.primitive_type = LONG_TYPE;
             exp->type_info.data_structure = PRIMITIVE;
         }
