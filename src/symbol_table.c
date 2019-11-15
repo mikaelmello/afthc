@@ -13,8 +13,7 @@ st_element_t* st_element_create(t_declaration* declaration) {
 void st_element_free(st_element_t* element) {
   if (element == NULL) return;
 
-  // we are not freeing the declaration inside it
-  // this is ast's free role
+  free_declaration(element->declaration);
   free(element);
 }
 

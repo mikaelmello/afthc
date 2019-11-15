@@ -14,6 +14,7 @@
         "utility": "c",
         "variant": "c",
         "*.y": "c",
-        "unordered_map": "c"
+        "unordered_map": "c",
+        "typeinfo": "c"
     }
 }

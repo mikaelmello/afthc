@@ -290,23 +290,6 @@ struct t_function {
   char* identifier;
   t_function_params* params;
   t_brace_enclosed_scope* body;
-
-  union {
-    int8_t (*byte_function)();
-    int16_t (*short_function)();
-    int32_t (*int_function)();
-    int64_t (*long_function)();
-
-    int8_t* (*array_byte_function)();
-    int16_t* (*array_short_function)();
-    int32_t* (*array_int_function)();
-    int64_t* (*array_long_function)();
-
-    t_set* (*set_function)();
-
-    float (*float_function)();
-    double (*double_function)();
-  } member;
 };
 
 struct t_function_params {
@@ -323,59 +306,7 @@ struct t_function_param {
 struct t_variable {
   t_type_info type_info;
   char* identifier;
-
-  union {
-    int8_t byte_val;
-    int16_t short_val;
-    int32_t int_val;
-    int64_t long_val;
-
-    int8_t* array_byte_val;
-    int16_t* array_short_val;
-    int32_t* array_int_val;
-    int64_t* array_long_val;
-
-    t_set* set_val;
-
-    float float_val;
-    double double_val;
-  } member;
 };
-
-typedef union node {
-  t_constant_type c_constant_type;
-  t_assignment_operator c_assignment_operator;
-  t_primitive_type c_primitive_type;
-  t_print_type c_print_type;
-  t_scan_type c_scan_type;
-  t_program* c_program;
-  t_declaration_list* c_declaration_list;
-  t_declaration* c_declaration;
-  t_variable* c_variable;
-  t_function* c_function;
-  t_function_params* c_function_params;
-  t_brace_enclosed_scope* c_brace_enclosed_scope;
-  t_statement_list* c_statement_list;
-  t_statement* c_statement;
-  t_print* c_print;
-  t_scan* c_scan;
-  t_return* c_return;
-  t_expression* c_expression;
-  t_condition* c_condition;
-  t_iteration* c_iteration;
-  t_assignment* c_assignment;
-  t_postfix_expression* c_postfix_expression;
-  t_primary_expression* c_primary_expression;
-  t_cast_expression* c_cast_expression;
-  t_constant* c_constant;
-  t_param_vals* c_param_vals;
-  t_identifier* c_identifier;
-  t_expression_type c_expression_type;
-  char* string_val;
-  int64_t integer_val;
-  double float_val;
-  char char_val;
-} node;
 
 struct st_element_t {
   t_declaration* declaration;
@@ -430,7 +361,7 @@ void free_iteration(t_iteration* it);
 void free_return(t_return* ret);
 void free_print(t_print* print);
 void free_scan(t_scan* scan);
-void free_declaration(st_element_t* declaration);
+void free_declaration(t_declaration* declaration);
 void free_declaration_list(t_declaration_list* list);
 void free_program(t_program* program);
 

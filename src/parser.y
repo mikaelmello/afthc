@@ -18,7 +18,6 @@ extern uint32_t column;
 extern scope_error_t LAST_ERROR;
 scope_t* root_scope;
 scope_t* current_scope;
-node ast_root;
 
 void yyerror (char const *s)
 {
@@ -140,7 +139,7 @@ program:
         free_program(program);
         $$ = program;
 
-        scope_destroy(current_scope);
+        scope_free(current_scope);
     }
 ;
 
@@ -245,7 +244,7 @@ fun-declaration:
         }
         fun->declaration->member.function->body = $8;
         $$ = fun;
-        current_scope = scope_destroy(current_scope);
+        current_scope = current_scope->parent;
     }
 |   type IDENTIFIER LEFT_PAREN {
         t_function* fun = zero_allocate(t_function);
@@ -267,7 +266,7 @@ fun-declaration:
         }
         fun->declaration->member.function->body = $6;
         $$ = fun;
-        current_scope = scope_destroy(current_scope);
+        current_scope = current_scope->parent;
     }
 ;
 
@@ -902,7 +901,6 @@ unary-expression:
         exp->type = $1->type;
         exp->value = $1;
         exp->type_info = $1->type_info;
-        printf("%d\n", exp->type_info.primitive_type);
         $$ = exp;
     }
 ;

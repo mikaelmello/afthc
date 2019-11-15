@@ -633,7 +633,7 @@ void free_fun_params(t_function_params* params) {
     free_fun_params(params->prev);
   }
 
-  free_declaration(params->cur);
+  // free_declaration(params->cur);
   free(params);
 }
 
@@ -662,7 +662,7 @@ void free_statement(t_statement* statement) {
       free_brace_enclosed_scope(statement->member.scope);
       break;
     case VAR_DECLARATION_STATEMENT:
-      free_declaration(statement->member.variable);
+      // free_declaration(statement->member.variable);
       break;
     case PRINT_STATEMENT:
       free_print(statement->member.print);
@@ -701,14 +701,14 @@ void free_function_call_params(t_param_vals* params) {
 void free_array_access(t_postfix_expression* expression) {
   if (expression == NULL) return;
 
-  free_declaration(expression->left);
+  // free_declaration(expression->left);
   free_expression(expression->member.array_index);
 }
 
 void free_function_call(t_postfix_expression* expression) {
   if (expression == NULL) return;
 
-  free_declaration(expression->left);
+  // free_declaration(expression->left);
   free_function_call_params(expression->member.function_params);
 }
 
@@ -738,7 +738,7 @@ void free_primary_expression(t_primary_expression* expression) {
 
   switch (expression->type) {
     case IDENTIFIER_PRIMARY_EXPRESSION:
-      free_declaration(expression->member.identifier);
+      // free_declaration(expression->member.identifier);
       break;
     case CONSTANT_PRIMARY_EXPRESSION:
       free_constant(expression->member.constant);
@@ -795,7 +795,7 @@ void free_cast_expression(t_cast_expression* cast) {
 void free_assignment(t_assignment* assignment) {
   if (assignment == NULL) return;
 
-  free_declaration(assignment->identifier);
+  // free_declaration(assignment->identifier);
   free_expression(assignment->expression);
   free(assignment);
 }
@@ -859,11 +859,39 @@ void free_print(t_print* print) {
 void free_scan(t_scan* scan) {
   if (scan == NULL) return;
 
-  free_declaration(scan->destiny);
+  // free_declaration(scan->destiny);
   free(scan);
 }
 
-void free_declaration(st_element_t* declaration) { return; }
+void free_function(t_function* function) {
+  if (function == NULL) return;
+
+  free_brace_enclosed_scope(function->body);
+  free_fun_params(function->params);
+  free(function->identifier);
+  free(function);
+}
+
+void free_variable(t_variable* variable) {
+  if (variable == NULL) return;
+
+  free(variable->identifier);
+  free(variable);
+}
+
+void free_declaration(t_declaration* declaration) {
+  if (declaration == NULL) return;
+
+  switch (declaration->type) {
+    case FUN_DECLARATION:
+      free_function(declaration->member.function);
+      break;
+    case VAR_DECLARATION:
+      free_variable(declaration->member.variable);
+      break;
+  }
+  free(declaration);
+}
 
 void free_declaration_list(t_declaration_list* list) {
   if (list == NULL) return;
@@ -871,7 +899,7 @@ void free_declaration_list(t_declaration_list* list) {
     free_declaration_list(list->prev);
   }
 
-  free_declaration(list->cur);
+  // free_declaration(list->cur);
   free(list);
 }
 

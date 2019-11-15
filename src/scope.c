@@ -6,24 +6,52 @@
 
 scope_error_t LAST_ERROR = 0;
 
-scope_t* scope_create(scope_t* parent) {
-  scope_t* scope = (scope_t*)calloc(1, sizeof(scope_t));
-  scope->parent = parent;
-  scope->symbol_table = st_create();
-  return scope;
+scope_list_t* scope_list_create() {
+  scope_list_t* list = (scope_list_t*)calloc(1, sizeof(scope_list_t));
+  list->head = NULL;
+  list->tail = NULL;
+  return list;
 }
 
-scope_t* scope_destroy(scope_t* current) {
-  if (current == NULL) return NULL;
+void scope_list_add(scope_list_t* list, scope_t* scope) {
+  if (list->head == NULL) {
+    list->head = list->tail = scope;
+  } else {
+    list->tail->next_sibling = scope;
+    list->tail = scope;
+  }
+}
 
-  scope_t* parent = current->parent;
-  // scope_free(current);
-  return parent;
+void scope_list_free(scope_list_t* list) {
+  if (list == NULL) return;
+
+  while (list->head != NULL) {
+    scope_t* cur = list->head;
+    list->head = cur->next_sibling;
+    scope_free(cur);
+  }
+
+  free(list);
+}
+
+scope_t* scope_create(scope_t* parent) {
+  scope_t* scope = (scope_t*)calloc(1, sizeof(scope_t));
+  scope->symbol_table = st_create();
+  scope->children = scope_list_create();
+  scope->parent = parent;
+  scope->next_sibling = NULL;
+
+  if (parent != NULL) {
+    scope_list_add(parent->children, scope);
+  }
+  return scope;
 }
 
 void scope_free(scope_t* scope) {
   if (scope == NULL) return;
+
   st_free(scope->symbol_table);
+  scope_list_free(scope->children);
   free(scope);
 }
 
