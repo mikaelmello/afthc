@@ -87,38 +87,11 @@ void st_free(st_t* st) {
 }
 
 st_element_t* st_add(st_t* st, t_declaration* declaration) {
-  st_element_t* element = st_element_create(declaration);
   return st_element_list_add(st->list, declaration);
 }
 
 st_element_t* st_find(st_t* st, char* label) {
   return st_element_list_find(st->list, label);
-}
-
-void print_primitive_type(t_primitive_type type) {
-  switch (type) {
-    case BYTE_TYPE:
-      printf("byte");
-      break;
-    case SHORT_TYPE:
-      printf("short");
-      break;
-    case INT_TYPE:
-      printf("int");
-      break;
-    case LONG_TYPE:
-      printf("long");
-      break;
-    case FLOAT_TYPE:
-      printf("float");
-      break;
-    case DOUBLE_TYPE:
-      printf("double");
-      break;
-    case VOID_TYPE:
-      printf("void");
-      break;
-  }
 }
 
 void t_declaration_free(t_declaration* dec) {}

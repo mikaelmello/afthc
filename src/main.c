@@ -12,8 +12,6 @@ extern uint32_t column;
 extern uint32_t line;
 extern int yyleng;
 extern char* yytext;
-extern node ast_root;
-extern void free_ast(node root, node_type type);
 extern scope_t* root_scope;
 extern scope_t* current_scope;
 

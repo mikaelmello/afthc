@@ -40,41 +40,40 @@ typedef enum t_declaration_type t_declaration_type;
 typedef enum t_primitive_type t_primitive_type;
 typedef enum t_structure_type t_structure_type;
 
-typedef enum node_type {
-  NT_PRIMARY_EXPRESSION_TYPE,
-  NT_CONSTANT_TYPE,
-  NT_POSTFIX_EXPRESSION_TYPE,
-  NT_ASSIGNMENT_OPERATOR,
-  NT_PRIMITIVE_TYPE,
-  NT_PRINT_TYPE,
-  NT_SCAN_TYPE,
-  NT_PROGRAM,
-  NT_DECLARATION_LIST,
-  NT_DECLARATION,
-  NT_VARIABLE,
-  NT_FUNCTION,
-  NT_FUNCTION_PARAMS,
-  NT_BRACE_ENCLOSED_SCOPE,
-  NT_STATEMENT_LIST,
-  NT_STATEMENT,
-  NT_PRINT,
-  NT_SCAN,
-  NT_RETURN,
-  NT_EXPRESSION,
-  NT_CONDITION,
-  NT_ITERATION,
-  NT_ASSIGNMENT,
-  NT_CAST_EXPRESSION,
-  NT_POSTFIX_EXPRESSION,
-  NT_PRIMARY_EXPRESSION,
-  NT_CONSTANT,
-  NT_PARAM_VALS,
-  NT_STRING,
-  NT_INTEGER,
-  NT_DOUBLE,
-  NT_CHAR,
-  NT_IDENTIFIER,
-} node_type;
+enum t_expression_type {
+  AND_EXPRESSION = 1,
+  OR_EXPRESSION,
+  BW_AND_EXPRESSION,
+  BW_OR_EXPRESSION,
+  BW_XOR_EXPRESSION,
+  NOT_EQ_EXPRESSION,
+  EQ_EQ_EXPRESSION,
+  LESS_THAN,
+  GREATER_THAN,
+  LESS_THAN_OR_EQUAL,
+  GREATER_THAN_OR_EQUAL,
+  CAST_EXPRESSION,
+  IS_IN,
+  LEFT_SHIFT_EXPRESSION,
+  ASSIGNMENT_EXPRESSION,
+  RIGHT_SHIFT_EXPRESSION,
+  RM_EXPRESSION,
+  UNARY_PLUS,
+  UNARY_MINUS,
+  UNARY_EXCL,
+  UNARY_SIZEOF,
+  ADD_PLUS,
+  ADD_MINUS,
+  ASTERISK_OPERATOR,
+  SLASH_OPERATOR,
+  PERCENT_OPERATOR,
+  ARRAY_ACCESS,
+  FUNCTION_CALL,
+  IDENTIFIER_PRIMARY_EXPRESSION,
+  CONSTANT_PRIMARY_EXPRESSION,
+  STRING_PRIMARY_EXPRESSION,
+  NESTED_PRIMARY_EXPRESSION,
+};
 
 enum t_primitive_type {
   BYTE_TYPE,
@@ -100,13 +99,6 @@ struct t_type_info {
   t_structure_type data_structure;
 };
 
-enum t_primary_expression_type {
-  IDENTIFIER_PRIMARY_EXPRESSION,
-  CONSTANT_PRIMARY_EXPRESSION,
-  STRING_PRIMARY_EXPRESSION,
-  NESTED_PRIMARY_EXPRESSION,
-};
-
 enum t_constant_type {
   INTEGER_CONSTANT,
   CHAR_CONSTANT,
@@ -125,7 +117,7 @@ struct t_constant {
 };
 
 struct t_primary_expression {
-  t_primary_expression_type exp_type;
+  t_expression_type type;
   t_type_info type_info;
 
   union {
@@ -142,10 +134,8 @@ struct t_param_vals {
   t_param_vals* prev;
 };
 
-enum t_postfix_expression_type { ARRAY_ACCESS, FUNCTION_CALL };
-
 struct t_postfix_expression {
-  t_postfix_expression_type exp_type;
+  t_expression_type type;
   t_type_info type_info;
 
   union {
@@ -173,35 +163,6 @@ struct t_assignment {
   t_expression* expression;
 };
 
-enum t_expression_type {
-  AND_EXPRESSION,
-  OR_EXPRESSION,
-  BW_AND_EXPRESSION,
-  BW_OR_EXPRESSION,
-  BW_XOR_EXPRESSION,
-  NOT_EQ_EXPRESSION,
-  EQ_EQ_EXPRESSION,
-  LESS_THAN,
-  GREATER_THAN,
-  LESS_THAN_OR_EQUAL,
-  GREATER_THAN_OR_EQUAL,
-  CAST_EXPRESSION,
-  IS_IN,
-  LEFT_SHIFT_EXPRESSION,
-  ASSIGNMENT_EXPRESSION,
-  RIGHT_SHIFT_EXPRESSION,
-  RM_EXPRESSION,
-  UNARY_PLUS,
-  UNARY_MINUS,
-  UNARY_EXCL,
-  UNARY_SIZEOF,
-  ADD_PLUS,
-  ADD_MINUS,
-  ASTERISK_OPERATOR,
-  SLASH_OPERATOR,
-  PERCENT_OPERATOR,
-};
-
 struct t_expression {
   t_expression_type type;
   t_type_info type_info;
@@ -214,10 +175,11 @@ struct t_expression {
 };
 
 struct t_cast_expression {
-  int cast;
+  t_expression_type type;
   t_type_info type_info;
   t_primitive_type cast_type;
-  t_postfix_expression* right;
+  t_expression* right;
+  t_postfix_expression* left;
 };
 
 struct t_iteration {
@@ -381,9 +343,7 @@ struct t_variable {
 };
 
 typedef union node {
-  t_primary_expression_type c_primary_expression_type;
   t_constant_type c_constant_type;
-  t_postfix_expression_type c_postfix_expression_type;
   t_assignment_operator c_assignment_operator;
   t_primitive_type c_primitive_type;
   t_print_type c_print_type;
@@ -425,5 +385,32 @@ struct st_element_t {
 int is_structure_equivalent(t_declaration* dec, t_structure_type type);
 int is_type_equivalent(t_primitive_type type1, t_primitive_type type2);
 t_type_info get_type_info(st_element_t* dec);
+void spaces(int n);
+void print_data_structure(t_structure_type structure, int cur_level);
+void print_primitive_type(t_primitive_type type, int cur_level);
+void print_fun_params(t_function_params* params, int cur_level);
+void print_brace_enclosed_scope(t_brace_enclosed_scope* scope, int cur_level);
+void print_statement_list(t_statement_list* list, int cur_level);
+void print_statement(t_statement* statement, int cur_level);
+void print_expression_type(t_expression_type type, int cur_level);
+void print_array_access(t_postfix_expression* expression, int cur_level);
+void print_function_call_params(t_param_vals* params, int cur_level);
+void print_function_call(t_postfix_expression* expression, int cur_level);
+void print_constant(t_constant* constant, int cur_level);
+void print_primary_expression(t_primary_expression* expression, int cur_level);
+void print_postfix_expression(t_postfix_expression* expression, int cur_level);
+void print_cast_expression(t_cast_expression* cast, int cur_level);
+void print_expression(t_expression* expression, int cur_level);
+void print_condition(t_condition* condition, int cur_level);
+void print_iteration(t_iteration* it, int cur_level);
+void print_return(t_return* ret, int cur_level);
+void print_print_type(t_print_type type, int cur_level);
+void print_print(t_print* print, int cur_level);
+void print_scan_type(t_scan_type type, int cur_level);
+void print_scan(t_scan* scan, int cur_level);
+void print_st_element(st_element_t* element, int cur_level, int print_fun_body);
+void print_declaration(st_element_t* declaration, int cur_level);
+void print_declaration_list(t_declaration_list* list, int cur_level);
+void print_program(t_program* program, int cur_level);
 
 #endif

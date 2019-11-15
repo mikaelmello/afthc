@@ -6,7 +6,8 @@ int top() {
 }
 
 int main(int argc, char argv) {
-    int loopCounter[];
+    int loopCounter;
+    int kkk[3];
     int answer;
     int x;
 
