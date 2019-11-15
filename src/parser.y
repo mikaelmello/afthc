@@ -998,6 +998,7 @@ identifier:
         if (element == NULL) {
             printf("Identifier %s not previously declared\n", $1);
         }
+        free($1);
         $$ = element;
     }
 

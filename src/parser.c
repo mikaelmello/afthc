@@ -564,10 +564,10 @@ static const yytype_uint16 yyrline[] =
      609,   622,   628,   641,   647,   660,   666,   684,   702,   708,
      735,   741,   754,   767,   773,   787,   793,   817,   841,   847,
      871,   877,   900,   911,   925,   935,   955,   969,   979,   985,
-     990,   996,  1005,  1018,  1026,  1034,  1044,  1051,  1058,  1068,
-    1069,  1070,  1071,  1072,  1073,  1077,  1078,  1079,  1080,  1084,
-    1085,  1086,  1087,  1088,  1092,  1093,  1094,  1098,  1101,  1104,
-    1107,  1110,  1113,  1116,  1119,  1122
+     990,   996,  1006,  1019,  1027,  1035,  1045,  1052,  1059,  1069,
+    1070,  1071,  1072,  1073,  1074,  1078,  1079,  1080,  1081,  1085,
+    1086,  1087,  1088,  1089,  1093,  1094,  1095,  1099,  1102,  1105,
+    1108,  1111,  1114,  1117,  1120,  1123
 };
 #endif
 
@@ -2667,13 +2667,14 @@ yyreduce:
         if (element == NULL) {
             printf("Identifier %s not previously declared\n", (yyvsp[0].string_val));
         }
+        free((yyvsp[0].string_val));
         (yyval.c_st_element) = element;
     }
-#line 2673 "src/parser.c"
+#line 2674 "src/parser.c"
     break;
 
   case 82:
-#line 1005 "src/parser.y"
+#line 1006 "src/parser.y"
     {
         t_primary_expression* exp = zero_allocate(t_primary_expression);
         exp->type = IDENTIFIER_PRIMARY_EXPRESSION;
@@ -2687,11 +2688,11 @@ yyreduce:
         }
         (yyval.c_primary_expression) = exp;
     }
-#line 2691 "src/parser.c"
+#line 2692 "src/parser.c"
     break;
 
   case 83:
-#line 1018 "src/parser.y"
+#line 1019 "src/parser.y"
     {
         t_primary_expression* exp = zero_allocate(t_primary_expression);
         printf("opa constante\n");
@@ -2700,11 +2701,11 @@ yyreduce:
         exp->type_info = (yyvsp[0].c_constant)->type_info;
         (yyval.c_primary_expression) = exp;
     }
-#line 2704 "src/parser.c"
+#line 2705 "src/parser.c"
     break;
 
   case 84:
-#line 1026 "src/parser.y"
+#line 1027 "src/parser.y"
     {
         t_primary_expression* exp = zero_allocate(t_primary_expression);
         exp->type = STRING_PRIMARY_EXPRESSION;
@@ -2713,11 +2714,11 @@ yyreduce:
         exp->type_info.data_structure = PRIMITIVE;
         (yyval.c_primary_expression) = exp;
     }
-#line 2717 "src/parser.c"
+#line 2718 "src/parser.c"
     break;
 
   case 85:
-#line 1034 "src/parser.y"
+#line 1035 "src/parser.y"
     {
         t_primary_expression* exp = zero_allocate(t_primary_expression);
         exp->type = NESTED_PRIMARY_EXPRESSION;
@@ -2725,11 +2726,11 @@ yyreduce:
         exp->type_info = (yyvsp[-1].c_expression)->type_info;
         (yyval.c_primary_expression) = exp;
     }
-#line 2729 "src/parser.c"
+#line 2730 "src/parser.c"
     break;
 
   case 86:
-#line 1044 "src/parser.y"
+#line 1045 "src/parser.y"
     {
         t_constant* c = zero_allocate(t_constant);
         c->type_info.primitive_type = LONG_TYPE;
@@ -2737,11 +2738,11 @@ yyreduce:
         c->member.integer_val = (yyvsp[0].integer_val);
         (yyval.c_constant) = c;
     }
-#line 2741 "src/parser.c"
+#line 2742 "src/parser.c"
     break;
 
   case 87:
-#line 1051 "src/parser.y"
+#line 1052 "src/parser.y"
     {
         t_constant* c = zero_allocate(t_constant);
         c->type_info.primitive_type = CHAR_TYPE;
@@ -2749,11 +2750,11 @@ yyreduce:
         c->member.char_val = (yyvsp[0].char_val);
         (yyval.c_constant) = c;
     }
-#line 2753 "src/parser.c"
+#line 2754 "src/parser.c"
     break;
 
   case 88:
-#line 1058 "src/parser.y"
+#line 1059 "src/parser.y"
     {
         t_constant* c = zero_allocate(t_constant);
         c->type_info.primitive_type = DOUBLE_TYPE;
@@ -2761,191 +2762,191 @@ yyreduce:
         c->member.float_val = (yyvsp[0].float_val);
         (yyval.c_constant) = c;
     }
-#line 2765 "src/parser.c"
+#line 2766 "src/parser.c"
     break;
 
   case 89:
-#line 1068 "src/parser.y"
+#line 1069 "src/parser.y"
     { (yyval.c_assignment_operator) = EQUAL_OPERATOR; }
-#line 2771 "src/parser.c"
+#line 2772 "src/parser.c"
     break;
 
   case 90:
-#line 1069 "src/parser.y"
+#line 1070 "src/parser.y"
     { (yyval.c_assignment_operator) = PLUS_EQUAL_OPERATOR; }
-#line 2777 "src/parser.c"
+#line 2778 "src/parser.c"
     break;
 
   case 91:
-#line 1070 "src/parser.y"
+#line 1071 "src/parser.y"
     { (yyval.c_assignment_operator) = MINUS_EQUAL_OPERATOR; }
-#line 2783 "src/parser.c"
+#line 2784 "src/parser.c"
     break;
 
   case 92:
-#line 1071 "src/parser.y"
+#line 1072 "src/parser.y"
     { (yyval.c_assignment_operator) = ASTERISK_EQUAL_OPERATOR; }
-#line 2789 "src/parser.c"
+#line 2790 "src/parser.c"
     break;
 
   case 93:
-#line 1072 "src/parser.y"
+#line 1073 "src/parser.y"
     { (yyval.c_assignment_operator) = SLASH_EQUAL_OPERATOR; }
-#line 2795 "src/parser.c"
+#line 2796 "src/parser.c"
     break;
 
   case 94:
-#line 1073 "src/parser.y"
+#line 1074 "src/parser.y"
     { (yyval.c_assignment_operator) = PERCENT_EQUAL_OPERATOR; }
-#line 2801 "src/parser.c"
+#line 2802 "src/parser.c"
     break;
 
   case 95:
-#line 1077 "src/parser.y"
+#line 1078 "src/parser.y"
     { (yyval.c_expression_type) = UNARY_PLUS; }
-#line 2807 "src/parser.c"
+#line 2808 "src/parser.c"
     break;
 
   case 96:
-#line 1078 "src/parser.y"
+#line 1079 "src/parser.y"
     { (yyval.c_expression_type) = UNARY_MINUS; }
-#line 2813 "src/parser.c"
+#line 2814 "src/parser.c"
     break;
 
   case 97:
-#line 1079 "src/parser.y"
+#line 1080 "src/parser.y"
     { (yyval.c_expression_type) = UNARY_EXCL; }
-#line 2819 "src/parser.c"
+#line 2820 "src/parser.c"
     break;
 
   case 98:
-#line 1080 "src/parser.y"
+#line 1081 "src/parser.y"
     { (yyval.c_expression_type) = UNARY_SIZEOF; }
-#line 2825 "src/parser.c"
+#line 2826 "src/parser.c"
     break;
 
   case 99:
-#line 1084 "src/parser.y"
+#line 1085 "src/parser.y"
     { (yyval.c_expression_type) = LESS_THAN; }
-#line 2831 "src/parser.c"
+#line 2832 "src/parser.c"
     break;
 
   case 100:
-#line 1085 "src/parser.y"
+#line 1086 "src/parser.y"
     { (yyval.c_expression_type) = GREATER_THAN; }
-#line 2837 "src/parser.c"
+#line 2838 "src/parser.c"
     break;
 
   case 101:
-#line 1086 "src/parser.y"
+#line 1087 "src/parser.y"
     { (yyval.c_expression_type) = LESS_THAN_OR_EQUAL; }
-#line 2843 "src/parser.c"
+#line 2844 "src/parser.c"
     break;
 
   case 102:
-#line 1087 "src/parser.y"
+#line 1088 "src/parser.y"
     { (yyval.c_expression_type) = GREATER_THAN_OR_EQUAL; }
-#line 2849 "src/parser.c"
+#line 2850 "src/parser.c"
     break;
 
   case 103:
-#line 1088 "src/parser.y"
+#line 1089 "src/parser.y"
     { (yyval.c_expression_type) = IS_IN; }
-#line 2855 "src/parser.c"
+#line 2856 "src/parser.c"
     break;
 
   case 104:
-#line 1092 "src/parser.y"
+#line 1093 "src/parser.y"
     { (yyval.c_expression_type) = ASTERISK_OPERATOR; }
-#line 2861 "src/parser.c"
+#line 2862 "src/parser.c"
     break;
 
   case 105:
-#line 1093 "src/parser.y"
+#line 1094 "src/parser.y"
     { (yyval.c_expression_type) = SLASH_OPERATOR; }
-#line 2867 "src/parser.c"
+#line 2868 "src/parser.c"
     break;
 
   case 106:
-#line 1094 "src/parser.y"
+#line 1095 "src/parser.y"
     { (yyval.c_expression_type) = PERCENT_OPERATOR; }
-#line 2873 "src/parser.c"
+#line 2874 "src/parser.c"
     break;
 
   case 107:
-#line 1098 "src/parser.y"
+#line 1099 "src/parser.y"
     {
         (yyval.c_primitive_type) = VOID_TYPE;
     }
-#line 2881 "src/parser.c"
+#line 2882 "src/parser.c"
     break;
 
   case 108:
-#line 1101 "src/parser.y"
+#line 1102 "src/parser.y"
     {
         (yyval.c_primitive_type) = BYTE_TYPE;
     }
-#line 2889 "src/parser.c"
+#line 2890 "src/parser.c"
     break;
 
   case 109:
-#line 1104 "src/parser.y"
+#line 1105 "src/parser.y"
     {
         (yyval.c_primitive_type) = BYTE_TYPE;
     }
-#line 2897 "src/parser.c"
+#line 2898 "src/parser.c"
     break;
 
   case 110:
-#line 1107 "src/parser.y"
+#line 1108 "src/parser.y"
     {
         (yyval.c_primitive_type) = BYTE_TYPE;
     }
-#line 2905 "src/parser.c"
+#line 2906 "src/parser.c"
     break;
 
   case 111:
-#line 1110 "src/parser.y"
+#line 1111 "src/parser.y"
     {
         (yyval.c_primitive_type) = SHORT_TYPE;
     }
-#line 2913 "src/parser.c"
+#line 2914 "src/parser.c"
     break;
 
   case 112:
-#line 1113 "src/parser.y"
+#line 1114 "src/parser.y"
     {
         (yyval.c_primitive_type) = INT_TYPE;
     }
-#line 2921 "src/parser.c"
+#line 2922 "src/parser.c"
     break;
 
   case 113:
-#line 1116 "src/parser.y"
+#line 1117 "src/parser.y"
     {
         (yyval.c_primitive_type) = LONG_TYPE;
     }
-#line 2929 "src/parser.c"
+#line 2930 "src/parser.c"
     break;
 
   case 114:
-#line 1119 "src/parser.y"
+#line 1120 "src/parser.y"
     {
         (yyval.c_primitive_type) = FLOAT_TYPE;
     }
-#line 2937 "src/parser.c"
+#line 2938 "src/parser.c"
     break;
 
   case 115:
-#line 1122 "src/parser.y"
+#line 1123 "src/parser.y"
     {
         (yyval.c_primitive_type) = DOUBLE_TYPE;
     }
-#line 2945 "src/parser.c"
+#line 2946 "src/parser.c"
     break;
 
 
-#line 2949 "src/parser.c"
+#line 2950 "src/parser.c"
 
       default: break;
     }
@@ -3177,5 +3178,5 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 1126 "src/parser.y"
+#line 1127 "src/parser.y"
 

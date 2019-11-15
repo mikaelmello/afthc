@@ -1,4 +1,5 @@
 #include "my_string.h"
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -49,7 +50,7 @@ void m_string_free(t_string* s) {
 char* duplicate(char* source) {
   int size = strlen(source);
   char* new = (char*)malloc(size + 1);
-  strncpy(new, source, size);
+  sprintf(new, "%s", source);
   new[size] = 0;
   return new;
 }
