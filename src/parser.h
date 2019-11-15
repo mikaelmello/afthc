@@ -124,7 +124,7 @@ extern int yydebug;
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 52 "src/parser.y"
+#line 53 "src/parser.y"
 
     t_expression_type c_expression_type;
     t_constant_type c_constant_type;

@@ -14,6 +14,7 @@ extern int yyleng;
 extern char* yytext;
 extern scope_t* root_scope;
 extern scope_t* current_scope;
+extern t_program* program;
 
 int main(int argc, char* argv[]) {
   argc -= 1;
@@ -27,8 +28,9 @@ int main(int argc, char* argv[]) {
   root_scope = scope_create(NULL);
   current_scope = root_scope;
 
-  // sym_table = create_symbol_table_list();
   yyparse();
-  // free_ast(ast_root, NT_PROGRAM);
-  // free_symbol_table_list(sym_table);
+
+  // print_program(program, 0);
+  free_program(program);
+  scope_free(current_scope);
 }

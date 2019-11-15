@@ -868,318 +868,318 @@ YY_RULE_SETUP
 case 8:
 YY_RULE_SETUP
 #line 107 "src/tokenizer.lex"
-{ return LEFT_BRACE; }
+{ column += yyleng; return LEFT_BRACE; }
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
 #line 108 "src/tokenizer.lex"
-{ return RIGHT_BRACE; }
+{ column += yyleng; return RIGHT_BRACE; }
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
 #line 109 "src/tokenizer.lex"
-{ return LEFT_BRACKET; }
+{ column += yyleng; return LEFT_BRACKET; }
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
 #line 110 "src/tokenizer.lex"
-{ return RIGHT_BRACKET; }
+{ column += yyleng; return RIGHT_BRACKET; }
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
 #line 111 "src/tokenizer.lex"
-{ return LEFT_PAREN; }
+{ column += yyleng; return LEFT_PAREN; }
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
 #line 112 "src/tokenizer.lex"
-{ return RIGHT_PAREN; }
+{ column += yyleng; return RIGHT_PAREN; }
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
 #line 113 "src/tokenizer.lex"
-{ return LEFT_ANGLE; }
+{ column += yyleng; return LEFT_ANGLE; }
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
 #line 114 "src/tokenizer.lex"
-{ return RIGHT_ANGLE; }
+{ column += yyleng; return RIGHT_ANGLE; }
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
 #line 116 "src/tokenizer.lex"
-{ return EQUAL; }
+{ column += yyleng; return EQUAL; }
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
 #line 117 "src/tokenizer.lex"
-{ return PLUS_EQUAL; }
+{ column += yyleng; return PLUS_EQUAL; }
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
 #line 118 "src/tokenizer.lex"
-{ return MINUS_EQUAL; }
+{ column += yyleng; return MINUS_EQUAL; }
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
 #line 119 "src/tokenizer.lex"
-{ return ASTERISK_EQUAL; }
+{ column += yyleng; return ASTERISK_EQUAL; }
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
 #line 120 "src/tokenizer.lex"
-{ return SLASH_EQUAL; }
+{ column += yyleng; return SLASH_EQUAL; }
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
 #line 121 "src/tokenizer.lex"
-{ return PERCENT_EQUAL; }
+{ column += yyleng; return PERCENT_EQUAL; }
 	YY_BREAK
 case 22:
 YY_RULE_SETUP
 #line 122 "src/tokenizer.lex"
-{ return LANGLE_EQUAL; }
+{ column += yyleng; return LANGLE_EQUAL; }
 	YY_BREAK
 case 23:
 YY_RULE_SETUP
 #line 123 "src/tokenizer.lex"
-{ return RANGLE_EQUAL; }
+{ column += yyleng; return RANGLE_EQUAL; }
 	YY_BREAK
 case 24:
 YY_RULE_SETUP
 #line 124 "src/tokenizer.lex"
-{ return EQUAL_EQUAL; }
+{ column += yyleng; return EQUAL_EQUAL; }
 	YY_BREAK
 case 25:
 YY_RULE_SETUP
 #line 125 "src/tokenizer.lex"
-{ return EXCL_EQUAL; }
+{ column += yyleng; return EXCL_EQUAL; }
 	YY_BREAK
 case 26:
 YY_RULE_SETUP
 #line 126 "src/tokenizer.lex"
-{ return DOUBLE_LANGLE; }
+{ column += yyleng; return DOUBLE_LANGLE; }
 	YY_BREAK
 case 27:
 YY_RULE_SETUP
 #line 127 "src/tokenizer.lex"
-{ return DOUBLE_RANGLE; }
+{ column += yyleng; return DOUBLE_RANGLE; }
 	YY_BREAK
 case 28:
 YY_RULE_SETUP
 #line 129 "src/tokenizer.lex"
-{ return TILDE; }
+{ column += yyleng; return TILDE; }
 	YY_BREAK
 case 29:
 YY_RULE_SETUP
 #line 130 "src/tokenizer.lex"
-{ return AND; }
+{ column += yyleng; return AND; }
 	YY_BREAK
 case 30:
 YY_RULE_SETUP
 #line 131 "src/tokenizer.lex"
-{ return BAR; }
+{ column += yyleng; return BAR; }
 	YY_BREAK
 case 31:
 YY_RULE_SETUP
 #line 132 "src/tokenizer.lex"
-{ return CARET; }
+{ column += yyleng; return CARET; }
 	YY_BREAK
 case 32:
 YY_RULE_SETUP
 #line 133 "src/tokenizer.lex"
-{ return EXCL; }
+{ column += yyleng; return EXCL; }
 	YY_BREAK
 case 33:
 YY_RULE_SETUP
 #line 134 "src/tokenizer.lex"
-{ return BAR_BAR; }
+{ column += yyleng; return BAR_BAR; }
 	YY_BREAK
 case 34:
 YY_RULE_SETUP
 #line 135 "src/tokenizer.lex"
-{ return AND_AND; }
+{ column += yyleng; return AND_AND; }
 	YY_BREAK
 case 35:
 YY_RULE_SETUP
 #line 136 "src/tokenizer.lex"
-{ return COMMA; }
+{ column += yyleng; return COMMA; }
 	YY_BREAK
 case 36:
 YY_RULE_SETUP
 #line 137 "src/tokenizer.lex"
-{ return SEMICOLON; }
+{ column += yyleng; return SEMICOLON; }
 	YY_BREAK
 case 37:
 YY_RULE_SETUP
 #line 138 "src/tokenizer.lex"
-{ return PLUS; }
+{ column += yyleng; return PLUS; }
 	YY_BREAK
 case 38:
 YY_RULE_SETUP
 #line 139 "src/tokenizer.lex"
-{ return MINUS; }
+{ column += yyleng; return MINUS; }
 	YY_BREAK
 case 39:
 YY_RULE_SETUP
 #line 140 "src/tokenizer.lex"
-{ return ASTERISK; }
+{ column += yyleng; return ASTERISK; }
 	YY_BREAK
 case 40:
 YY_RULE_SETUP
 #line 141 "src/tokenizer.lex"
-{ return SLASH; }
+{ column += yyleng; return SLASH; }
 	YY_BREAK
 case 41:
 YY_RULE_SETUP
 #line 142 "src/tokenizer.lex"
-{ return PERCENT; }
+{ column += yyleng; return PERCENT; }
 	YY_BREAK
 case 42:
 YY_RULE_SETUP
 #line 144 "src/tokenizer.lex"
-{ return IN_RW; }
+{ column += yyleng; return IN_RW; }
 	YY_BREAK
 case 43:
 YY_RULE_SETUP
 #line 145 "src/tokenizer.lex"
-{ return RM_RW; }
+{ column += yyleng; return RM_RW; }
 	YY_BREAK
 case 44:
 YY_RULE_SETUP
 #line 146 "src/tokenizer.lex"
-{ return SIZEOF_RW; }
+{ column += yyleng; return SIZEOF_RW; }
 	YY_BREAK
 case 45:
 YY_RULE_SETUP
 #line 147 "src/tokenizer.lex"
-{ return VOID_RW; }
+{ column += yyleng; return VOID_RW; }
 	YY_BREAK
 case 46:
 YY_RULE_SETUP
 #line 148 "src/tokenizer.lex"
-{ return BOOL_RW; }
+{ column += yyleng; return BOOL_RW; }
 	YY_BREAK
 case 47:
 YY_RULE_SETUP
 #line 149 "src/tokenizer.lex"
-{ return BYTE_RW; }
+{ column += yyleng; return BYTE_RW; }
 	YY_BREAK
 case 48:
 YY_RULE_SETUP
 #line 150 "src/tokenizer.lex"
-{ return CHAR_RW; }
+{ column += yyleng; return CHAR_RW; }
 	YY_BREAK
 case 49:
 YY_RULE_SETUP
 #line 151 "src/tokenizer.lex"
-{ return SHORT_RW; }
+{ column += yyleng; return SHORT_RW; }
 	YY_BREAK
 case 50:
 YY_RULE_SETUP
 #line 152 "src/tokenizer.lex"
-{ return INT_RW; }
+{ column += yyleng; return INT_RW; }
 	YY_BREAK
 case 51:
 YY_RULE_SETUP
 #line 153 "src/tokenizer.lex"
-{ return LONG_RW; }
+{ column += yyleng; return LONG_RW; }
 	YY_BREAK
 case 52:
 YY_RULE_SETUP
 #line 154 "src/tokenizer.lex"
-{ return FLOAT_RW; }
+{ column += yyleng; return FLOAT_RW; }
 	YY_BREAK
 case 53:
 YY_RULE_SETUP
 #line 155 "src/tokenizer.lex"
-{ return DOUBLE_RW; }
+{ column += yyleng; return DOUBLE_RW; }
 	YY_BREAK
 case 54:
 YY_RULE_SETUP
 #line 156 "src/tokenizer.lex"
-{ return PRINT_RW; }
+{ column += yyleng; return PRINT_RW; }
 	YY_BREAK
 case 55:
 YY_RULE_SETUP
 #line 157 "src/tokenizer.lex"
-{ return PRINTC_RW; }
+{ column += yyleng; return PRINTC_RW; }
 	YY_BREAK
 case 56:
 YY_RULE_SETUP
 #line 158 "src/tokenizer.lex"
-{ return PRINTX_RW; }
+{ column += yyleng; return PRINTX_RW; }
 	YY_BREAK
 case 57:
 YY_RULE_SETUP
 #line 159 "src/tokenizer.lex"
-{ return SCAN_RW; }
+{ column += yyleng; return SCAN_RW; }
 	YY_BREAK
 case 58:
 YY_RULE_SETUP
 #line 160 "src/tokenizer.lex"
-{ return SCANC_RW; }
+{ column += yyleng; return SCANC_RW; }
 	YY_BREAK
 case 59:
 YY_RULE_SETUP
 #line 161 "src/tokenizer.lex"
-{ return SCANF_RW; }
+{ column += yyleng; return SCANF_RW; }
 	YY_BREAK
 case 60:
 YY_RULE_SETUP
 #line 162 "src/tokenizer.lex"
-{ return IF_RW; }
+{ column += yyleng; return IF_RW; }
 	YY_BREAK
 case 61:
 YY_RULE_SETUP
 #line 163 "src/tokenizer.lex"
-{ return ELSE_RW; }
+{ column += yyleng; return ELSE_RW; }
 	YY_BREAK
 case 62:
 YY_RULE_SETUP
 #line 164 "src/tokenizer.lex"
-{ return WHILE_RW; }
+{ column += yyleng; return WHILE_RW; }
 	YY_BREAK
 case 63:
 YY_RULE_SETUP
 #line 165 "src/tokenizer.lex"
-{ return FOR_RW; }
+{ column += yyleng; return FOR_RW; }
 	YY_BREAK
 case 64:
 YY_RULE_SETUP
 #line 166 "src/tokenizer.lex"
-{ return RETURN_RW; }
+{ column += yyleng; return RETURN_RW; }
 	YY_BREAK
 case 65:
 YY_RULE_SETUP
 #line 168 "src/tokenizer.lex"
-{ yylval.integer_val = atoi(yytext); return INTEGER; }
+{ column += yyleng; yylval.integer_val = atoi(yytext); return INTEGER; }
 	YY_BREAK
 case 66:
 YY_RULE_SETUP
 #line 169 "src/tokenizer.lex"
-{ yylval.float_val = atof(yytext); return REAL; }
+{ column += yyleng; yylval.float_val = atof(yytext); return REAL; }
 	YY_BREAK
 case 67:
 YY_RULE_SETUP
 #line 170 "src/tokenizer.lex"
-{ yylval.string_val = duplicate(yytext); return IDENTIFIER; }
+{ column += yyleng; yylval.string_val = duplicate(yytext); return IDENTIFIER; }
 	YY_BREAK
 case 68:
 /* rule 68 can match eol */
 YY_RULE_SETUP
 #line 171 "src/tokenizer.lex"
-{ yylval.string_val = duplicate(yytext); return STRING; }
+{ column += yyleng; yylval.string_val = duplicate(yytext); return STRING; }
 	YY_BREAK
 case 69:
 YY_RULE_SETUP
 #line 172 "src/tokenizer.lex"
-{ yylval.char_val = *yytext; return CHAR; }
+{ column += yyleng; yylval.char_val = *yytext; return CHAR; }
 	YY_BREAK
 case 70:
 YY_RULE_SETUP
 #line 173 "src/tokenizer.lex"
-{ BEGIN(INITIAL); }
+{ column += yyleng; BEGIN(INITIAL); }
 	YY_BREAK
 case 71:
 /* rule 71 can match eol */

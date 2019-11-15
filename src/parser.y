@@ -18,6 +18,7 @@ extern uint32_t column;
 extern scope_error_t LAST_ERROR;
 scope_t* root_scope;
 scope_t* current_scope;
+t_program* program;
 
 void yyerror (char const *s)
 {
@@ -133,13 +134,9 @@ void yyerror (char const *s)
 
 program:
     declaration-list {
-        t_program* program = zero_allocate(t_program);
+        program = zero_allocate(t_program);
         program->declaration_list = $1;
-        print_program(program, 0);
-        free_program(program);
         $$ = program;
-
-        scope_free(current_scope);
     }
 ;
 
@@ -177,7 +174,7 @@ var-declaration:
         scope_element_t* add = scope_add(current_scope, dec);
         if (LAST_ERROR == EXISTING_DECLARATION) {
             LAST_ERROR = 0;
-            printf("Multiple declaration of identifier %s\n", $2);
+            printf("Location %d:%d - Multiple declaration of identifier %s\n", line, column, $2);
         }
         $$ = add;
     }
@@ -193,7 +190,7 @@ var-declaration:
         scope_element_t* add = scope_add(current_scope, dec);
         if (LAST_ERROR == EXISTING_DECLARATION) {
             LAST_ERROR = 0;
-            printf("Multiple declaration of identifier %s\n", $2);
+            printf("Location %d:%d - Multiple declaration of identifier %s\n", line, column, $2);
         }
         $$ = add;
     }
@@ -209,7 +206,7 @@ var-declaration:
         scope_element_t* add = scope_add(current_scope, dec);
         if (LAST_ERROR == EXISTING_DECLARATION) {
             LAST_ERROR = 0;
-            printf("Multiple declaration of identifier %s\n", $2);
+            printf("Location %d:%d - Multiple declaration of identifier %s\n", line, column, $2);
         }
         $$ = add;
     }
@@ -232,14 +229,14 @@ fun-declaration:
     } param-decs RIGHT_PAREN {
         st_element_t* fun = scope_find(current_scope, $2);
         if (fun == NULL) {
-            printf("Should not happen, fun is null!\n");
+            printf("Location %d:%d - Should not happen, fun is null!\n", line, column);
             exit(55);
         }
         fun->declaration->member.function->params = $5;
     } scope {
         st_element_t* fun = scope_find(current_scope, $2);
         if (fun == NULL) {
-            printf("Should not happen, fun is null!\n");
+            printf("Location %d:%d - Should not happen, fun is null!\n", line, column);
             exit(55);
         }
         fun->declaration->member.function->body = $8;
@@ -261,7 +258,7 @@ fun-declaration:
     } RIGHT_PAREN scope {
         st_element_t* fun = scope_find(current_scope, $2);
         if (fun == NULL) {
-            printf("Should not happen, fun is null!\n");
+            printf("Location %d:%d - Should not happen, fun is null!\n", line, column);
             exit(55);
         }
         fun->declaration->member.function->body = $6;
@@ -366,8 +363,9 @@ print:
         print->expression = $2;
         $$ = print;
 
-        assert($2 != NULL);
-        assert($2->type_info.data_structure == PRIMITIVE);
+        if ($2->type_info.data_structure != PRIMITIVE) {
+            printf("Location %d:%d - You can only print primitive values, no sets, arrays or functions\n", line, column);
+        }
 
         if ($1 == PRINT_CHAR_TYPE) {
             assert(is_type_equivalent(
@@ -386,21 +384,29 @@ scan:
 
         assert($2 != NULL);
         assert($2->declaration != NULL);
-        assert($2->declaration->type == VAR_DECLARATION);
-        assert($2->declaration->member.variable->type_info.data_structure == PRIMITIVE);
+
+        char* label = declaration_get_label($2->declaration);
+        if ($2->declaration->type != VAR_DECLARATION) {
+            printf("Location %d:%d - %s is not a variable and you can't scan to it.\n", line, column, label);
+        }
+        if ($2->declaration->member.variable->type_info.data_structure != PRIMITIVE) {
+            printf("Location %d:%d - Variable %s is not primitive.\n", line, column, label);
+        }
 
         if ($1 == SCAN_DEC_TYPE || $1 == SCAN_CHAR_TYPE) {
-            assert(is_type_equivalent(
+            if (!is_type_equivalent(
                 LONG_TYPE, 
                 $2->declaration->member.variable->type_info.primitive_type
-                )
-            );
+            )) {
+                printf("Location %d:%d - Variable %s is not an integer or char.\n", line, column, label);
+            }
         } else {
-            assert(is_type_equivalent(
+            if (!is_type_equivalent(
                 FLOAT_TYPE, 
                 $2->declaration->member.variable->type_info.primitive_type
-                )
-            );
+            )) {
+                printf("Location %d:%d - scanf can't scan to variable that is not a float or double.\n", line, column);
+            }
         }
         scan->destiny = $2;
         $$ = scan;
@@ -434,12 +440,10 @@ scan-type:
 condition:
     IF_RW LEFT_PAREN expression RIGHT_PAREN statement %prec REDUCE {
         assert($3 != NULL);
-        assert($3->type_info.data_structure == PRIMITIVE);
-        assert(is_type_equivalent(
-            LONG_TYPE, 
-            $3->type_info.primitive_type
-            )
-        );
+
+        if ($3->type_info.data_structure != PRIMITIVE || !is_type_equivalent(LONG_TYPE, $3->type_info.primitive_type)) {
+            printf("Location %d:%d - Condition expression must return a primitive and integer type\n", line, column);
+        };
         
         t_condition* cond = zero_allocate(t_condition);
         cond->condition = $3;
@@ -450,12 +454,10 @@ condition:
     }
 |   IF_RW LEFT_PAREN expression RIGHT_PAREN statement ELSE_RW statement {   
         assert($3 != NULL);
-        assert($3->type_info.data_structure == PRIMITIVE);
-        assert(is_type_equivalent(
-            LONG_TYPE, 
-            $3->type_info.primitive_type
-            )
-        );
+        
+        if ($3->type_info.data_structure != PRIMITIVE || !is_type_equivalent(LONG_TYPE, $3->type_info.primitive_type)) {
+            printf("Location %d:%d - Condition expression must return a primitive and integer type\n", line, column);
+        };
 
         t_condition* cond = zero_allocate(t_condition);
         cond->condition = $3;
@@ -469,12 +471,10 @@ condition:
 iteration:
     WHILE_RW LEFT_PAREN expression RIGHT_PAREN statement {
         assert($3 != NULL);
-        assert($3->type_info.data_structure == PRIMITIVE);
-        assert(is_type_equivalent(
-            LONG_TYPE, 
-            $3->type_info.primitive_type
-            )
-        );
+        
+        if ($3->type_info.data_structure != PRIMITIVE || !is_type_equivalent(LONG_TYPE, $3->type_info.primitive_type)) {
+            printf("Location %d:%d - Condition expression must return a primitive and integer type\n", line, column);
+        };
 
         t_iteration* w = zero_allocate(t_iteration);
         w->initialization = NULL;
@@ -487,28 +487,19 @@ iteration:
         
 
         if ($3 != NULL) {
-            assert($3->type_info.data_structure == PRIMITIVE);
-            assert(is_type_equivalent(
-                LONG_TYPE, 
-                $3->type_info.primitive_type
-                )
-            );
+            if ($3->type_info.data_structure != PRIMITIVE) {
+                printf("Location %d:%d - Condition expression must return a primitive type\n", line, column);
+            };
         }
         if ($5 != NULL) {
-            assert($5->type_info.data_structure == PRIMITIVE);
-            assert(is_type_equivalent(
-                LONG_TYPE, 
-                $5->type_info.primitive_type
-                )
-            );
+            if ($5->type_info.data_structure != PRIMITIVE) {
+                printf("Location %d:%d - Condition expression must return a primitive type\n", line, column);
+            };
         }
         if ($7 != NULL) {
-            assert($7->type_info.data_structure == PRIMITIVE);
-            assert(is_type_equivalent(
-                LONG_TYPE, 
-                $7->type_info.primitive_type
-                )
-            );
+            if ($7->type_info.data_structure != PRIMITIVE) {
+                printf("Location %d:%d - Condition expression must return a primitive type\n", line, column);
+            };
         }
         
         t_iteration* f = zero_allocate(t_iteration);
@@ -540,10 +531,18 @@ optional-expression:
 assignment:
     identifier assignment-op expression {
         t_type_info info = get_type_info($1);
-        assert(info.data_structure == PRIMITIVE);
-        assert($3->type_info.data_structure == PRIMITIVE);
-        assert($3->type_info.primitive_type != VOID_TYPE && $3->type_info.primitive_type != STRING_TYPE);
-        assert(is_type_equivalent($3->type_info.primitive_type, info.primitive_type));
+        char* label = declaration_get_label($1->declaration);
+        if (info.data_structure != PRIMITIVE) {
+            printf("Location %d:%d - Identifier %s must have primitive type\n", line, column, label);
+        }
+        if ($3->type_info.data_structure != PRIMITIVE) {
+            printf("Location %d:%d - Expression must have primitive type\n", line, column);
+        } else if ($3->type_info.primitive_type == VOID_TYPE || $3->type_info.primitive_type == STRING_TYPE) {
+            printf("Location %d:%d - Expression must have a numeric value type\n", line, column);
+        } else if (!is_type_equivalent($3->type_info.primitive_type, info.primitive_type)) {
+            printf("Location %d:%d - Expression and variable must have equivalent types\n", line, column);
+        }
+
         t_assignment* exp = zero_allocate(t_assignment);
         exp->identifier = $1;
         exp->operator = $2;
@@ -568,10 +567,12 @@ expression:
 
 and-expression:
     and-expression AND_AND or-expression {
-        assert($1->type_info.data_structure == PRIMITIVE);
-        assert(is_type_equivalent($1->type_info.primitive_type, LONG_TYPE));
-        assert($3->type_info.data_structure == PRIMITIVE);
-        assert(is_type_equivalent($3->type_info.primitive_type, LONG_TYPE));
+        if ($1->type_info.data_structure != PRIMITIVE || $1->type_info.primitive_type == VOID_TYPE || $1->type_info.primitive_type == STRING_TYPE) {
+            printf("Location %d:%d - Left expression must return a primitive and integer type\n", line, column);
+        };
+        if ($3->type_info.data_structure != PRIMITIVE || $3->type_info.primitive_type == VOID_TYPE || $3->type_info.primitive_type == STRING_TYPE) {
+            printf("Location %d:%d - Right expression must return a primitive and integer type\n", line, column);
+        };
 
         t_expression* exp = zero_allocate(t_expression);
         exp->type_info = $1->type_info;
@@ -587,10 +588,12 @@ and-expression:
 
 or-expression:
     or-expression BAR_BAR bw-and-expression {
-        assert($1->type_info.data_structure == PRIMITIVE);
-        assert(is_type_equivalent($1->type_info.primitive_type, LONG_TYPE));
-        assert($3->type_info.data_structure == PRIMITIVE);
-        assert(is_type_equivalent($3->type_info.primitive_type, LONG_TYPE));
+        if ($1->type_info.data_structure != PRIMITIVE || $1->type_info.primitive_type == VOID_TYPE || $1->type_info.primitive_type == STRING_TYPE) {
+            printf("Location %d:%d - Left expression must return a primitive and integer type\n", line, column);
+        };
+        if ($3->type_info.data_structure != PRIMITIVE || $3->type_info.primitive_type == VOID_TYPE || $3->type_info.primitive_type == STRING_TYPE) {
+            printf("Location %d:%d - Right expression must return a primitive and integer type\n", line, column);
+        };
 
         t_expression* exp = zero_allocate(t_expression);
         exp->type_info = $1->type_info;
@@ -606,10 +609,12 @@ or-expression:
 
 bw-and-expression:
     bw-and-expression AND bw-or-expression {
-        assert($1->type_info.data_structure == PRIMITIVE);
-        assert(is_type_equivalent($1->type_info.primitive_type, LONG_TYPE));
-        assert($3->type_info.data_structure == PRIMITIVE);
-        assert(is_type_equivalent($3->type_info.primitive_type, LONG_TYPE));
+        if ($1->type_info.data_structure != PRIMITIVE || $1->type_info.primitive_type == VOID_TYPE || $1->type_info.primitive_type == STRING_TYPE) {
+            printf("Location %d:%d - Left expression must return a primitive and integer type\n", line, column);
+        };
+        if ($3->type_info.data_structure != PRIMITIVE || $3->type_info.primitive_type == VOID_TYPE || $3->type_info.primitive_type == STRING_TYPE) {
+            printf("Location %d:%d - Right expression must return a primitive and integer type\n", line, column);
+        };
 
         t_expression* exp = zero_allocate(t_expression);
         exp->type_info = $1->type_info;
@@ -625,10 +630,12 @@ bw-and-expression:
 
 bw-or-expression:
     bw-or-expression BAR bw-xor-expression {
-        assert($1->type_info.data_structure == PRIMITIVE);
-        assert(is_type_equivalent($1->type_info.primitive_type, LONG_TYPE));
-        assert($3->type_info.data_structure == PRIMITIVE);
-        assert(is_type_equivalent($3->type_info.primitive_type, LONG_TYPE));
+        if ($1->type_info.data_structure != PRIMITIVE || $1->type_info.primitive_type == VOID_TYPE || $1->type_info.primitive_type == STRING_TYPE) {
+            printf("Location %d:%d - Left expression must return a primitive and integer type\n", line, column);
+        };
+        if ($3->type_info.data_structure != PRIMITIVE || $3->type_info.primitive_type == VOID_TYPE || $3->type_info.primitive_type == STRING_TYPE) {
+            printf("Location %d:%d - Right expression must return a primitive and integer type\n", line, column);
+        };
 
         t_expression* exp = zero_allocate(t_expression);
         exp->type_info = $1->type_info;
@@ -644,10 +651,12 @@ bw-or-expression:
 
 bw-xor-expression:
     bw-xor-expression CARET eq-expression {
-        assert($1->type_info.data_structure == PRIMITIVE);
-        assert(is_type_equivalent($1->type_info.primitive_type, LONG_TYPE));
-        assert($3->type_info.data_structure == PRIMITIVE);
-        assert(is_type_equivalent($3->type_info.primitive_type, LONG_TYPE));
+        if ($1->type_info.data_structure != PRIMITIVE || $1->type_info.primitive_type == VOID_TYPE || $1->type_info.primitive_type == STRING_TYPE) {
+            printf("Location %d:%d - Left expression must return a primitive and integer type\n", line, column);
+        };
+        if ($3->type_info.data_structure != PRIMITIVE || $3->type_info.primitive_type == VOID_TYPE || $3->type_info.primitive_type == STRING_TYPE) {
+            printf("Location %d:%d - Right expression must return a primitive and integer type\n", line, column);
+        };
 
         t_expression* exp = zero_allocate(t_expression);
         exp->type_info = $1->type_info;
@@ -666,12 +675,12 @@ eq-expression:
         t_type_info info;
         info.primitive_type = LONG_TYPE;
         info.data_structure = PRIMITIVE;
-        assert($1->type_info.data_structure == PRIMITIVE);
-        assert($1->type_info.primitive_type != VOID_TYPE && 
-            $1->type_info.primitive_type != STRING_TYPE);
-        assert($3->type_info.data_structure == PRIMITIVE);
-        assert($3->type_info.primitive_type != VOID_TYPE && 
-            $3->type_info.primitive_type != STRING_TYPE);
+        if ($1->type_info.data_structure != PRIMITIVE || $1->type_info.primitive_type == VOID_TYPE || $1->type_info.primitive_type == STRING_TYPE) {
+            printf("Location %d:%d - Left expression must return a primitive and integer type\n", line, column);
+        };
+        if ($3->type_info.data_structure != PRIMITIVE || $3->type_info.primitive_type == VOID_TYPE || $3->type_info.primitive_type == STRING_TYPE) {
+            printf("Location %d:%d - Right expression must return a primitive and integer type\n", line, column);
+        };
 
         t_expression* exp = zero_allocate(t_expression);
         exp->type = EQ_EQ_EXPRESSION;
@@ -684,12 +693,12 @@ eq-expression:
         t_type_info info;
         info.primitive_type = LONG_TYPE;
         info.data_structure = PRIMITIVE;
-        assert($1->type_info.data_structure == PRIMITIVE);
-        assert($1->type_info.primitive_type != VOID_TYPE && 
-            $1->type_info.primitive_type != STRING_TYPE);
-        assert($3->type_info.data_structure == PRIMITIVE);
-        assert($3->type_info.primitive_type != VOID_TYPE && 
-            $3->type_info.primitive_type != STRING_TYPE);
+        if ($1->type_info.data_structure != PRIMITIVE || $1->type_info.primitive_type == VOID_TYPE || $1->type_info.primitive_type == STRING_TYPE) {
+            printf("Location %d:%d - Left expression must return a primitive and integer type\n", line, column);
+        };
+        if ($3->type_info.data_structure != PRIMITIVE || $3->type_info.primitive_type == VOID_TYPE || $3->type_info.primitive_type == STRING_TYPE) {
+            printf("Location %d:%d - Right expression must return a primitive and integer type\n", line, column);
+        };
             
         t_expression* exp = zero_allocate(t_expression);
         exp->type = NOT_EQ_EXPRESSION;
@@ -710,18 +719,22 @@ rel-expression:
         info.data_structure = PRIMITIVE;
 
         if ($2 == IS_IN) {
-            assert($1->type_info.data_structure == SET);
-            assert($1->type_info.primitive_type != VOID_TYPE && 
-                $1->type_info.primitive_type != STRING_TYPE);
-            assert($3->type_info.data_structure == PRIMITIVE);
-            assert(is_type_equivalent($1->type_info.primitive_type, $3->type_info.primitive_type));
+            if ($1->type_info.data_structure != SET) {
+                printf("Location %d:%d - Can only use 'in' operator with sets on the left side.\n", line, column);
+            }
+            if ($3->type_info.data_structure != PRIMITIVE) {
+                printf("Location %d:%d - Can only check if primitive values are in a set.\n", line, column);
+            }
+            if (!is_type_equivalent($1->type_info.primitive_type, $3->type_info.primitive_type)) {
+                printf("Location %d:%d - Can only check primitive values of the same type of the set.\n", line, column);
+            }
         } else {
-            assert($1->type_info.data_structure == PRIMITIVE);
-            assert($1->type_info.primitive_type != VOID_TYPE && 
-                $1->type_info.primitive_type != STRING_TYPE);
-            assert($3->type_info.data_structure == PRIMITIVE);
-            assert($3->type_info.primitive_type != VOID_TYPE && 
-                $3->type_info.primitive_type != STRING_TYPE);
+            if ($1->type_info.data_structure != PRIMITIVE || $1->type_info.primitive_type == VOID_TYPE || $1->type_info.primitive_type == STRING_TYPE) {
+                printf("Location %d:%d - Left expression must return a primitive and integer type\n", line, column);
+            };
+            if ($3->type_info.data_structure != PRIMITIVE || $3->type_info.primitive_type == VOID_TYPE || $3->type_info.primitive_type == STRING_TYPE) {
+                printf("Location %d:%d - Right expression must return a primitive and integer type\n", line, column);
+            };
         }
 
         t_expression* exp = zero_allocate(t_expression);
@@ -738,10 +751,24 @@ rel-expression:
 
 shift-expression:
     shift-expression DOUBLE_LANGLE set-rm-expression {
-        assert($1->type_info.data_structure == PRIMITIVE);
-        assert(is_type_equivalent($1->type_info.primitive_type, LONG_TYPE));
-        assert($3->type_info.data_structure == PRIMITIVE);
-        assert(is_type_equivalent($3->type_info.primitive_type, LONG_TYPE));
+        t_structure_type e1 = $1->type_info.data_structure;
+        t_structure_type e2 = $3->type_info.data_structure;
+        t_primitive_type t1 = $1->type_info.primitive_type;
+        t_primitive_type t2 = $3->type_info.primitive_type;
+
+        if (e1 != SET && e1 != PRIMITIVE) {
+            printf("Location %d:%d - Can only use >> with sets or primitives\n", line, column);
+        } else if (e2 == SET) {
+            printf("Location %d:%d - To remove elements from a set use the rm operator, not opposite angle brackets.\n", line, column);
+        } else if (e2 != PRIMITIVE) {
+            printf("Location %d:%d - Can only use << with sets or primitives.\n", line, column);
+        } else if (e1 == SET) {
+            if (!is_type_equivalent(t1, t2)) {
+                printf("Location %d:%d - Trying to insert element of different type in set.\n", line, column);
+            }
+        } else if (!is_type_equivalent(t1, LONG_TYPE) || !is_type_equivalent(t2, LONG_TYPE)) {
+            printf("Location %d:%d - Can only use << with integers.\n", line, column);
+        }
 
         t_expression* exp = zero_allocate(t_expression);
         exp->type_info = $1->type_info;
@@ -751,10 +778,23 @@ shift-expression:
         $$ = exp;
     }
 |   shift-expression DOUBLE_RANGLE set-rm-expression {
-        assert($1->type_info.data_structure == PRIMITIVE);
-        assert(is_type_equivalent($1->type_info.primitive_type, LONG_TYPE));
-        assert($3->type_info.data_structure == PRIMITIVE);
-        assert(is_type_equivalent($3->type_info.primitive_type, LONG_TYPE));
+        t_structure_type e1 = $1->type_info.data_structure;
+        t_structure_type e2 = $3->type_info.data_structure;
+        t_primitive_type t1 = $1->type_info.primitive_type;
+        t_primitive_type t2 = $3->type_info.primitive_type;
+        if (e1 == SET) {
+            printf("Location %d:%d - To remove elements from a set use the rm operator, not opposite angle brackets..\n", line, column);
+        } else if (e1 != PRIMITIVE) {
+            printf("Location %d:%d - Can only use << with sets or primitives.\n", line, column);
+        } else if (e2 == SET) {
+            if (!is_type_equivalent(t1, t2)) {
+                printf("Location %d:%d - Trying to insert element of different type in set.\n", line, column);
+            }
+        } else if (e2 != PRIMITIVE) {
+            printf("Location %d:%d - Can only use << with sets or primitives.\n", line, column);
+        } else if (!is_type_equivalent(t1, LONG_TYPE) || !is_type_equivalent(t2, LONG_TYPE)) {
+            printf("Location %d:%d - Can only use << with integers.\n", line, column);
+        }
 
         t_expression* exp = zero_allocate(t_expression);
         exp->type_info = $1->type_info;
@@ -770,11 +810,15 @@ shift-expression:
 
 set-rm-expression:
     set-rm-expression RM_RW add-expression {
-        assert($1->type_info.data_structure == SET);
-        assert($1->type_info.primitive_type != VOID_TYPE && 
-            $1->type_info.primitive_type != STRING_TYPE);
-        assert($3->type_info.data_structure == PRIMITIVE);
-        assert(is_type_equivalent($1->type_info.primitive_type, $3->type_info.primitive_type));
+        if ($1->type_info.data_structure != SET) {
+            printf("Location %d:%d - Can only use 'rm' operator with sets on the left side.\n", line, column);
+        }
+        if ($3->type_info.data_structure != PRIMITIVE) {
+            printf("Location %d:%d - Can only remove primitive values from a set.\n", line, column);
+        }
+        if (!is_type_equivalent($1->type_info.primitive_type, $3->type_info.primitive_type)) {
+            printf("Location %d:%d - Can only remove primitive values of the same type of the set.\n", line, column);
+        }
 
         t_expression* exp = zero_allocate(t_expression);
         exp->type_info = $1->type_info;
@@ -790,12 +834,12 @@ set-rm-expression:
 
 add-expression:
     add-expression PLUS mult-expression {
-        assert($1->type_info.data_structure == PRIMITIVE);
-        assert($1->type_info.primitive_type != VOID_TYPE && 
-            $1->type_info.primitive_type != STRING_TYPE);
-        assert($3->type_info.data_structure == PRIMITIVE);
-        assert($3->type_info.primitive_type != VOID_TYPE && 
-            $3->type_info.primitive_type != STRING_TYPE);
+        if ($1->type_info.data_structure != PRIMITIVE || $1->type_info.primitive_type == VOID_TYPE || $1->type_info.primitive_type == STRING_TYPE) {
+            printf("Location %d:%d - Left expression must return a primitive and integer type\n", line, column);
+        };
+        if ($3->type_info.data_structure != PRIMITIVE || $3->type_info.primitive_type == VOID_TYPE || $3->type_info.primitive_type == STRING_TYPE) {
+            printf("Location %d:%d - Right expression must return a primitive and integer type\n", line, column);
+        };
 
         t_type_info info;
         info.data_structure = PRIMITIVE;
@@ -814,12 +858,12 @@ add-expression:
         $$ = exp;
     }
 |   add-expression MINUS mult-expression {
-        assert($1->type_info.data_structure == PRIMITIVE);
-        assert($1->type_info.primitive_type != VOID_TYPE && 
-            $1->type_info.primitive_type != STRING_TYPE);
-        assert($3->type_info.data_structure == PRIMITIVE);
-        assert($3->type_info.primitive_type != VOID_TYPE && 
-            $3->type_info.primitive_type != STRING_TYPE);
+        if ($1->type_info.data_structure != PRIMITIVE || $1->type_info.primitive_type == VOID_TYPE || $1->type_info.primitive_type == STRING_TYPE) {
+            printf("Location %d:%d - Left expression must return a primitive and integer type\n", line, column);
+        };
+        if ($3->type_info.data_structure != PRIMITIVE || $3->type_info.primitive_type == VOID_TYPE || $3->type_info.primitive_type == STRING_TYPE) {
+            printf("Location %d:%d - Right expression must return a primitive and integer type\n", line, column);
+        };
 
         t_type_info info;
         info.data_structure = PRIMITIVE;
@@ -844,12 +888,12 @@ add-expression:
 
 mult-expression:
     mult-expression mul-op unary-expression {
-        assert($1->type_info.data_structure == PRIMITIVE);
-        assert($1->type_info.primitive_type != VOID_TYPE && 
-            $1->type_info.primitive_type != STRING_TYPE);
-        assert($3->type_info.data_structure == PRIMITIVE);
-        assert($3->type_info.primitive_type != VOID_TYPE && 
-            $3->type_info.primitive_type != STRING_TYPE);
+        if ($1->type_info.data_structure != PRIMITIVE || $1->type_info.primitive_type == VOID_TYPE || $1->type_info.primitive_type == STRING_TYPE) {
+            printf("Location %d:%d - Left expression must return a primitive and integer type\n", line, column);
+        };
+        if ($3->type_info.data_structure != PRIMITIVE || $3->type_info.primitive_type == VOID_TYPE || $3->type_info.primitive_type == STRING_TYPE) {
+            printf("Location %d:%d - Right expression must return a primitive and integer type\n", line, column);
+        };
 
         t_type_info info;
         info.data_structure = PRIMITIVE;
@@ -876,12 +920,14 @@ unary-expression:
     unary-op unary-expression {
         t_type_info info;
         if ($1 == UNARY_PLUS || $1 == UNARY_MINUS || $1 == UNARY_EXCL) {
-            assert($2->type_info.data_structure == PRIMITIVE);
-            assert($2->type_info.primitive_type != VOID_TYPE && 
-                $2->type_info.primitive_type != STRING_TYPE);
+            if ($2->type_info.data_structure != PRIMITIVE || $2->type_info.primitive_type == VOID_TYPE || $2->type_info.primitive_type == STRING_TYPE) {
+                printf("Location %d:%d - Right expression must return a primitive and integer type\n", line, column);
+            };
 
             if ($1 == UNARY_EXCL) {
-                assert(is_type_equivalent($2->type_info.primitive_type, LONG_TYPE) == 1);
+                if (is_type_equivalent($2->type_info.primitive_type, LONG_TYPE) == 0) {
+                    printf("Location %d:%d - Can only negate integer types.\n", line, column);
+                }
             }
 
             info = $2->type_info;
@@ -907,9 +953,9 @@ unary-expression:
 
 cast-expression:
     LEFT_PAREN type RIGHT_PAREN LEFT_PAREN expression RIGHT_PAREN {
-        assert($5->type_info.data_structure == PRIMITIVE);
-        assert($5->type_info.primitive_type != VOID_TYPE && 
-               $5->type_info.primitive_type != STRING_TYPE);
+        if ($5->type_info.data_structure != PRIMITIVE || $5->type_info.primitive_type == VOID_TYPE || $5->type_info.primitive_type == STRING_TYPE) {
+            printf("Location %d:%d - Right expression must return a primitive and integer type\n", line, column);
+        };
 
         t_cast_expression* exp = zero_allocate(t_cast_expression);
 
@@ -931,15 +977,13 @@ cast-expression:
 
 postfix-expression:
     identifier LEFT_BRACKET expression RIGHT_BRACKET {
-        assert($3->type_info.data_structure == PRIMITIVE);
-        assert(
-            is_type_equivalent(
-                $3->type_info.primitive_type, 
-                LONG_TYPE)
-            == 1
-        );
-
-        assert(is_structure_equivalent($1->declaration, ARRAY) == 1);
+        if ($3->type_info.data_structure != PRIMITIVE || $3->type_info.primitive_type == VOID_TYPE || $3->type_info.primitive_type == STRING_TYPE) {
+            printf("Location %d:%d - Index expression must return a primitive and integer type\n", line, column);
+        };
+        t_type_info id = get_type_info($1);
+        if (id.data_structure != ARRAY) {
+            printf("Location %d:%d - Identifier must be array\n", line, column);
+        };
 
         t_postfix_expression* exp = zero_allocate(t_postfix_expression);
         exp->type = ARRAY_ACCESS;
@@ -958,7 +1002,10 @@ postfix-expression:
         
         // TODO: assert param-vals
 
-        assert(is_structure_equivalent($1->declaration, FUNCTION) == 1);
+        t_type_info id = get_type_info($1);
+        if (id.data_structure != FUNCTION) {
+            printf("Location %d:%d - Identifier must be function\n", line, column);
+        };
 
         exp->type_info.primitive_type = get_type_info($1).primitive_type;
         exp->type_info.data_structure = PRIMITIVE;
@@ -994,7 +1041,7 @@ identifier:
     IDENTIFIER {
         st_element_t* element = scope_find(current_scope, $1);
         if (element == NULL) {
-            printf("Identifier %s not previously declared\n", $1);
+            printf("Location %d:%d - Identifier %s not previously declared\n", line, column, $1);
         }
         free($1);
         $$ = element;
@@ -1016,7 +1063,6 @@ primary-expression:
     }
 |   constant {
         t_primary_expression* exp = zero_allocate(t_primary_expression);
-        printf("opa constante\n");
         exp->type = CONSTANT_PRIMARY_EXPRESSION;
         exp->member.constant = $1;
         exp->type_info = $1->type_info;

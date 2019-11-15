@@ -11,9 +11,15 @@ int main() {
   int mikael;
   int x;
   3 >> myset;
+  myset << 3;
+  myset >> 3;
   4 >> myset;
   3 >> myset;
   7 >> myset;
+
+  if (x) {
+    
+  }
 
   iterator = 0;
   i <= 10;
