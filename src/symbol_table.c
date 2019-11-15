@@ -95,89 +95,41 @@ st_element_t* st_find(st_t* st, char* label) {
 
 void t_declaration_free(t_declaration* dec) {}
 
-// t_symbol_table_list* create_symbol_table_list() {
-//   t_symbol_table_list* list =
-//       (t_symbol_table_list*)malloc(sizeof(t_symbol_table_list));
-//   list->head = NULL;
-//   list->tail = NULL;
-//   list->size = 0;
-//   return list;
-// }
+void st_print(st_t* st, int cur_level) {
+  if (st == NULL) return;
 
-// void free_symbol_table_list(t_symbol_table_list* list) {
-//   if (list == NULL) return;
+  spaces(cur_level);
+  printf("Symbol table\n");
+  st_element_list_print(st->list, cur_level + 1);
+}
 
-//   t_symbol_table_node* last = list->tail;
-//   while (last != NULL) {
-//     t_symbol_table_node* prev = last->prev;
-//     free(last);
-//     last = prev;
-//   }
+void st_element_list_print(st_element_list_t* list, int cur_level) {
+  if (list == NULL) return;
 
-//   free(list);
-// }
+  st_element_t* cur = list->head;
+  while (cur != NULL) {
+    st_element_print(cur, cur_level + 1);
+    cur = cur->next;
+  }
+}
 
-// void free_symbol_table_node(t_symbol_table_node* node) {
-//   if (node == NULL) return;
-//   free(node);
-// }
+void st_element_print(st_element_t* element, int cur_level) {
+  if (element == NULL) return;
+  t_declaration* dec = element->declaration;
 
-// t_symbol_table_node* append_symbol_table_node(t_symbol_table_list* list,
-//                                               t_declaration* declaration) {
-//   t_symbol_table_node* node =
-//       (t_symbol_table_node*)calloc(1, sizeof(t_symbol_table_node));
-
-//   node->declaration = declaration;
-
-//   if (list->tail) {
-//     node->prev = list->tail;
-//     list->tail->next = node;
-//   }
-
-//   if (!list->head) {
-//     list->head = node;
-//   }
-
-//   list->size += 1;
-//   list->tail = node;
-
-//   return node;
-// }
-
-// void print_symbol_table_list(t_symbol_table_list* list) {
-//   if (list == NULL) return;
-
-//   printf("==============================\n");
-//   printf("===== TABELA DE SIMBOLOS =====\n");
-//   printf("==============================\n");
-
-//   t_symbol_table_node* cur = list->head;
-//   while (cur != NULL) {
-//     print_symbol_table_node(cur);
-//     cur = cur->next;
-//   }
-// }
-
-// void print_symbol_table_node(t_symbol_table_node* node) {
-//   t_declaration* dec = node->declaration;
-
-//   if (dec->type == VAR_DECLARATION) {
-//     t_variable* var = dec->member.variable;
-//     printf("VARIABLE\n");
-//     printf("  Type: ");
-//     print_primitive_type(var->type);
-//     printf("\n");
-//     printf("  Identifier: %s\n", var->identifier);
-//     printf("  Structure: (%s)\n",
-//            var->structure == SET_TYPE
-//                ? "set"
-//                : var->structure == ARRAY_TYPE ? "array" : "primitive");
-//   } else {
-//     t_function* fun = dec->member.function;
-//     printf("FUNCTION\n");
-//     printf("  Return type: ");
-//     print_primitive_type(fun->return_type);
-//     printf("\n");
-//     printf("  Identifier: %s\n", fun->identifier);
-//   }
-// }
+  spaces(cur_level);
+  if (dec->type == VAR_DECLARATION) {
+    t_variable* var = dec->member.variable;
+    printf("VARIABLE\n");
+    print_primitive_type(var->type_info.primitive_type, cur_level + 1);
+    print_data_structure(var->type_info.data_structure, cur_level + 1);
+    spaces(cur_level + 1);
+    printf("Identifier: %s\n", var->identifier);
+  } else {
+    t_function* fun = dec->member.function;
+    printf("FUNCTION\n");
+    print_primitive_type(fun->type_info.primitive_type, cur_level + 1);
+    spaces(cur_level + 1);
+    printf("Identifier: %s\n", fun->identifier);
+  }
+}

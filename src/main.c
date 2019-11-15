@@ -32,5 +32,6 @@ int main(int argc, char* argv[]) {
 
   // print_program(program, 0);
   free_program(program);
+  scope_print(current_scope, 0);
   scope_free(current_scope);
 }

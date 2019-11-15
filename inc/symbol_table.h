@@ -40,4 +40,8 @@ st_element_t* st_add(st_t* symbol_table, t_declaration* declaration);
 
 st_element_t* st_find(st_t* symbol_table, char* label);
 
+void st_print(st_t* st, int cur_level);
+void st_element_list_print(st_element_list_t* list, int cur_level);
+void st_element_print(st_element_t* element, int cur_level);
+
 #endif

@@ -79,3 +79,26 @@ scope_element_t* scope_find(scope_t* scope, char* label) {
   }
   return NULL;
 }
+
+void scope_print(scope_t* scope, int cur_level) {
+  if (scope == NULL) return;
+
+  spaces(cur_level);
+  printf("Scope\n");
+  st_print(scope->symbol_table, cur_level + 1);
+  spaces(cur_level + 1);
+  printf("Children\n");
+  scope_list_print(scope->children, cur_level + 2);
+}
+
+void scope_list_print(scope_list_t* list, int cur_level) {
+  if (list == NULL) return;
+
+  spaces(cur_level);
+  printf("List of scopes\n");
+  scope_t* cur = list->head;
+  while (cur != NULL) {
+    scope_print(cur, cur_level + 1);
+    cur = cur->next_sibling;
+  }
+}
