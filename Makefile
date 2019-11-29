@@ -1,10 +1,10 @@
-C		= gcc
+C	= gcc
 CINCS  	= -I"inc/" -I"src/"
 CFLAGS 	= $(CINCS) -std=c11 -O2 -lfl
 SRCS	= $(shell find src -name '*.c' -and -not -name 'lex.yy.c' -and -not -name 'parser.c') src/lex.yy.c src/parser.c
 OBJ		= $(addprefix obj/,$(notdir $(SRCS:%.c=%.o))) 
 LEXICAL = lexical-analyzer
-BIN     = tokenizer
+BIN     = afthc
 RM      = rm -f
 
 .PHONY: all all-before all-after clean clean-custom
