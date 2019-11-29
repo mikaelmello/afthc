@@ -1,0 +1,831 @@
+%% abtex2-modelo-artigo.tex, v-1.9.7 laurocesar
+%% Copyright 2012-2018 by abnTeX2 group at http://www.abntex.net.br/ 
+%%
+%% This work may be distributed and/or modified under the
+%% conditions of the LaTeX Project Public License, either version 1.3
+%% of this license or (at your option) any later version.
+%% The latest version of this license is in
+%%   http://www.latex-project.org/lppl.txt
+%% and version 1.3 or later is part of all distributions of LaTeX
+%% version 2005/12/01 or later.
+%%
+%% This work has the LPPL maintenance status `maintained'.
+%% 
+%% The Current Maintainer of this work is the abnTeX2 team, led
+%% by Lauro César Araujo. Further information are available on 
+%% http://www.abntex.net.br/
+%%
+%% This work consists of the files abntex2-modelo-artigo.tex and
+%% abntex2-modelo-references.bib
+%%
+
+% ------------------------------------------------------------------------
+% ------------------------------------------------------------------------
+% abnTeX2: Modelo de Artigo Acadêmico em conformidade com
+% ABNT NBR 6022:2018: Informação e documentação - Artigo em publicação 
+% periódica científica - Apresentação
+% ------------------------------------------------------------------------
+% ------------------------------------------------------------------------
+
+\documentclass[
+	% -- opções da classe memoir --
+	article,			% indica que é um artigo acadêmico
+	11pt,				% tamanho da fonte
+	oneside,			% para impressão apenas no recto. Oposto a twoside
+	a4paper,			% tamanho do papel. 
+	% -- opções da classe abntex2 --
+	%chapter=TITLE,		% títulos de capítulos convertidos em letras maiúsculas
+	%section=TITLE,		% títulos de seções convertidos em letras maiúsculas
+	%subsection=TITLE,	% títulos de subseções convertidos em letras maiúsculas
+	%subsubsection=TITLE % títulos de subsubseções convertidos em letras maiúsculas
+	% -- opções do pacote babel --
+	english,			% idioma adicional para hifenização
+	brazil,				% o último idioma é o principal do documento
+	sumario=tradicional
+	]{abntex2}
+
+
+% ---
+% PACOTES
+% ---
+
+% ---
+% Pacotes fundamentais 
+% ---
+\usepackage{lmodern}			% Usa a fonte Latin Modern
+\usepackage[T1]{fontenc}		% Selecao de codigos de fonte.
+\usepackage[utf8]{inputenc}		% Codificacao do documento (conversão automática dos acentos)
+\usepackage{indentfirst}		% Indenta o primeiro parágrafo de cada seção.
+\usepackage{nomencl} 			% Lista de simbolos
+\usepackage{color}				% Controle das cores
+\usepackage{graphicx}			% Inclusão de gráficos
+\usepackage{microtype} 			% para melhorias de justificação
+\usepackage{syntax}				% BNF Grammar definition
+% ---
+		
+% ---
+% Pacotes adicionais, usados apenas no âmbito do Modelo Canônico do abnteX2
+% ---
+\usepackage{lipsum}				% para geração de dummy text
+% ---
+		
+% ---
+% Pacotes de citações
+% ---
+\usepackage[brazilian,hyperpageref]{backref}	 % Paginas com as citações na bibl
+\usepackage[alf]{abntex2cite}	% Citações padrão ABNT
+% ---
+
+% ---
+% Configurações do pacote backref
+% Usado sem a opção hyperpageref de backref
+\renewcommand{\backrefpagesname}{Citado na(s) página(s):~}
+% Texto padrão antes do número das páginas
+\renewcommand{\backref}{}
+% Define os textos da citação
+\renewcommand*{\backrefalt}[4]{
+	\ifcase #1 %
+		Nenhuma citação no texto.%
+	\or
+		Citado na página #2.%
+	\else
+		Citado #1 vezes nas páginas #2.%
+	\fi}%
+% ---
+
+% --- Informações de dados para CAPA e FOLHA DE ROSTO ---
+\titulo{Processo de desenvolvimento da Afth}
+% \tituloestrangeiro{Selection of the project theme from the Translators class}
+
+\autor{
+Mikael Mello\thanks{Departamento de Ciência da Computação, Universidade de Brasília,
+Brasília, DF, Brasil.
+\mbox{\href{mailto:contact@mikaelmello.com}{contact@mikaelmello.com}} }
+}
+
+\local{Brasil}
+\data{Novembro 2019}
+% ---
+
+% ---
+% Configurações de aparência do PDF final
+
+% alterando o aspecto da cor azul
+\definecolor{blue}{RGB}{41,5,195}
+
+% informações do PDF
+\makeatletter
+\hypersetup{
+     	%pagebackref=true,
+		pdftitle={\@title}, 
+		pdfauthor={\@author},
+    	pdfsubject={},
+	   pdfcreator={Mikael Mello},
+		pdfkeywords={tradutores}{relatório}{escolha do tema}, 
+		colorlinks=true,       		% false: boxed links; true: colored links
+    	linkcolor=blue,          	% color of internal links
+    	citecolor=blue,        		% color of links to bibliography
+    	filecolor=magenta,      		% color of file links
+		urlcolor=blue,
+		bookmarksdepth=4
+}
+\makeatother
+% --- 
+
+% ---
+% compila o indice
+% ---
+\makeindex
+% ---
+
+% ---
+% Altera as margens padrões
+% ---
+\setlrmarginsandblock{3cm}{3cm}{*}
+\setulmarginsandblock{3cm}{3cm}{*}
+\checkandfixthelayout
+% ---
+
+% --- 
+% Espaçamentos entre linhas e parágrafos 
+% --- 
+
+% O tamanho do parágrafo é dado por:
+\setlength{\parindent}{1.3cm}
+
+% Controle do espaçamento entre um parágrafo e outro:
+\setlength{\parskip}{0.2cm}  % tente também \onelineskip
+
+% Espaçamento simples
+\SingleSpacing
+
+
+% ----
+% Início do documento
+% ----
+\begin{document}
+
+% Seleciona o idioma do documento (conforme pacotes do babel)
+%\selectlanguage{english}
+\selectlanguage{brazil}
+
+% Retira espaço extra obsoleto entre as frases.
+\frenchspacing 
+
+% ----------------------------------------------------------
+% ELEMENTOS PRÉ-TEXTUAIS
+% ----------------------------------------------------------
+
+%---
+%
+% Se desejar escrever o artigo em duas colunas, descomente a linha abaixo
+% e a linha com o texto ``FIM DE ARTIGO EM DUAS COLUNAS''.
+% \twocolumn[    		% INICIO DE ARTIGO EM DUAS COLUNAS
+%
+%---
+
+% página de titulo principal (obrigatório)
+\maketitle
+
+
+% titulo em outro idioma (opcional)
+
+
+
+% resumo em português
+\begin{resumoumacoluna}
+	O projeto da disciplina Tradutores envolve o desenvolvimento de
+	um tradutor para uma linguagem mínima que possua funcionalidades
+	básicas, porém que também suporte alguma funcionalidade complexa
+	não presente em C. Este relatório detalha o processo de desenvolvimento
+	da Afth, a linguagem definida.
+	
+	\vspace{\onelineskip}
+	 
+	\noindent
+	\textbf{Palavras-chave}: tradutores. compiladores. linguagens de programação.
+\end{resumoumacoluna}
+
+
+% resumo em inglês
+\renewcommand{\resumoname}{Abstract}
+\begin{resumoumacoluna}
+	\begin{otherlanguage*}{english}
+		The project of the Translators class involves developing a
+		translator for a minimal language that supports basic operations,
+		but that also implements a complex feature that is not present
+		in C. This report details the development process of Afth, the defined
+		language.
+		\vspace{\onelineskip}
+		 
+		\noindent
+		\textbf{Keywords}: translators. compilers. programming languages.
+	\end{otherlanguage*}  
+\end{resumoumacoluna}
+
+% ]  				% FIM DE ARTIGO EM DUAS COLUNAS
+% ---
+
+\begin{center}\smaller
+	
+	%   \textbf{Data de submissão e aprovação}: 26 de agosto de 2019.
+	
+\end{center}
+
+% ----------------------------------------------------------
+% ELEMENTOS TEXTUAIS
+% ----------------------------------------------------------
+\textual
+
+% ----------------------------------------------------------
+% Introdução
+% ----------------------------------------------------------
+\section{Introdução}
+
+O projeto prático da disciplina Tradutores tem como principais objetivos o entendimento
+dos aspectos teóricos e práticos da implementação de tradutores. Assim, a principal
+para o aluno é a implementação de um tradutor de uma linguagem simples, similar à C,
+porém com alguma funcionalidade complexa que não esteja presente em C,
+a ser definida pelo aluno.
+
+A linguagem simplificada deve, obrigatoriamente, possuir as estruturas básicas de uma
+linguagem de programação: comandos de leitura e escrita, comando condicional,
+comando de repetição, tratamento de expressões aritméticas e booleanas e chamada a
+subrotinas.
+
+Estas, e mais algumas, foram implementadas, juntamente com o suporte de conjunto
+como uma estrutura de dados nativa de uma variável. Um conjunto é uma coleção de elementos distinguíveis, chamados
+elementos, não pode possuir o mesmo objeto mais de uma vez e seus elementos não são ordenados
+\cite[Apêndice B.1]{Cormen:2009:IAT:1614191}. Neste artigo, e em outros que detalhem a implementação da linguagem e do tradutor, a linguagem
+será chamada de Afth, originado de \textit{August 5th}.
+
+% ----------------------------------------------------------
+% Seção de explicações
+% ----------------------------------------------------------
+\section{Motivação para a escolha}
+
+Conjuntos são amplamente usados no campo da Ciência da Computação
+como um todo. Se trata de um conceito matemático extremamente importante
+com várias aplicações em computação.
+
+Um banco de dados relacional pode ser descrito como estruturar um banco de dados
+como uma relação entre conjuntos, onde operações como união, interseção, diferença,
+junção e várias outras são fundamentais, todas estudadas na área da Álgebra Relacional
+e aproveitadas na implementação de bancos de dados.
+
+Na área linguagens formais, uma linguagem é um conjunto de cadeias, assim como o
+seu alfabeto é um conjunto de símbolos, dentre várias outras aplicações. Esta área
+da Ciência da Computação é importante tanto para aspectos teóricos, como decidibilidade,
+computabilidade, complexidade, entre outros conceitos, como em aplicações, tendo exemplos
+de processamento de linguagens, reconhecimento de padrões, entre outros.
+
+Por estas e outras aplicações, uma implementação embutida de conjuntos em uma linguagem
+é de interesse do programador, que não precisa se preocupar em implementar o código
+que realize estas operações de forma eficiente, uma vez que a linguagem possui
+suporte nativo e seu tradutor tratará de otimizá-las.
+
+\section{Descrição da linguagem}
+\label{desc}
+
+Afth é uma linguagem de programação compilada de propósito geral, estruturada, imperativa,
+procedural e possui tipagem fraca e estática.
+
+Os tipos primitivos de uma variável são:
+
+\begin{itemize}
+	\item \texttt{byte}, \texttt{char}: Inteiros sinalizados em
+	      complemento de 2, possuindo 8 bits de tamanho
+	\item \texttt{short}, \texttt{int}, \texttt{long}: Inteiros sinalizados em
+	      complemento de 2, possuindo 16, 32 e 64 bits de tamanho, respectivamente.
+	\item \texttt{float}, \texttt{double}: Números reais no formato de ponto
+	      flutuante IEEE 754 de precisão simples e dupla, respectivamente.
+\end{itemize}
+
+Um programa Afth é composto por declarações de variáveis ou funções, sendo necessário
+que haja a declaração de uma função chamada \texttt{main} que retorne uma variável do tipo
+\texttt{int}. Dentro de funções, estão conjuntos de expressões que podem ser de repetição,
+condicionais, atribuições, aritméticas, lógicas, leitura e escrita, retorno de função,
+declarações de variáveis, entre outras definidas na gramática.
+
+Cada variável possui um tipo primitivo, se em sua declaração houver um par de chaves
+\texttt{\{\}} logo após seu identificador, isto significa que a variável é um conjunto
+de elementos do tipo primitivo definido, se possuir um par de colchetes \texttt{[]} 
+com um número dentro, é um vetor de tamanho fixo cujos elementos são do tipo definido.
+
+A linguagem implementa comandos condicionais \texttt{if-else if-else}, laços de repetição
+no formato \texttt{for} e \texttt{while}, tratamento de expressões aritméticas com operadores
+\texttt{+}, \texttt{-}, \texttt{*}, \texttt{/}, \texttt{\%}, operadores bit a bit \texttt{\&},
+\texttt{|}, \texttt{\^}, \texttt{\~}, \texttt{<<}, \texttt{>>}, operadores lógicos \texttt{||},
+\texttt{\&\&}, \texttt{!}, operadores relacionais \texttt{==}, \texttt{>}, \texttt{<}, \texttt{!=},
+\texttt{>=}, \texttt{<=}, operadores de atribuição \texttt{=}, \texttt{+=}, \texttt{-=}, \texttt{*=},
+\texttt{/=}, \texttt{\%=}, comandos de escrita \texttt{print}, \texttt{printc}, \texttt{printx} e
+de leitura \texttt{scan}, \texttt{scanc} e \texttt{scanf}.
+
+Para verificar se um elemento \texttt{x} está no conjunto \texttt{A}, há o operador \texttt{in}
+(\texttt{x in A}), para inserir um elemento no conjunto, \texttt{x >> A} ou \texttt{A << x}. Para
+remover, \texttt{A rm x}. Além disso, serão implementadas as operações de união
+(\texttt{A | B}), interseção (\texttt{A \& B}) e diferença de conjuntos (\texttt{A - B}).
+
+\subsection{Gramática}
+
+A gramática da linguagem Afth é inspirada na gramática de C
+\cite[Seção A13]{Kernighan:1988:CPL:576122} e C-Minus \cite{BNFCM}.
+
+
+\setlength{\grammarparsep}{0pt plus 1pt minus 1pt} % increase separation between rules
+\setlength{\grammarindent}{12em} % increase separation between LHS/RHS 
+
+\begin{grammar}
+	
+	<program> ::= <declaration-list>
+		
+	<declaration-list> ::= <declaration-list> <declaration> | <declaration>
+	
+	<declaration> ::= <var-declaration> | <fun-declaration>
+	
+	<var-declaration> ::= <type> <identifier> 
+	\alt <type> <identifier> `[' <integer> `]' 
+	\alt <type> <identifier> `\{' `\}' 
+	
+	<fun-declaration> ::= <type> <identifier> `(' <param-decs> `)' <scope>
+		
+	<param-decs> ::= <param-decs> `,' <var-declaration> | <var-declaration>
+	
+	<scope> ::= `\{' <statement-list> `\}'
+	
+	<statement-list> ::= <statement-list> <statement> | $\varepsilon$
+	
+	<statement> ::= <scope>
+	\alt <var-declaration> `;'
+	\alt <print>
+	\alt <scan>
+	\alt <expression> `;'
+	\alt <condition>
+	\alt <iteration>
+	\alt <return>
+	
+	<print> ::= <print-type> <expression> `;'
+
+	<scan> ::= <scan-type> <identifier> `;'
+
+	<print-type> ::= `print' | `printc' | `printx'
+
+	<scan-type> ::= `scan' | `scanc' | `scanf'	
+
+	<condition> ::= `if' `(' <expression> `)' <statement>
+	\alt `if' `(' <expression> `)' <statement> `else' <statement>
+		
+	<iteration> ::= `while' `(' <expression> `)' <statement>
+	\alt `for' `(' <optional-expression> `;' <optional-expression> `;' <optional-expression> `)' <statement>
+
+	<optional-expression> ::= <expression>
+	\alt $\varepsilon$
+
+	<return> ::= `return' <optional-expression> `;'
+	
+	<expression> ::= <assignment>
+	\alt <and-expression>
+
+	<assignment> ::= <identifier> <assignment-op> <expression>
+	
+	<and-expression> ::= <or-expression>
+	\alt <and-expression> `&&' <or-expression>
+	
+	<or-expression> ::= <bw-and-expression>
+	\alt <or-expression> `||' <bw-and-expression>
+	
+	<bw-and-expression> ::= <bw-or-expression>
+	\alt <bw-and-expression> `&' <bw-or-expression>
+	
+	<bw-or-expression> ::= <bw-xor-expression>
+	\alt <bw-or-expression> `|' <bw-xor-expression>
+	
+	<bw-xor-expression> ::= <eq-expression>
+	\alt <bw-xor-expression> `^' <eq-expression>
+	
+	<eq-expression> ::= <rel-expression>
+	\alt <eq-expression> `==' <rel-expression>
+	\alt <eq-expression> `!=' <rel-expression>
+	
+	<rel-expression> ::= <shift-expression>
+	\alt <rel-expression> <rel-op> <shift-expression>
+	
+	<shift-expression> ::= <set-rm-expression>
+	\alt <shift-expression> `<<' <set-rm-expression>
+	\alt <shift-expression> `>>' <set-rm-expression>
+
+	<set-rm-expression> ::= <add-expression>
+	\alt <set-rm-expression> `rm' <add-expression>
+	
+	<add-expression> ::= <mult-expression>
+	\alt <add-expression> `+' <mult-expression>
+	\alt <add-expression> `-' <mult-expression>
+	
+	<mult-expression> ::= <unary-expression>
+	\alt <mult-expression> <mul-op> <unary-expression>
+	
+	<unary-expression> ::= <cast-expression>
+	\alt <unary-op> <unary-expression>
+	\alt `sizeof' <unary-expression>
+
+	<cast-expression> ::= <postfix-expression>
+	\alt `(' <type> `)' <expression>
+	
+	<postfix-expression> ::= <primary-expression>
+	\alt <postfix-expression> [ <expression> ]
+	\alt <postfix-expression> ( <param-vals> )
+		
+	<param-vals> ::= <param-vals> `,' <expression> | <expression> | $\varepsilon$
+
+	<primary-expression> ::= <identifier>
+	\alt <constant>
+	\alt <string>
+	\alt `(' <expression> `)'
+	
+	<constant> ::= <integer>
+	\alt `'' <symbol> `''
+	\alt <integer> `.' <integer>
+	
+	<integer> ::= <digit>+
+	
+	<identifier> ::= <letter> \{ <letter> | <digit> | `_' \}*
+
+	<type> ::= `void' | `bool' | `byte' | `char' | `short' | `int' | `long' | `float' | `double'
+	
+	<symbol> ::= any printable ascii character
+
+	<letter> ::= `a' | `b' | ... | `z' | `A' | ... | `Z'
+	
+	<digit> ::= `0' | `1' | `2' | ... | `9'
+	
+	<assignment-op> ::= `=' | `+=' | `-=' | `*=' | `/=' | `\%='
+	
+	<unary-op> ::= `+' | `-' | `~' | `!'
+	
+	<rel-op> ::= `<' | `>' | `<=' | `>=' | `in'
+	
+	<mul-op> ::= `*' | `/' | `\%'
+	
+\end{grammar}
+
+% ---
+% Finaliza a parte no bookmark do PDF, para que se inicie o bookmark na raiz
+% ---
+\bookmarksetup{startatroot}% 
+% ---
+
+\section{Analisador léxico}
+
+
+O analisador léxico é responsável por ler um texto de entrada,
+normalmente de um arquivo, caractere por caractere de modo que
+os agrupe em sequências chamadas lexemas. Estes lexemas têm
+então um valor atribuído a eles e são convertidos em tokens. 
+Estes tokens são a saída do programa, sendo normalmente lidos
+pelo analisador sintático na próxima fase do processo de tradução.
+
+Também é comum que o analisador léxico interaja com a tabela de
+símbolos. Ao descobrir um lexema do tipo identificador, pode inserir
+este lexema na tabela de símbolos.
+
+O analisador léxico descrito nesta seção é limitado a apenas
+escanear a entrada, identificar os tokens válidos e mostrá-los ao
+usuário. Também é responsável por mostrar ao usuário todas as 
+sequências de caracteres que não puderam ser agrupadas em lexemas. 
+
+
+\subsection{Funcionamento do analisador}
+
+O analisador léxico foi gerado pela ferramenta Flex
+\cite{westes:flex}, uma ferramenta que gera programas que
+reconhecem padrões léxicos em um texto. O arquivo
+\texttt{src/tokenizer.lex} \cite{unb-translator-mikael} contém
+todas as diretivas necessárias para que o Flex gere o \textit{scanner}
+completo, sem modificações posteriores. 
+
+Primeiramente, foram definidas as expressões regulares dos lexemas
+que deveriam ser identificados pelo \textit{scanner}. São estes palavras
+reservadas como \texttt{if}, \texttt{for}, \texttt{while},
+\texttt{print}, entre outras, símbolos como parênteses
+\texttt{'(', ')'}, colchetes \texttt{[ ]}, vírgula e ponto e
+vírgula \texttt{',', ';'}, constantes como números, números com
+casas decimais, cadeias de caracteres envolvidas por aspas duplas,
+um caractere envolvido por aspas simples, entre outros. A lista
+completa pode ser vista no código-fonte do arquivo
+\texttt{src/tokenizer.lex}.
+
+Após ter escrito todas as expressões regulares, bastou colocar
+cada uma delas como um padrão a ser casado pelo \textit{scanner}.
+Também foi adicionado ao código um enumerador com um número único
+para cada tipo de lexema a ser identificado, de modo que ao chamar
+a função \texttt{yylex()}, o \textit{scanner} trata de casar a maior
+quantidade possível de caracteres em uma expressão regular de um
+lexema e quando o consegue, retorna o identificador numérico deste
+lexema para o invocador da função.
+
+Assim, basta chamar continuamente \texttt{yylex()} até que não
+haja mais caracteres a serem lidos, caso em que a função retornará
+o valor 0. Deste modo, para cada chamada de função em que um lexema
+é corretamente identificado, é impresso na tela o tipo do lexema
+e a cadeia de caracteres que casaram com seu padrão.
+
+O \textit{scanner} também implementa comentários, isto é, seções do código
+que não devem ser escaneadas como sendo parte do programa, tendo
+como único fim servir como anotações. Por isso, sempre que o
+\textit{scanner} identifica a expressão regular \texttt{/*}, ignora todos
+os caracteres até que encontre o padrão \texttt{*/}, sendo isto
+definido como comentários em bloco. Também é implementado o comentário
+em linha, onde quando se encontra a expressão \texttt{//}, todos
+os caracteres são ignorados até que se encontre um caractere
+de quebra de linha.
+
+\subsection{Tratamento de erros}
+
+O analisador léxico, ao identificar um lexema, o imprime e
+continua a ler os próximos caracteres buscando casar com algum
+padrão definido. Se não é possível casar o resto da entrada com
+algum dos padrões dos lexemas, o analisador retorna o caractere
+atual como um erro e tenta novamente a partir do próximo caractere.
+
+Baseado nisso, quando vários caracteres contínuos não casam com
+nenhum padrão, eles serão agrupados em apenas um erro, de modo 
+a não poluir a saída para o usuário, mostrando um erro por caractere
+inválido.
+
+Para isto, foi criado um tipo de dados chamado \texttt{t_lexical_error},
+erro léxico, que armazena a cadeia de caracteres contínuos de um erro,
+além da linha e coluna do primeiro caractere pertencente à cadeia.
+
+No início da análise léxica, mantém-se uma referência nula a um
+objeto de erro, indicando que ainda não houveram caracteres sem
+casamento de padrão.
+
+Quando um caractere não é reconhecido e o lexema indicando erro é retornado
+pelo \textit{scanner} e o objeto de erro é nulo, deve-se criar um novo
+objeto de erro e apontar esta referência para ele. Este objeto tem como
+elementos a cadeia de caracteres não reconhecida, que no momento
+contém apenas o caractere atual, e sua posição, a do caractere atual. 
+
+Se o objeto não for nulo, isto é, um erro já estiver sido iniciado,
+este caractere é adicionado à cadeia do erro atual.
+
+Se um padrão for reconhecido e um lexema válido for retornado
+ou a leitura da entrada for finalizada, deve-se verificar se o objeto
+de erro é nulo. Se não for nulo, isto significa que a sequência
+de caracteres não reconhecidos foi terminada e então o objeto de
+erro deve ser finalizado.
+
+Para imprimir os erros apenas depois que todos os lexemas válidos
+forem reconhecidos, os objetos de erro são armzenados em uma lista.
+Após toda a entrada ser lida, realiza-se uma iteração sobre todos
+os elementos da lista, de modo que cada erro dentro dela é mostrado
+ao usuário, indicando a cadeia de caracteres não reconhecida e a
+posição de seu início.
+
+\subsection{Alterações feitas na gramática}
+
+Nesta estapa do desenvolvimento do tradutor, foram adicionados
+à gramática as regras relacionadas à entrada e saída, sendo criadas
+as regras \textit{scan-words} e \textit{print-words}, definindo
+as palavras reservadas para leitura e escrita de dados, assim como
+as regras \textit{scan} e \textit{print}, que definem a sintaxe
+de tais operações.
+
+Além disso, \textit{var-declaration} e \textit{assignment} deixam
+de ser produtos da regra \textit{expression} e são agora produtos
+diretos da regra \textit{statement}. Isto deve-se ao fato de que
+uma \textit{expression} poderia ser encerrada sem um ponto e vírgula
+no final até quando fosse filha direta da regra \textit{statement}.
+Deste modo foi necessário colocar um ponto e vírgula após \textit{expression}
+como produto de \textit{statement}. Como ambas \textit{var-declaration}
+e \textit{assignment} já terminam com ponto e vírgula, a gramática
+exigiria dois, por isso foi necessário movê-las.
+
+Também foi adicionada a palavra \texttt{void} como um dos tipos
+de dados disponíveis, onde só deve ser usada como tipos de retorno
+de funções.
+
+\subsection{Testes}
+
+Para testar a identificação correta de tokens foram escritos quatro
+arquivos, de extensão \texttt{.afth}, dois deles apenas com tokens
+válidos e dois com alguns erros.
+
+O primeiro, \texttt{samples/correct.lexical.afth}, contém apenas
+algumas declarações de variáveis e expressões aritméticas e condicionais
+simples, juntamente com uma expressão de saída \texttt{print}.
+Todos os tokens são corretamente identificados, as variáveis são
+interpretadas como lexemas do tipo identificador, as palavras reservadas
+são identificadas de forma apropriada assim como diversos símbolos.
+
+O segundo, \texttt{samples/correct2.lexical.afth}, possui a declaração
+de uma variável do tipo conjunto de inteiros, onde todos os tokens são
+devidamente agrupados em lexemas apropriados, assim como nas operações
+de inserção e remoção dos elementos neste conjunto. Os símbolos de
+maior e menor duplos são devidamente agrupados como um só lexema, assim
+como as palavras reservadas \texttt{in} e \texttt{rm}.
+
+O terceiro, \texttt{samples/strange-chars.lexical.afth}, possui
+cadeias de caracteres não presentes na gramática da linguagem. As três
+são devidamente informadas como inválidas pelo analisador léxico,
+indicando corretamente a linha e a coluna onde são iniciadas.
+
+O quarto, \texttt{samples/identifier-invalid-char.lexica.afth}, possui
+testes para verificar a análise correta de identificadores. Várias letras
+contínuas, separadas por símbolos como \texttt{-} ou \texttt{/}, são
+devidamente interpretados como diferentes identificadores, uma vez que
+o erro presente é sintático, não são reportados erros pelo analisador léxico.
+Além disso, um dos identificadores possui um caractere inválido no
+meio da cadeia, o analisador interpreta corretamente cada metade da cadeia
+como sendo um identificador diferente e o caractere inválido é identificado
+como um erro e impresso no final da execução do analisador.
+
+\subsection{Sobre o analisador léxico}
+
+A construção do analisador léxico torna-se extremamente simples com
+o auxílio da ferramenta Flex, uma vez que basta especificar os padrões
+a serem casados, sem ser necessário se preocupar com a corretude
+das funções que leem a entrada e são responsáveis por identificar
+os lexemas.
+
+Nesta fase, foi necessário desenvolver estruturas personalizadas
+para facilitar o gerenciamento de erros, porém são estruturas simples,
+assim a maior complexidade de desenvolver um analisador léxico
+continua a ser o casamento de entrada com padrões pré-definidos, o que
+é majoritariamente feito pelo Flex.
+
+\section{Analisador sintático}
+
+Este analisador é responsável por encontrar uma derivação da entrada que corresponda a sequência de tokens lida do analisador léxico.
+
+Para isso, o \textit{parser} gerado é do formato LR(1), o que significa que a entrada será lida da esquerda para a direita, construindo uma derivação da direita para a esquerda, sempre olhando até um símbolo seguinte da entrada de modo a identificar qual regra deve ser seguida.
+
+Cada regra da gramática possui uma estrutura de dados correspondente, de modo que as derivações a partir desta regra são propriedades da estrutura de dados correspondente.
+
+Assim, é criada uma árvore sintática abstrata onde o tipo de dados raiz corresponde a regra inicial da gramática, seus membros a derivação desta regra, e assim em diante.
+
+Deste modo, a árvore pode ser facilmente percorrida por qualquer algoritmo de busca como busca em largura ou profundidade. 
+
+Ao final do programa, esta árvore é impressa na saída padrão usando o algoritmo de busca em profundidade.
+
+Além disso, o programa também adiciona uma entrada na tabela de símbolos toda vez que há uma declaração, que pode ser de variável ou função. A tabela de símbolos pode conter declarações de variáveis ou de funções, contendo detalhes como o identificador, tipo de dados e estrutura da variável ou do retorno da função e os parâmetros da função.
+
+\subsection{Mudanças na gramática}
+
+Ao desenvolver o analisador sintático, várias correções foram feitas na gramática ao longo do desenvolvimento, de modo a tanto facilitar o trabalho como corrigir conflitos.
+
+A regra \texttt{var-declaration} agora possui uma derivação em que não há inteiro entre os colchetes. A regra \texttt{fun-declaration} agora possui uma derivação com inteiro entre os cochetes.
+
+A regra \texttt{assignment} não é mais uma derivação direta de \texttt{statement}, mas sim de \texttt{expression}.
+
+Havia também um conflito de shift/reduce nas regras derivadas a partir de \texttt{condition}, isto foi resolvido ao ter apenas uma regra \texttt{condition}, com variações para ambos \texttt{if} e \texttt{if else}. Além disso, no Bison é usado o modificador \texttt{\%prec} para decidir que a regra sem o \texttt{else} tem precedência, ou seja, um shift deve ser feito.
+
+A regra \texttt{iteration} agora deriva duas regras novas, \texttt{for-iteration} e 
+\texttt{while-iteration}, que são exatamente iguais às antigas derivações de \texttt{iteration}.
+
+Houveram algumas mudanças nas ordens das regras derivadas a partir de \texttt{expression}, e além disso, \texttt{shift-expression} não possui mais uma derivação com o operador \texttt{rm}, isto foi movido para uma nova regra chamada \texttt{set-rm-expression}.
+
+\subsection{Testes}
+
+Para testar a análise sintática, os quatro arquivos de teste do analisador léxico também são úteis.
+
+O primeiro, \texttt{samples/correct.lexical.afth}, contém apenas
+algumas declarações de variáveis e expressões aritméticas e condicionais
+simples, juntamente com uma expressão de saída \texttt{print}. Nenhum erro é exibido, como esperado.
+
+O segundo, \texttt{samples/correct2.lexical.afth}, possui a declaração
+de uma variável do tipo conjunto de inteiros, assim como operações
+de inserção e remoção dos elementos neste conjunto. A derivação desta entrada também está correta.
+
+O terceiro, \texttt{samples/strange-chars.lexical.afth}, possui
+cadeias de caracteres não presentes na gramática da linguagem, mas apenas isso. Ao ignorar estes elementos da entrada, tudo é derivado corretamente.
+
+O quarto, \texttt{samples/identifier-invalid-char.lexica.afth}, possui
+testes para verificar a análise correta de identificadores. Várias letras
+contínuas, separadas por símbolos como \texttt{-} ou \texttt{/}, são
+devidamente interpretados como diferentes identificadores. O analisador sintático verifica o erro que acontece na declaração de uma variável e denuncia o erro.
+
+\section{Analisador Semântico}
+
+Esta fase é responsável por verificar quaisquer erros semânticos presentes na entrada, como tipos inválidos para uma operação específica, variáveis utilizadas sem serem declaradas, variáveis declaradas múltiplas vezes, entre outros.
+
+Além disso, a análise semântica anota atributos nos elementos da árvore sintática abstrata, de modo a coletar as informações necessárias para a próxima fase da compilação, a geração de código três endereços.
+
+Para realizar tal função, foram adicionadas ações nas regras gramaticais já presentes desde a fase do analisador sintático. Elas são responsáveis por verificar o tipo dos filhos de um certo nó, conferir se estão de acordo com a especificação do nó atual, e então definir o tipo do nó atual com base nos filhos.
+
+Ao lidar com identificadores, é verificada a existência de um identificador de mesmo nome na tabela de símbolos do escopo atual, e sua presença ou não pode significar um erro.
+
+\subsection{Escopos}
+
+Na linguagem Afth, um programa pode possuir vários escopos, onde cada escopo pode ter um escopo pai e uma lista de escopos filhos, além da sua tabela de símbolos correspondente.
+
+A tabela de símbolos de um escopo guarda informações sobre todas as variáveis e funções declaradas naquele escopo. Funções só podem ser declaradas no escopo global, o que é aplicado pelas regras gramaticais.
+
+Na criação de um escopo, ele deve ser obrigatoriamente filho do escopo do contexto atual em que se está sendo criado, deste modo, todos os escopos, exceto o global, possuem um escopo pai.
+
+Declarações de variáveis ou funções são armazenadas na tabela de símbolos do escopo atual, de modo que dois identificadores iguais não podem ser declarados no mesmo escopo, mas podem ser declarados em escopos diferentes.
+
+Para buscar uma referência de um identificador, no caso de um acesso de variável ou chamada de função por exemplo, o analisador semântico procura o identificador na tabela de símbolos do escopo atual e caso não encontre, refaz a busca de forma recursiva no escopo pai do escopo atual. Isto significa que a variável declarada mais recentemente será acessada, no caso de uma referência ao seu identificador.
+
+\subsection{Tipos}
+
+Com o objetivo de tornar a compilação simples, todos os tipos inteiros de 8 bits de tamanho (byte, bool, char) são salvos como byte. Além disso, a linguagem é fracamente tipada, não há distinção entre os tipos inteiros assim como não há conversão entre os tipos de ponto flutuante (float e double).
+
+Cada variável também pode ter um tipo de estrutura de dados, que assume os valores primitivo, indicando que não há uma estrutura de dados, apenas o tipo primitivo, conjunto e vetor de tamanho fixo.
+
+A única operação permitida com variáveis de tipo vetor é o acesso por meio do operador pós-fixo \texttt{[]}, enquanto que as únicas operações permitidas com variáveis de tipo conjunto são as descritas na seção \ref{desc}.
+
+Além delas, operações que agem em bits (bitwise) só podem ser aplicadas com expressões de tipos inteiros.
+
+\subsection{Tratamento de erros e testes}
+
+Ao encontrar um erro semântico, o compilador busca assumir um valor que seria correto para prosseguir com sua análise e então reportar mais erros encontrados pela frente.
+
+Assim, mesmo que uma operação possua elementos de tipos inválidos, depois que o erro é impresso na tela, assume-se que estão corretos e a análise semântica e sintática prossegue.
+
+Para verificar a tipagem, cada nó de expressão da árvore sintática abstrata possui atributos indicando o tipo da estrutura de dados e o seu tipo primitivo. Logo, cada nó da árvore pode definir seu comportamento de acordo com os tipos dos seus filhos.
+
+Por exemplo, uma operação de soma só aceita duas expressões sem estruturas de dados (primitiva) e que tenham tipos equivalentes, ambas inteiras ou ambas de ponto flutuante. Uma operação com o operador \texttt{<<} deve ser feita ou com duas expressões inteiras, significando um shift de bits, ou com uma expressão que é o identificador de um conjunto e uma expressão com valor primitivo de um tipo equivalente ao tipo do conjunto, significando uma inserção.
+
+No programa existem várias funções auxiliares com o objetivo de obter informações do tipo de uma expressão ou elemento da tabela de símbolos, verificar se tipos são equivalentes, entre outros.
+
+Ao referenciar um identificador, o analisador verifica se o mesmo pode ser encontrado em algum dos escopos ativos. Se não encontrar, o erro é denunciado e uma variável temporária é criada para assumir que ela existe, permitindo que a análise continue e verifique outros possíveis erros.
+
+Para testar a verificação de erros, três arquivos de teste são úteis.
+
+O primeiro, \texttt{samples/correct.lexical.afth}, contém apenas
+algumas declarações de variáveis e expressões aritméticas e condicionais
+simples, juntamente com uma expressão de saída \texttt{print}. Nenhum erro é exibido, como esperado.
+
+O segundo, \texttt{samples/many-errors.lexical.afth}, possui uso de variáveis não declaradas, uso incorreto do operador \texttt{>>} com conjuntos, erros sintáticos, etc. Todos os erros são devidamente denunciados.
+
+O terceiro, \texttt{samples/identifier-invalid-char.lexica.afth}, possui
+testes para verificar a análise correta de identificadores. Várias letras
+contínuas, separadas por símbolos como \texttt{-} ou \texttt{/}, são
+devidamente interpretados como diferentes identificadores. O analisador sintático verifica erros sintáticos e o analisador semântico verifica uso indevido de variáveis não declaradas.
+
+% ----------------------------------------------------------
+% ELEMENTOS PÓS-TEXTUAIS
+% ----------------------------------------------------------
+\postextual
+
+% ----------------------------------------------------------
+% Referências bibliográficas
+% ----------------------------------------------------------
+\bibliography{references}
+
+% ----------------------------------------------------------
+% Glossário
+% ----------------------------------------------------------
+%
+% Há diversas soluções prontas para glossário em LaTeX. 
+% Consulte o manual do abnTeX2 para obter sugestões.
+%
+%\glossary
+
+% ----------------------------------------------------------
+% Apêndices
+% ----------------------------------------------------------
+
+% ---
+% Inicia os apêndices
+% ---
+% \begin{apendicesenv}
+
+% % ----------------------------------------------------------
+% \chapter{Nullam elementum urna vel imperdiet sodales elit ipsum pharetra ligula
+% ac pretium ante justo a nulla curabitur tristique arcu eu metus}
+% % ----------------------------------------------------------
+% \lipsum[55-56]
+
+% \end{apendicesenv}
+% ---
+
+% ----------------------------------------------------------
+% Anexos
+% ----------------------------------------------------------
+% \cftinserthook{toc}{AAA}
+% % ---
+% % Inicia os anexos
+% % ---
+% %\anexos
+% \begin{anexosenv}
+
+% % ---
+% \chapter{Cras non urna sed feugiat cum sociis natoque penatibus et magnis dis
+% parturient montes nascetur ridiculus mus}
+% % ---
+
+% \lipsum[31]
+
+% \end{anexosenv}
+
+% ----------------------------------------------------------
+% Agradecimentos
+% ----------------------------------------------------------
+
+% \section*{Agradecimentos}
+% Texto sucinto aprovado pelo periódico em que será publicado. Último 
+% elemento pós-textual.
+
+\end{document}
