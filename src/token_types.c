@@ -2,11 +2,6 @@
 #include <stdio.h>
 #include "lexical_error_handler.h"
 
-void print_lexical_error(t_lexical_error* error) {
-  printf("<ERROR WHEN PARSING> Match: %s - Location %d:%d\n",
-         error->token->characters, error->line, error->column);
-}
-
 void print_token_name(int token, char* match) {
   int print = 1;
 

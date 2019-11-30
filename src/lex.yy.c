@@ -1190,7 +1190,7 @@ YY_RULE_SETUP
 case 72:
 YY_RULE_SETUP
 #line 175 "src/tokenizer.lex"
-{ printf("error?\n"); }
+{ column += yyleng; add_error(*yytext, line, column); }
 	YY_BREAK
 case 73:
 YY_RULE_SETUP

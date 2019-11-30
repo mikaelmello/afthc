@@ -172,6 +172,6 @@ IDENTIFIER      {LETTER}({DIGIT}|{LETTER}|{UNDERSCORE})*
 {CHAR}              { column += yyleng; yylval.char_val = *yytext; return CHAR; }
 {WHITESPACE}        { column += yyleng; BEGIN(INITIAL); }
 {NEWLINE}           { column = 0; line++; BEGIN(INITIAL); }
-.                   { printf("error?\n"); }
+.                   { column += yyleng; add_error(*yytext, line, column); }
 
 %%

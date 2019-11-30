@@ -29,6 +29,7 @@ int main(int argc, char* argv[]) {
   current_scope = root_scope;
 
   yyparse();
+  lexical_eror_handler_finalize();
 
   print_program(program, 0);
   free_program(program);

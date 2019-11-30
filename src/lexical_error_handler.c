@@ -1,53 +1,27 @@
 #include "lexical_error_handler.h"
+#include <stdio.h>
 #include <stdlib.h>
 #include "my_string.h"
 
-t_lexical_error_list* lex_error_list_create() {
-  t_lexical_error_list* list =
-      (t_lexical_error_list*)malloc(sizeof(t_lexical_error_list));
-  list->head = NULL;
-  list->tail = NULL;
-  list->size = 0;
-  return list;
-}
+int last_column = -1;
+int last_line = -1;
+t_string* current_error = NULL;
 
-void lex_error_list_add(t_lexical_error_list* list, t_lexical_error* error) {
-  if (list->size == 0) {
-    list->head = error;
-    list->tail = error;
-    list->size = 1;
-  } else {
-    list->size += 1;
-    list->tail->next = error;
-    list->tail = error;
+void add_error(char c, int line, int column) {
+  if (current_error == NULL) {
+    current_error = m_string_create();
+  } else if (column != last_column + 1 || line != last_line) {
+    printf("Location %d:%d - String of invalid characters: %s\n", last_line,
+           last_column, current_error->characters);
+    m_string_clear(current_error);
   }
+  m_string_add_char(current_error, c);
+  last_column = column;
+  last_line = line;
 }
 
-t_lexical_error* lex_error_create(t_string* token, uint32_t line,
-                                  uint32_t column) {
-  t_lexical_error* e = (t_lexical_error*)malloc(sizeof(t_lexical_error));
-  e->token = token;
-  e->line = line;
-  e->column = column;
-  e->next = NULL;
-
-  return e;
-}
-
-void lex_error_list_free(t_lexical_error_list* list) {
-  t_lexical_error* next;
-  t_lexical_error* current = list->head;
-
-  while (current != NULL) {
-    next = current->next;
-    lex_error_free(current);
-    current = next;
-  }
-
-  free(list);
-}
-
-void lex_error_free(t_lexical_error* error) {
-  m_string_free(error->token);
-  free(error);
+void lexical_eror_handler_finalize() {
+  printf("Location %d:%d - String of invalid characters: %s\n", last_line,
+         last_column, current_error->characters);
+  m_string_free(current_error);
 }
