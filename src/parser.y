@@ -175,6 +175,10 @@ var-declaration:
         if (LAST_ERROR == EXISTING_DECLARATION) {
             LAST_ERROR = 0;
             printf("Location %d:%d - Multiple declaration of identifier %s\n", line, column, $2);
+            if (add->declaration->type != VAR_DECLARATION) {
+                printf("Location %d:%d - Previous identifier was declared as function and not variable!\n", line, column);
+            }
+            add = NULL;
         }
         $$ = add;
     }
@@ -254,7 +258,6 @@ fun-declaration:
         dec->type = FUN_DECLARATION;
         dec->member.function = fun;
         scope_add(current_scope, dec);
-        current_scope = scope_create(current_scope);
     } RIGHT_PAREN scope {
         st_element_t* fun = scope_find(current_scope, $2);
         if (fun == NULL) {
@@ -263,7 +266,6 @@ fun-declaration:
         }
         fun->declaration->member.function->body = $6;
         $$ = fun;
-        current_scope = current_scope->parent;
     }
 ;
 
@@ -277,7 +279,7 @@ param-decs:
     }
 |   var-declaration {
         t_function_params* fp = zero_allocate(t_function_params);
-        assert($1->declaration->type == VAR_DECLARATION);
+
         fp->cur = $1;
         fp->prev = NULL;
         $$ = fp; 
@@ -285,10 +287,13 @@ param-decs:
 ;
 
 scope:
-    LEFT_BRACE statement-list RIGHT_BRACE {
+    LEFT_BRACE {
+        current_scope = scope_create(current_scope);
+    } statement-list RIGHT_BRACE {
         t_brace_enclosed_scope* scope = zero_allocate(t_brace_enclosed_scope);
-        scope->statements = $2;
+        scope->statements = $3;
         $$ = scope;
+        current_scope = current_scope->parent;
     }
 ;
 
