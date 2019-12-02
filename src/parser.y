@@ -231,13 +231,15 @@ fun-declaration:
         scope_add(current_scope, dec);
         current_scope = scope_create(current_scope);
     } param-decs RIGHT_PAREN {
-        st_element_t* fun = scope_find(current_scope, $2);
+        st_element_t* fun = scope_find(current_scope->parent, $2);
         if (fun == NULL) {
             printf("Location %d:%d - Should not happen, fun is null!\n", line, column);
             exit(55);
         }
         fun->declaration->member.function->params = $5;
     } scope {
+        current_scope = current_scope->parent;
+
         st_element_t* fun = scope_find(current_scope, $2);
         if (fun == NULL) {
             printf("Location %d:%d - Should not happen, fun is null!\n", line, column);
@@ -245,7 +247,6 @@ fun-declaration:
         }
         fun->declaration->member.function->body = $8;
         $$ = fun;
-        current_scope = current_scope->parent;
     }
 |   type IDENTIFIER LEFT_PAREN {
         t_function* fun = zero_allocate(t_function);
