@@ -624,8 +624,8 @@ return:
     RETURN_RW optional-expression SEMICOLON {
         t_return* ret = zero_allocate(t_return);
         ret->expression = $2;
-        gen_return($2);
         $$ = ret;
+        gen_return($$);
     }
 ;
 

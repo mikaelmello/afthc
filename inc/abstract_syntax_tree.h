@@ -2,8 +2,10 @@
 #define ABSTRACT_SYNTAX_TREE_H
 
 #include <stdint.h>
+#include "tac.h"
 
 typedef struct st_element_t st_element_t;
+typedef struct tac_operand_t tac_operand_t;
 typedef struct t_program t_program;
 typedef struct t_declaration_list t_declaration_list;
 typedef struct t_declaration t_declaration;
@@ -164,7 +166,7 @@ struct t_assignment {
 };
 
 struct t_expression {
-  int addr;
+  tac_operand_t* operand;
   t_expression_type type;
   t_type_info type_info;
   t_expression* left;

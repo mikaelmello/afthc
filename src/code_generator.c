@@ -22,9 +22,11 @@ int gen_fun_label(char* name) {
 }
 int get_stack_head() { return tac_program.stack_head; }
 
-void gen_return(t_expression* expression) {
-  tac_operand_t* operands[3] =
-      /* get operand from expression */ {NULL, NULL, NULL};
+void gen_return(t_return* ret) {
+  tac_operand_t* operands[3] = {
+      (ret == NULL || ret->expression == NULL ? NULL
+                                              : ret->expression->operand),
+      NULL, NULL};
 
   tac_program_add_line(&tac_program, RETURN_INSTR, operands);
 }
@@ -62,7 +64,7 @@ void gen_assignment(t_assignment* assignment) {
   if (assignment->operator== EQUAL_OPERATOR) {
     tac_operand_t* operands[3] = {
         tac_operand_stack_at(varpos),
-        tac_operand_temp(assignment->expression->addr),
+        assignment->expression->operand,
         NULL,
     };
     tac_program_add_line(&tac_program, MOV_INSTR, operands);
@@ -72,7 +74,7 @@ void gen_assignment(t_assignment* assignment) {
   tac_operand_t* operands[3] = {
       tac_operand_stack_at(varpos),
       tac_operand_stack_at(varpos),
-      tac_operand_temp(assignment->expression->addr),
+      assignment->expression->operand,
   };
 
   switch (assignment->operator) {

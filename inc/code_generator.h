@@ -6,7 +6,7 @@
 int get_stack_head();
 
 int gen_fun_label(char* name);
-void gen_return(t_expression* expression);
+void gen_return(t_return* ret);
 int gen_push(int value);
 int gen_pop();
 int gen_primitive_declaration();
