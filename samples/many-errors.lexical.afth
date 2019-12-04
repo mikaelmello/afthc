@@ -33,7 +33,7 @@ int main() {
 
   for (iteratdwdqwdqor-123-13-12-31-3112-312- = i; i <= 10; i += 1) {
     if (x) {
-      mikael;
+      mikssssael;
     }
   }
 
@@ -45,9 +45,9 @@ int main() {
   myset rm 3;
   myset rm 4;
 
-  // for (iterator = 0; i <= 10; i += 1) {
-  //     if (iterator in myset) {
-  //         print iterator;
-  //     }
-  // }
+  for (iterator = 0; i <= 10; i += 1) {
+      if (iterator in myset) {
+          print iterator;
+      }
+  }
 }

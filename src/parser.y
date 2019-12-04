@@ -128,6 +128,9 @@ void yyerror (char const *s)
 %type <c_expression_type> mul-op;
 %type <c_expression_type> unary-op;
 
+%destructor { free_expression($$); } <c_expression>
+%destructor { free($$); } <string_val>
+
 %start program
 
 %%
@@ -175,10 +178,11 @@ var-declaration:
         if (LAST_ERROR == EXISTING_DECLARATION) {
             LAST_ERROR = 0;
             printf("Location %d:%d - Multiple declaration of identifier %s\n", line, column, $2);
+            free_declaration(dec);
             if (add->declaration->type != VAR_DECLARATION) {
                 printf("Location %d:%d - Previous identifier was declared as function and not variable!\n", line, column);
+                add = NULL;
             }
-            add = NULL;
         }
         $$ = add;
     }
@@ -594,8 +598,13 @@ iteration:
         f->body = $9;
         $$ = f;
     }
-|   FOR_RW LEFT_PAREN error {
-        $$ = NULL;
+|   FOR_RW LEFT_PAREN error RIGHT_PAREN statement {
+        t_iteration* f = zero_allocate(t_iteration);
+        f->initialization = NULL;
+        f->condition = NULL;
+        f->step = NULL;
+        f->body = $5;
+        $$ = f;
         yyerrok;   
     }
 ;

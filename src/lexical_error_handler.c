@@ -21,7 +21,9 @@ void add_error(char c, int line, int column) {
 }
 
 void lexical_eror_handler_finalize() {
-  printf("Location %d:%d - String of invalid characters: %s\n", last_line,
-         last_column, current_error->characters);
-  m_string_free(current_error);
+  if (current_error != NULL) {
+    printf("Location %d:%d - String of invalid characters: %s\n", last_line,
+           last_column, current_error->characters);
+    m_string_free(current_error);
+  }
 }
