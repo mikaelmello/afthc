@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "code_generator.h"
 #include "symbol_table.h"
 #include "tac.h"
 
@@ -37,8 +38,7 @@ void scope_exit() {
     abort();
   }
 
-  int size = st_total_size(current_scope->symbol_table);
-  // decrease stack by size
+  gen_stack_set(current_scope->stack_head);
 
   current_scope = current_scope->parent;
 }

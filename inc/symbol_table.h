@@ -29,7 +29,6 @@ st_element_t* st_element_list_find(st_element_list_t* list, char* label);
 
 st_t* st_create();
 void st_free(st_t* symbol_table);
-int st_total_size(st_t* symbol_table);
 
 st_element_t* st_add(st_t* symbol_table, t_declaration* declaration);
 st_element_t* st_find(st_t* symbol_table, char* label);

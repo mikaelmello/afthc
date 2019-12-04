@@ -210,6 +210,13 @@ void tac_line_print(tac_line_t* line) {
       tac_operand_print(line->operands[0]);
       printf("\n");
       break;
+    case MOV_INSTR:
+      printf("mov ");
+      tac_operand_print(line->operands[0]);
+      printf(", ");
+      tac_operand_print(line->operands[1]);
+      printf("\n");
+      break;
     default:
       printf("MISSING CASE %d\n", line->instruction);
   }
@@ -242,10 +249,10 @@ void tac_operand_print(tac_operand_t* operand) {
 
   switch (operand->type) {
     case FUN_PARAM:
-      printf("#%d\n", operand->value.fun_param);
+      printf("#%d", operand->value.fun_param);
       break;
     case TEMP_VAR:
-      printf("$%d\n", operand->value.temp_var);
+      printf("$%d", operand->value.temp_var);
       break;
     case LABEL:
       if (operand->value.label->name != NULL) {
@@ -255,9 +262,26 @@ void tac_operand_print(tac_operand_t* operand) {
       }
       break;
     case SYMBOL:
-      printf("%s\n", operand->value.symbol_name);
+      printf("%s", operand->value.symbol_name);
       break;
     case CONSTANT:
-      printf("%d\n", operand->value.constant);
+      printf("%d", operand->value.constant);
+      break;
+    case STACK:
+      printf("$s");
+      break;
   }
+}
+
+tac_operand_t* tac_operand_constant(int value) {
+  tac_operand_t* op = (tac_operand_t*)calloc(1, sizeof(tac_operand_t));
+  op->type = CONSTANT;
+  op->value.constant = value;
+  return op;
+}
+
+tac_operand_t* tac_operand_stack() {
+  tac_operand_t* op = (tac_operand_t*)calloc(1, sizeof(tac_operand_t));
+  op->type = STACK;
+  return op;
 }

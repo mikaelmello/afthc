@@ -39,6 +39,8 @@ void tac_label_print(tac_label_t* print);
 void tac_line_print(tac_line_t* line);
 void tac_line_free_members(tac_line_t* line);
 
+tac_operand_t* tac_operand_stack();
+tac_operand_t* tac_operand_constant(int value);
 void tac_operand_free(tac_operand_t* operand);
 void tac_operand_print(tac_operand_t* operand);
 
@@ -119,6 +121,7 @@ enum tac_operand_type_t {
   LABEL,
   SYMBOL,
   CONSTANT,
+  STACK,
 };
 
 struct tac_label_t {

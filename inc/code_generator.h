@@ -5,5 +5,6 @@
 
 int gen_fun_label(char* name);
 void gen_return(t_expression* expression);
+void gen_stack_set(int position);
 
 #endif

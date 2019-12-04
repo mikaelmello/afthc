@@ -310,6 +310,7 @@ struct t_variable {
 };
 
 struct st_element_t {
+  int addr;
   t_declaration* declaration;
   st_element_t* next;
 };

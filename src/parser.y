@@ -270,6 +270,9 @@ fun-declaration:
             exit(55);
         }
         fun->declaration->member.function->body = $6;
+
+        // in case we do not have a return yet
+        gen_return(NULL);
         $$ = fun;
     }
 ;

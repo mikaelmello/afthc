@@ -19,3 +19,13 @@ void gen_return(t_expression* expression) {
 
   tac_program_add_line(&tac_program, RETURN_INSTR, operands);
 }
+
+void gen_stack_set(int position) {
+  tac_operand_t* operands[3] = {
+      tac_operand_stack(),
+      tac_operand_constant(position),
+      NULL,
+  };
+
+  tac_program_add_line(&tac_program, MOV_INSTR, operands);
+}
