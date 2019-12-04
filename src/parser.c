@@ -76,6 +76,7 @@
 #include <stdio.h>
 #include <assert.h>
 #include "scope.h"
+#include "code_generator.h"
 #include <string.h>
 
 #define zero_allocate(type) ((type*)calloc(1, sizeof(type)))
@@ -88,6 +89,7 @@ extern scope_error_t LAST_ERROR;
 scope_t* root_scope;
 scope_t* current_scope;
 t_program* program;
+tac_program_t tac_program;
 
 void yyerror (char const *s)
 {
@@ -95,7 +97,7 @@ void yyerror (char const *s)
 }
 
 
-#line 99 "src/parser.c"
+#line 101 "src/parser.c"
 
 # ifndef YY_NULLPTR
 #  if defined __cplusplus
@@ -209,7 +211,7 @@ extern int yydebug;
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 53 "src/parser.y"
+#line 55 "src/parser.y"
 
     t_expression_type c_expression_type;
     t_constant_type c_constant_type;
@@ -244,7 +246,7 @@ union YYSTYPE
     double float_val;
     char char_val;
 
-#line 248 "src/parser.c"
+#line 250 "src/parser.c"
 
 };
 typedef union YYSTYPE YYSTYPE;
@@ -556,19 +558,19 @@ static const yytype_uint8 yytranslate[] =
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_uint16 yyrline[] =
 {
-       0,   139,   139,   147,   153,   159,   162,   168,   189,   205,
-     224,   237,   224,   255,   255,   278,   285,   295,   295,   306,
-     312,   318,   324,   331,   339,   345,   351,   357,   364,   370,
-     376,   382,   388,   406,   428,   461,   498,   501,   504,   510,
-     513,   516,   522,   536,   550,   561,   575,   601,   613,   621,
-     624,   630,   660,   667,   673,   688,   694,   709,   715,   730,
-     736,   751,   757,   772,   778,   796,   814,   820,   851,   857,
-     884,   910,   916,   934,   940,   964,   988,   994,  1018,  1024,
-    1049,  1059,  1073,  1083,  1105,  1127,  1137,  1143,  1148,  1154,
-    1164,  1178,  1185,  1193,  1203,  1210,  1217,  1227,  1228,  1229,
-    1230,  1231,  1232,  1236,  1237,  1238,  1239,  1243,  1244,  1245,
-    1246,  1247,  1251,  1252,  1253,  1257,  1260,  1263,  1266,  1269,
-    1272,  1275,  1278,  1281
+       0,   141,   141,   149,   155,   161,   164,   170,   191,   207,
+     226,   239,   226,   257,   257,   280,   287,   297,   297,   308,
+     314,   320,   326,   333,   341,   347,   353,   359,   366,   372,
+     378,   384,   390,   408,   430,   463,   500,   503,   506,   512,
+     515,   518,   524,   538,   552,   563,   577,   603,   615,   623,
+     626,   632,   662,   669,   675,   690,   696,   711,   717,   732,
+     738,   753,   759,   774,   780,   798,   816,   822,   853,   859,
+     886,   912,   918,   936,   942,   966,   990,   996,  1020,  1026,
+    1051,  1061,  1075,  1085,  1107,  1129,  1139,  1145,  1150,  1156,
+    1166,  1180,  1187,  1195,  1205,  1212,  1219,  1229,  1230,  1231,
+    1232,  1233,  1234,  1238,  1239,  1240,  1241,  1245,  1246,  1247,
+    1248,  1249,  1253,  1254,  1255,  1259,  1262,  1265,  1268,  1271,
+    1274,  1277,  1280,  1283
 };
 #endif
 
@@ -1270,99 +1272,99 @@ yydestruct (const char *yymsg, int yytype, YYSTYPE *yyvaluep)
   switch (yytype)
     {
     case 3: /* IDENTIFIER  */
-#line 132 "src/parser.y"
+#line 134 "src/parser.y"
       { free(((*yyvaluep).string_val)); }
-#line 1276 "src/parser.c"
+#line 1278 "src/parser.c"
         break;
 
     case 4: /* STRING  */
-#line 132 "src/parser.y"
+#line 134 "src/parser.y"
       { free(((*yyvaluep).string_val)); }
-#line 1282 "src/parser.c"
+#line 1284 "src/parser.c"
         break;
 
     case 92: /* optional-expression  */
-#line 131 "src/parser.y"
+#line 133 "src/parser.y"
       { free_expression(((*yyvaluep).c_expression)); }
-#line 1288 "src/parser.c"
+#line 1290 "src/parser.c"
         break;
 
     case 94: /* expression  */
-#line 131 "src/parser.y"
+#line 133 "src/parser.y"
       { free_expression(((*yyvaluep).c_expression)); }
-#line 1294 "src/parser.c"
+#line 1296 "src/parser.c"
         break;
 
     case 95: /* and-expression  */
-#line 131 "src/parser.y"
+#line 133 "src/parser.y"
       { free_expression(((*yyvaluep).c_expression)); }
-#line 1300 "src/parser.c"
+#line 1302 "src/parser.c"
         break;
 
     case 96: /* or-expression  */
-#line 131 "src/parser.y"
+#line 133 "src/parser.y"
       { free_expression(((*yyvaluep).c_expression)); }
-#line 1306 "src/parser.c"
+#line 1308 "src/parser.c"
         break;
 
     case 97: /* bw-and-expression  */
-#line 131 "src/parser.y"
+#line 133 "src/parser.y"
       { free_expression(((*yyvaluep).c_expression)); }
-#line 1312 "src/parser.c"
+#line 1314 "src/parser.c"
         break;
 
     case 98: /* bw-or-expression  */
-#line 131 "src/parser.y"
+#line 133 "src/parser.y"
       { free_expression(((*yyvaluep).c_expression)); }
-#line 1318 "src/parser.c"
+#line 1320 "src/parser.c"
         break;
 
     case 99: /* bw-xor-expression  */
-#line 131 "src/parser.y"
+#line 133 "src/parser.y"
       { free_expression(((*yyvaluep).c_expression)); }
-#line 1324 "src/parser.c"
+#line 1326 "src/parser.c"
         break;
 
     case 100: /* eq-expression  */
-#line 131 "src/parser.y"
+#line 133 "src/parser.y"
       { free_expression(((*yyvaluep).c_expression)); }
-#line 1330 "src/parser.c"
+#line 1332 "src/parser.c"
         break;
 
     case 101: /* rel-expression  */
-#line 131 "src/parser.y"
+#line 133 "src/parser.y"
       { free_expression(((*yyvaluep).c_expression)); }
-#line 1336 "src/parser.c"
+#line 1338 "src/parser.c"
         break;
 
     case 102: /* shift-expression  */
-#line 131 "src/parser.y"
+#line 133 "src/parser.y"
       { free_expression(((*yyvaluep).c_expression)); }
-#line 1342 "src/parser.c"
+#line 1344 "src/parser.c"
         break;
 
     case 103: /* set-rm-expression  */
-#line 131 "src/parser.y"
+#line 133 "src/parser.y"
       { free_expression(((*yyvaluep).c_expression)); }
-#line 1348 "src/parser.c"
+#line 1350 "src/parser.c"
         break;
 
     case 104: /* add-expression  */
-#line 131 "src/parser.y"
+#line 133 "src/parser.y"
       { free_expression(((*yyvaluep).c_expression)); }
-#line 1354 "src/parser.c"
+#line 1356 "src/parser.c"
         break;
 
     case 105: /* mult-expression  */
-#line 131 "src/parser.y"
+#line 133 "src/parser.y"
       { free_expression(((*yyvaluep).c_expression)); }
-#line 1360 "src/parser.c"
+#line 1362 "src/parser.c"
         break;
 
     case 106: /* unary-expression  */
-#line 131 "src/parser.y"
+#line 133 "src/parser.y"
       { free_expression(((*yyvaluep).c_expression)); }
-#line 1366 "src/parser.c"
+#line 1368 "src/parser.c"
         break;
 
       default:
@@ -1626,52 +1628,52 @@ yyreduce:
   switch (yyn)
     {
   case 2:
-#line 139 "src/parser.y"
+#line 141 "src/parser.y"
     {
         program = zero_allocate(t_program);
         program->declaration_list = (yyvsp[0].c_declaration_list);
         (yyval.c_program) = program;
     }
-#line 1636 "src/parser.c"
+#line 1638 "src/parser.c"
     break;
 
   case 3:
-#line 147 "src/parser.y"
+#line 149 "src/parser.y"
     {
         t_declaration_list* declaration_list = zero_allocate(t_declaration_list);
         declaration_list->prev = (yyvsp[-1].c_declaration_list);
         declaration_list->cur = (yyvsp[0].c_st_element);
         (yyval.c_declaration_list) = declaration_list;
     }
-#line 1647 "src/parser.c"
+#line 1649 "src/parser.c"
     break;
 
   case 4:
-#line 153 "src/parser.y"
+#line 155 "src/parser.y"
     {
         (yyval.c_declaration_list) = NULL;
     }
-#line 1655 "src/parser.c"
+#line 1657 "src/parser.c"
     break;
 
   case 5:
-#line 159 "src/parser.y"
+#line 161 "src/parser.y"
     {
         (yyval.c_st_element) = (yyvsp[-1].c_st_element);
     }
-#line 1663 "src/parser.c"
+#line 1665 "src/parser.c"
     break;
 
   case 6:
-#line 162 "src/parser.y"
+#line 164 "src/parser.y"
     {
         (yyval.c_st_element) = (yyvsp[0].c_st_element);
     }
-#line 1671 "src/parser.c"
+#line 1673 "src/parser.c"
     break;
 
   case 7:
-#line 168 "src/parser.y"
+#line 170 "src/parser.y"
     {
         t_variable* var = zero_allocate(t_variable);
         var->type_info.primitive_type = (yyvsp[-1].c_primitive_type);
@@ -1693,11 +1695,11 @@ yyreduce:
         }
         (yyval.c_st_element) = add;
     }
-#line 1697 "src/parser.c"
+#line 1699 "src/parser.c"
     break;
 
   case 8:
-#line 189 "src/parser.y"
+#line 191 "src/parser.y"
     {
         t_variable* var = zero_allocate(t_variable);
         var->type_info.primitive_type = (yyvsp[-4].c_primitive_type);
@@ -1714,11 +1716,11 @@ yyreduce:
         }
         (yyval.c_st_element) = add;
     }
-#line 1718 "src/parser.c"
+#line 1720 "src/parser.c"
     break;
 
   case 9:
-#line 205 "src/parser.y"
+#line 207 "src/parser.y"
     {
         t_variable* var = zero_allocate(t_variable);
         var->type_info.primitive_type = (yyvsp[-3].c_primitive_type);
@@ -1735,11 +1737,11 @@ yyreduce:
         }
         (yyval.c_st_element) = add;
     }
-#line 1739 "src/parser.c"
+#line 1741 "src/parser.c"
     break;
 
   case 10:
-#line 224 "src/parser.y"
+#line 226 "src/parser.y"
     {
         t_function* fun = zero_allocate(t_function);
         fun->type_info.primitive_type = (yyvsp[-2].c_primitive_type);
@@ -1754,11 +1756,11 @@ yyreduce:
         scope_add(current_scope, dec);
         current_scope = scope_create(current_scope);
     }
-#line 1758 "src/parser.c"
+#line 1760 "src/parser.c"
     break;
 
   case 11:
-#line 237 "src/parser.y"
+#line 239 "src/parser.y"
     {
         st_element_t* fun = scope_find(current_scope->parent, (yyvsp[-4].string_val));
         if (fun == NULL) {
@@ -1767,11 +1769,11 @@ yyreduce:
         }
         fun->declaration->member.function->params = (yyvsp[-1].c_function_params);
     }
-#line 1771 "src/parser.c"
+#line 1773 "src/parser.c"
     break;
 
   case 12:
-#line 244 "src/parser.y"
+#line 246 "src/parser.y"
     {
         current_scope = current_scope->parent;
 
@@ -1783,11 +1785,11 @@ yyreduce:
         fun->declaration->member.function->body = (yyvsp[0].c_brace_enclosed_scope);
         (yyval.c_st_element) = fun;
     }
-#line 1787 "src/parser.c"
+#line 1789 "src/parser.c"
     break;
 
   case 13:
-#line 255 "src/parser.y"
+#line 257 "src/parser.y"
     {
         t_function* fun = zero_allocate(t_function);
         fun->type_info.primitive_type = (yyvsp[-2].c_primitive_type);
@@ -1800,11 +1802,11 @@ yyreduce:
         dec->member.function = fun;
         scope_add(current_scope, dec);
     }
-#line 1804 "src/parser.c"
+#line 1806 "src/parser.c"
     break;
 
   case 14:
-#line 266 "src/parser.y"
+#line 268 "src/parser.y"
     {
         st_element_t* fun = scope_find(current_scope, (yyvsp[-4].string_val));
         if (fun == NULL) {
@@ -1814,11 +1816,11 @@ yyreduce:
         fun->declaration->member.function->body = (yyvsp[0].c_brace_enclosed_scope);
         (yyval.c_st_element) = fun;
     }
-#line 1818 "src/parser.c"
+#line 1820 "src/parser.c"
     break;
 
   case 15:
-#line 278 "src/parser.y"
+#line 280 "src/parser.y"
     {
         t_function_params* fp = zero_allocate(t_function_params);
         assert((yyvsp[0].c_st_element)->declaration->type == VAR_DECLARATION);
@@ -1826,11 +1828,11 @@ yyreduce:
         fp->prev = (yyvsp[-2].c_function_params);
         (yyval.c_function_params) = fp; 
     }
-#line 1830 "src/parser.c"
+#line 1832 "src/parser.c"
     break;
 
   case 16:
-#line 285 "src/parser.y"
+#line 287 "src/parser.y"
     {
         t_function_params* fp = zero_allocate(t_function_params);
 
@@ -1838,60 +1840,60 @@ yyreduce:
         fp->prev = NULL;
         (yyval.c_function_params) = fp; 
     }
-#line 1842 "src/parser.c"
+#line 1844 "src/parser.c"
     break;
 
   case 17:
-#line 295 "src/parser.y"
+#line 297 "src/parser.y"
     {
         current_scope = scope_create(current_scope);
     }
-#line 1850 "src/parser.c"
+#line 1852 "src/parser.c"
     break;
 
   case 18:
-#line 297 "src/parser.y"
+#line 299 "src/parser.y"
     {
         t_brace_enclosed_scope* scope = zero_allocate(t_brace_enclosed_scope);
         scope->statements = (yyvsp[-1].c_statement_list);
         (yyval.c_brace_enclosed_scope) = scope;
         current_scope = current_scope->parent;
     }
-#line 1861 "src/parser.c"
+#line 1863 "src/parser.c"
     break;
 
   case 19:
-#line 306 "src/parser.y"
+#line 308 "src/parser.y"
     {
         t_statement_list* fp = zero_allocate(t_statement_list);
         fp->cur = (yyvsp[0].c_statement);
         fp->prev = (yyvsp[-1].c_statement_list);
         (yyval.c_statement_list) = fp; 
     }
-#line 1872 "src/parser.c"
+#line 1874 "src/parser.c"
     break;
 
   case 20:
-#line 312 "src/parser.y"
+#line 314 "src/parser.y"
     {
     (yyval.c_statement_list) = NULL;
 }
-#line 1880 "src/parser.c"
+#line 1882 "src/parser.c"
     break;
 
   case 21:
-#line 318 "src/parser.y"
+#line 320 "src/parser.y"
     {
         t_statement* stmt = zero_allocate(t_statement);
         stmt->type = BRACE_ENCLOSED_SCOPE_STATEMENT;
         stmt->member.scope = (yyvsp[0].c_brace_enclosed_scope);
         (yyval.c_statement) = stmt;
     }
-#line 1891 "src/parser.c"
+#line 1893 "src/parser.c"
     break;
 
   case 22:
-#line 324 "src/parser.y"
+#line 326 "src/parser.y"
     {
         t_statement* stmt = zero_allocate(t_statement);
         assert((yyvsp[-1].c_st_element)->declaration->type == VAR_DECLARATION);
@@ -1899,11 +1901,11 @@ yyreduce:
         stmt->member.variable = (yyvsp[-1].c_st_element);
         (yyval.c_statement) = stmt;
     }
-#line 1903 "src/parser.c"
+#line 1905 "src/parser.c"
     break;
 
   case 23:
-#line 331 "src/parser.y"
+#line 333 "src/parser.y"
     {
         yyerrok;
         t_statement* stmt = zero_allocate(t_statement);
@@ -1912,44 +1914,44 @@ yyreduce:
         stmt->member.variable = (yyvsp[-1].c_st_element);
         (yyval.c_statement) = stmt;
     }
-#line 1916 "src/parser.c"
+#line 1918 "src/parser.c"
     break;
 
   case 24:
-#line 339 "src/parser.y"
+#line 341 "src/parser.y"
     {
         t_statement* stmt = zero_allocate(t_statement);
         stmt->type = PRINT_STATEMENT;
         stmt->member.print = (yyvsp[0].c_print);
         (yyval.c_statement) = stmt;
     }
-#line 1927 "src/parser.c"
+#line 1929 "src/parser.c"
     break;
 
   case 25:
-#line 345 "src/parser.y"
+#line 347 "src/parser.y"
     {
         t_statement* stmt = zero_allocate(t_statement);
         stmt->type = SCAN_STATEMENT;
         stmt->member.scan = (yyvsp[0].c_scan);
         (yyval.c_statement) = stmt;
     }
-#line 1938 "src/parser.c"
+#line 1940 "src/parser.c"
     break;
 
   case 26:
-#line 351 "src/parser.y"
+#line 353 "src/parser.y"
     {
         t_statement* stmt = zero_allocate(t_statement);
         stmt->type = EXPRESSION_STATEMENT;
         stmt->member.expression = (yyvsp[-1].c_expression);
         (yyval.c_statement) = stmt;
     }
-#line 1949 "src/parser.c"
+#line 1951 "src/parser.c"
     break;
 
   case 27:
-#line 357 "src/parser.y"
+#line 359 "src/parser.y"
     {
         yyerrok;
         t_statement* stmt = zero_allocate(t_statement);
@@ -1957,52 +1959,52 @@ yyreduce:
         stmt->member.expression = (yyvsp[-1].c_expression);
         (yyval.c_statement) = stmt;
     }
-#line 1961 "src/parser.c"
+#line 1963 "src/parser.c"
     break;
 
   case 28:
-#line 364 "src/parser.y"
+#line 366 "src/parser.y"
     {
         t_statement* stmt = zero_allocate(t_statement);
         stmt->type = CONDITION_STATEMENT;
         stmt->member.condition = (yyvsp[0].c_condition);
         (yyval.c_statement) = stmt;
     }
-#line 1972 "src/parser.c"
+#line 1974 "src/parser.c"
     break;
 
   case 29:
-#line 370 "src/parser.y"
+#line 372 "src/parser.y"
     {
         t_statement* stmt = zero_allocate(t_statement);
         stmt->type = ITERATION_STATEMENT;
         stmt->member.iteration = (yyvsp[0].c_iteration);
         (yyval.c_statement) = stmt;
     }
-#line 1983 "src/parser.c"
+#line 1985 "src/parser.c"
     break;
 
   case 30:
-#line 376 "src/parser.y"
+#line 378 "src/parser.y"
     {
         t_statement* stmt = zero_allocate(t_statement);
         stmt->type = RETURN_STATEMENT;
         stmt->member._return = (yyvsp[0].c_return);
         (yyval.c_statement) = stmt;
     }
-#line 1994 "src/parser.c"
+#line 1996 "src/parser.c"
     break;
 
   case 31:
-#line 382 "src/parser.y"
+#line 384 "src/parser.y"
     {
         (yyval.c_statement) = NULL;
     }
-#line 2002 "src/parser.c"
+#line 2004 "src/parser.c"
     break;
 
   case 32:
-#line 388 "src/parser.y"
+#line 390 "src/parser.y"
     {
         t_print* print = zero_allocate(t_print);
         print->type = (yyvsp[-2].c_print_type);
@@ -2021,11 +2023,11 @@ yyreduce:
             );
         }
     }
-#line 2025 "src/parser.c"
+#line 2027 "src/parser.c"
     break;
 
   case 33:
-#line 406 "src/parser.y"
+#line 408 "src/parser.y"
     {
         yyerrok;
         t_print* print = zero_allocate(t_print);
@@ -2045,11 +2047,11 @@ yyreduce:
             );
         }
     }
-#line 2049 "src/parser.c"
+#line 2051 "src/parser.c"
     break;
 
   case 34:
-#line 428 "src/parser.y"
+#line 430 "src/parser.y"
     {
         t_scan* scan = zero_allocate(t_scan);
         scan->type = (yyvsp[-2].c_scan_type);
@@ -2083,11 +2085,11 @@ yyreduce:
         scan->destiny = (yyvsp[-1].c_st_element);
         (yyval.c_scan) = scan;
     }
-#line 2087 "src/parser.c"
+#line 2089 "src/parser.c"
     break;
 
   case 35:
-#line 461 "src/parser.y"
+#line 463 "src/parser.y"
     {
         yyerrok;
         t_scan* scan = zero_allocate(t_scan);
@@ -2122,59 +2124,59 @@ yyreduce:
         scan->destiny = (yyvsp[-1].c_st_element);
         (yyval.c_scan) = scan;
     }
-#line 2126 "src/parser.c"
+#line 2128 "src/parser.c"
     break;
 
   case 36:
-#line 498 "src/parser.y"
+#line 500 "src/parser.y"
     {
         (yyval.c_print_type) = PRINT_DEC_TYPE;
     }
-#line 2134 "src/parser.c"
+#line 2136 "src/parser.c"
     break;
 
   case 37:
-#line 501 "src/parser.y"
+#line 503 "src/parser.y"
     {
         (yyval.c_print_type) = PRINT_CHAR_TYPE;
     }
-#line 2142 "src/parser.c"
+#line 2144 "src/parser.c"
     break;
 
   case 38:
-#line 504 "src/parser.y"
+#line 506 "src/parser.y"
     {
         (yyval.c_print_type) = PRINT_HEX_TYPE;
     }
-#line 2150 "src/parser.c"
+#line 2152 "src/parser.c"
     break;
 
   case 39:
-#line 510 "src/parser.y"
+#line 512 "src/parser.y"
     {
         (yyval.c_scan_type) = SCAN_DEC_TYPE;
     }
-#line 2158 "src/parser.c"
+#line 2160 "src/parser.c"
     break;
 
   case 40:
-#line 513 "src/parser.y"
+#line 515 "src/parser.y"
     {
         (yyval.c_scan_type) = SCAN_CHAR_TYPE;
     }
-#line 2166 "src/parser.c"
+#line 2168 "src/parser.c"
     break;
 
   case 41:
-#line 516 "src/parser.y"
+#line 518 "src/parser.y"
     {
         (yyval.c_scan_type) = SCAN_FLOAT_TYPE;
     }
-#line 2174 "src/parser.c"
+#line 2176 "src/parser.c"
     break;
 
   case 42:
-#line 522 "src/parser.y"
+#line 524 "src/parser.y"
     {
         assert((yyvsp[-2].c_expression) != NULL);
 
@@ -2189,11 +2191,11 @@ yyreduce:
 
         (yyval.c_condition) = cond;  
     }
-#line 2193 "src/parser.c"
+#line 2195 "src/parser.c"
     break;
 
   case 43:
-#line 536 "src/parser.y"
+#line 538 "src/parser.y"
     {   
         assert((yyvsp[-4].c_expression) != NULL);
         
@@ -2208,11 +2210,11 @@ yyreduce:
 
         (yyval.c_condition) = cond;
     }
-#line 2212 "src/parser.c"
+#line 2214 "src/parser.c"
     break;
 
   case 44:
-#line 550 "src/parser.y"
+#line 552 "src/parser.y"
     {
         yyerrok;
 
@@ -2221,11 +2223,11 @@ yyreduce:
 
         (yyval.c_condition) = cond;
     }
-#line 2225 "src/parser.c"
+#line 2227 "src/parser.c"
     break;
 
   case 45:
-#line 561 "src/parser.y"
+#line 563 "src/parser.y"
     {
         assert((yyvsp[-2].c_expression) != NULL);
         
@@ -2240,11 +2242,11 @@ yyreduce:
         w->body = (yyvsp[0].c_statement);
         (yyval.c_iteration) = w;
     }
-#line 2244 "src/parser.c"
+#line 2246 "src/parser.c"
     break;
 
   case 46:
-#line 575 "src/parser.y"
+#line 577 "src/parser.y"
     {
         
 
@@ -2271,11 +2273,11 @@ yyreduce:
         f->body = (yyvsp[0].c_statement);
         (yyval.c_iteration) = f;
     }
-#line 2275 "src/parser.c"
+#line 2277 "src/parser.c"
     break;
 
   case 47:
-#line 601 "src/parser.y"
+#line 603 "src/parser.y"
     {
         t_iteration* f = zero_allocate(t_iteration);
         f->initialization = NULL;
@@ -2285,37 +2287,37 @@ yyreduce:
         (yyval.c_iteration) = f;
         yyerrok;   
     }
-#line 2289 "src/parser.c"
+#line 2291 "src/parser.c"
     break;
 
   case 48:
-#line 613 "src/parser.y"
+#line 615 "src/parser.y"
     {
         t_return* ret = zero_allocate(t_return);
         ret->expression = (yyvsp[-1].c_expression);
         (yyval.c_return) = ret;
     }
-#line 2299 "src/parser.c"
+#line 2301 "src/parser.c"
     break;
 
   case 49:
-#line 621 "src/parser.y"
+#line 623 "src/parser.y"
     {
         (yyval.c_expression) = (yyvsp[0].c_expression);
     }
-#line 2307 "src/parser.c"
+#line 2309 "src/parser.c"
     break;
 
   case 50:
-#line 624 "src/parser.y"
+#line 626 "src/parser.y"
     {
         (yyval.c_expression) = NULL;
     }
-#line 2315 "src/parser.c"
+#line 2317 "src/parser.c"
     break;
 
   case 51:
-#line 630 "src/parser.y"
+#line 632 "src/parser.y"
     {
         if ((yyvsp[0].c_expression)->type_info.data_structure != PRIMITIVE) {
             printf("Location %d:%d - Expression must have primitive type\n", line, column);
@@ -2343,11 +2345,11 @@ yyreduce:
         exp->type_info = info;
         (yyval.c_assignment) = exp;
     }
-#line 2347 "src/parser.c"
+#line 2349 "src/parser.c"
     break;
 
   case 52:
-#line 660 "src/parser.y"
+#line 662 "src/parser.y"
     {
         t_expression* exp = zero_allocate(t_expression);
         exp->type = ASSIGNMENT_EXPRESSION;
@@ -2355,19 +2357,19 @@ yyreduce:
         exp->type_info = (yyvsp[0].c_assignment)->type_info;
         (yyval.c_expression) = exp;
     }
-#line 2359 "src/parser.c"
+#line 2361 "src/parser.c"
     break;
 
   case 53:
-#line 667 "src/parser.y"
+#line 669 "src/parser.y"
     {
         (yyval.c_expression) = (yyvsp[0].c_expression);
     }
-#line 2367 "src/parser.c"
+#line 2369 "src/parser.c"
     break;
 
   case 54:
-#line 673 "src/parser.y"
+#line 675 "src/parser.y"
     {
         if ((yyvsp[-2].c_expression)->type_info.data_structure != PRIMITIVE || (yyvsp[-2].c_expression)->type_info.primitive_type == VOID_TYPE || (yyvsp[-2].c_expression)->type_info.primitive_type == STRING_TYPE) {
             printf("Location %d:%d - Left expression must return a primitive and integer type\n", line, column);
@@ -2383,19 +2385,19 @@ yyreduce:
         exp->right = (yyvsp[0].c_expression);
         (yyval.c_expression) = exp;
     }
-#line 2387 "src/parser.c"
+#line 2389 "src/parser.c"
     break;
 
   case 55:
-#line 688 "src/parser.y"
+#line 690 "src/parser.y"
     {
         (yyval.c_expression) = (yyvsp[0].c_expression);
     }
-#line 2395 "src/parser.c"
+#line 2397 "src/parser.c"
     break;
 
   case 56:
-#line 694 "src/parser.y"
+#line 696 "src/parser.y"
     {
         if ((yyvsp[-2].c_expression)->type_info.data_structure != PRIMITIVE || (yyvsp[-2].c_expression)->type_info.primitive_type == VOID_TYPE || (yyvsp[-2].c_expression)->type_info.primitive_type == STRING_TYPE) {
             printf("Location %d:%d - Left expression must return a primitive and integer type\n", line, column);
@@ -2411,19 +2413,19 @@ yyreduce:
         exp->right = (yyvsp[0].c_expression);
         (yyval.c_expression) = exp;
     }
-#line 2415 "src/parser.c"
+#line 2417 "src/parser.c"
     break;
 
   case 57:
-#line 709 "src/parser.y"
+#line 711 "src/parser.y"
     {
         (yyval.c_expression) = (yyvsp[0].c_expression);
     }
-#line 2423 "src/parser.c"
+#line 2425 "src/parser.c"
     break;
 
   case 58:
-#line 715 "src/parser.y"
+#line 717 "src/parser.y"
     {
         if ((yyvsp[-2].c_expression)->type_info.data_structure != PRIMITIVE || (yyvsp[-2].c_expression)->type_info.primitive_type == VOID_TYPE || (yyvsp[-2].c_expression)->type_info.primitive_type == STRING_TYPE) {
             printf("Location %d:%d - Left expression must return a primitive and integer type\n", line, column);
@@ -2439,19 +2441,19 @@ yyreduce:
         exp->right = (yyvsp[0].c_expression);
         (yyval.c_expression) = exp;
     }
-#line 2443 "src/parser.c"
+#line 2445 "src/parser.c"
     break;
 
   case 59:
-#line 730 "src/parser.y"
+#line 732 "src/parser.y"
     {
         (yyval.c_expression) = (yyvsp[0].c_expression);
     }
-#line 2451 "src/parser.c"
+#line 2453 "src/parser.c"
     break;
 
   case 60:
-#line 736 "src/parser.y"
+#line 738 "src/parser.y"
     {
         if ((yyvsp[-2].c_expression)->type_info.data_structure != PRIMITIVE || (yyvsp[-2].c_expression)->type_info.primitive_type == VOID_TYPE || (yyvsp[-2].c_expression)->type_info.primitive_type == STRING_TYPE) {
             printf("Location %d:%d - Left expression must return a primitive and integer type\n", line, column);
@@ -2467,19 +2469,19 @@ yyreduce:
         exp->right = (yyvsp[0].c_expression);
         (yyval.c_expression) = exp;
     }
-#line 2471 "src/parser.c"
+#line 2473 "src/parser.c"
     break;
 
   case 61:
-#line 751 "src/parser.y"
+#line 753 "src/parser.y"
     {
         (yyval.c_expression) = (yyvsp[0].c_expression);
     }
-#line 2479 "src/parser.c"
+#line 2481 "src/parser.c"
     break;
 
   case 62:
-#line 757 "src/parser.y"
+#line 759 "src/parser.y"
     {
         if ((yyvsp[-2].c_expression)->type_info.data_structure != PRIMITIVE || (yyvsp[-2].c_expression)->type_info.primitive_type == VOID_TYPE || (yyvsp[-2].c_expression)->type_info.primitive_type == STRING_TYPE) {
             printf("Location %d:%d - Left expression must return a primitive and integer type\n", line, column);
@@ -2495,19 +2497,19 @@ yyreduce:
         exp->right = (yyvsp[0].c_expression);
         (yyval.c_expression) = exp;
     }
-#line 2499 "src/parser.c"
+#line 2501 "src/parser.c"
     break;
 
   case 63:
-#line 772 "src/parser.y"
+#line 774 "src/parser.y"
     {
         (yyval.c_expression) = (yyvsp[0].c_expression);
     }
-#line 2507 "src/parser.c"
+#line 2509 "src/parser.c"
     break;
 
   case 64:
-#line 778 "src/parser.y"
+#line 780 "src/parser.y"
     {
         t_type_info info;
         info.primitive_type = LONG_TYPE;
@@ -2526,11 +2528,11 @@ yyreduce:
         exp->type_info = info;
         (yyval.c_expression) = exp;
     }
-#line 2530 "src/parser.c"
+#line 2532 "src/parser.c"
     break;
 
   case 65:
-#line 796 "src/parser.y"
+#line 798 "src/parser.y"
     {
         t_type_info info;
         info.primitive_type = LONG_TYPE;
@@ -2549,19 +2551,19 @@ yyreduce:
         exp->type_info = info;
         (yyval.c_expression) = exp;
     }
-#line 2553 "src/parser.c"
+#line 2555 "src/parser.c"
     break;
 
   case 66:
-#line 814 "src/parser.y"
+#line 816 "src/parser.y"
     {
         (yyval.c_expression) = (yyvsp[0].c_expression);
     }
-#line 2561 "src/parser.c"
+#line 2563 "src/parser.c"
     break;
 
   case 67:
-#line 820 "src/parser.y"
+#line 822 "src/parser.y"
     {
         t_type_info info;
         info.primitive_type = LONG_TYPE;
@@ -2593,19 +2595,19 @@ yyreduce:
         exp->type_info = info;
         (yyval.c_expression) = exp;
     }
-#line 2597 "src/parser.c"
+#line 2599 "src/parser.c"
     break;
 
   case 68:
-#line 851 "src/parser.y"
+#line 853 "src/parser.y"
     {
         (yyval.c_expression) = (yyvsp[0].c_expression);
     }
-#line 2605 "src/parser.c"
+#line 2607 "src/parser.c"
     break;
 
   case 69:
-#line 857 "src/parser.y"
+#line 859 "src/parser.y"
     {
         t_structure_type e1 = (yyvsp[-2].c_expression)->type_info.data_structure;
         t_structure_type e2 = (yyvsp[0].c_expression)->type_info.data_structure;
@@ -2633,11 +2635,11 @@ yyreduce:
         exp->right = (yyvsp[0].c_expression);
         (yyval.c_expression) = exp;
     }
-#line 2637 "src/parser.c"
+#line 2639 "src/parser.c"
     break;
 
   case 70:
-#line 884 "src/parser.y"
+#line 886 "src/parser.y"
     {
         t_structure_type e1 = (yyvsp[-2].c_expression)->type_info.data_structure;
         t_structure_type e2 = (yyvsp[0].c_expression)->type_info.data_structure;
@@ -2664,19 +2666,19 @@ yyreduce:
         exp->right = (yyvsp[0].c_expression);
         (yyval.c_expression) = exp;
     }
-#line 2668 "src/parser.c"
+#line 2670 "src/parser.c"
     break;
 
   case 71:
-#line 910 "src/parser.y"
+#line 912 "src/parser.y"
     {
         (yyval.c_expression) = (yyvsp[0].c_expression);
     }
-#line 2676 "src/parser.c"
+#line 2678 "src/parser.c"
     break;
 
   case 72:
-#line 916 "src/parser.y"
+#line 918 "src/parser.y"
     {
         if ((yyvsp[-2].c_expression)->type_info.data_structure != SET) {
             printf("Location %d:%d - Can only use 'rm' operator with sets on the left side.\n", line, column);
@@ -2695,19 +2697,19 @@ yyreduce:
         exp->right = (yyvsp[0].c_expression);
         (yyval.c_expression) = exp;
     }
-#line 2699 "src/parser.c"
+#line 2701 "src/parser.c"
     break;
 
   case 73:
-#line 934 "src/parser.y"
+#line 936 "src/parser.y"
     {
         (yyval.c_expression) = (yyvsp[0].c_expression);
     }
-#line 2707 "src/parser.c"
+#line 2709 "src/parser.c"
     break;
 
   case 74:
-#line 940 "src/parser.y"
+#line 942 "src/parser.y"
     {
         if ((yyvsp[-2].c_expression)->type_info.data_structure != PRIMITIVE || (yyvsp[-2].c_expression)->type_info.primitive_type == VOID_TYPE || (yyvsp[-2].c_expression)->type_info.primitive_type == STRING_TYPE) {
             printf("Location %d:%d - Left expression must return a primitive and integer type\n", line, column);
@@ -2732,11 +2734,11 @@ yyreduce:
         exp->right = (yyvsp[0].c_expression);
         (yyval.c_expression) = exp;
     }
-#line 2736 "src/parser.c"
+#line 2738 "src/parser.c"
     break;
 
   case 75:
-#line 964 "src/parser.y"
+#line 966 "src/parser.y"
     {
         if ((yyvsp[-2].c_expression)->type_info.data_structure != PRIMITIVE || (yyvsp[-2].c_expression)->type_info.primitive_type == VOID_TYPE || (yyvsp[-2].c_expression)->type_info.primitive_type == STRING_TYPE) {
             printf("Location %d:%d - Left expression must return a primitive and integer type\n", line, column);
@@ -2761,19 +2763,19 @@ yyreduce:
         exp->right = (yyvsp[0].c_expression);
         (yyval.c_expression) = exp;
     }
-#line 2765 "src/parser.c"
+#line 2767 "src/parser.c"
     break;
 
   case 76:
-#line 988 "src/parser.y"
+#line 990 "src/parser.y"
     {
         (yyval.c_expression) = (yyvsp[0].c_expression);
     }
-#line 2773 "src/parser.c"
+#line 2775 "src/parser.c"
     break;
 
   case 77:
-#line 994 "src/parser.y"
+#line 996 "src/parser.y"
     {
         if ((yyvsp[-2].c_expression)->type_info.data_structure != PRIMITIVE || (yyvsp[-2].c_expression)->type_info.primitive_type == VOID_TYPE || (yyvsp[-2].c_expression)->type_info.primitive_type == STRING_TYPE) {
             printf("Location %d:%d - Left expression must return a primitive and integer type\n", line, column);
@@ -2798,19 +2800,19 @@ yyreduce:
         exp->right = (yyvsp[0].c_expression);
         (yyval.c_expression) = exp;
     }
-#line 2802 "src/parser.c"
+#line 2804 "src/parser.c"
     break;
 
   case 78:
-#line 1018 "src/parser.y"
+#line 1020 "src/parser.y"
     {
         (yyval.c_expression) = (yyvsp[0].c_expression);
     }
-#line 2810 "src/parser.c"
+#line 2812 "src/parser.c"
     break;
 
   case 79:
-#line 1024 "src/parser.y"
+#line 1026 "src/parser.y"
     {
         t_type_info info;
         if ((yyvsp[-1].c_expression_type) == UNARY_PLUS || (yyvsp[-1].c_expression_type) == UNARY_MINUS || (yyvsp[-1].c_expression_type) == UNARY_EXCL) {
@@ -2836,11 +2838,11 @@ yyreduce:
         exp->right = (yyvsp[0].c_expression);
         (yyval.c_expression) = exp;
     }
-#line 2840 "src/parser.c"
+#line 2842 "src/parser.c"
     break;
 
   case 80:
-#line 1049 "src/parser.y"
+#line 1051 "src/parser.y"
     {
         t_expression* exp = zero_allocate(t_expression);
         exp->type = (yyvsp[0].c_cast_expression)->type;
@@ -2848,11 +2850,11 @@ yyreduce:
         exp->type_info = (yyvsp[0].c_cast_expression)->type_info;
         (yyval.c_expression) = exp;
     }
-#line 2852 "src/parser.c"
+#line 2854 "src/parser.c"
     break;
 
   case 81:
-#line 1059 "src/parser.y"
+#line 1061 "src/parser.y"
     {
         if ((yyvsp[-1].c_expression)->type_info.data_structure != PRIMITIVE || (yyvsp[-1].c_expression)->type_info.primitive_type == VOID_TYPE || (yyvsp[-1].c_expression)->type_info.primitive_type == STRING_TYPE) {
             printf("Location %d:%d - Right expression must return a primitive and integer type\n", line, column);
@@ -2867,11 +2869,11 @@ yyreduce:
         exp->type_info.data_structure = PRIMITIVE;
         (yyval.c_cast_expression) = exp;
     }
-#line 2871 "src/parser.c"
+#line 2873 "src/parser.c"
     break;
 
   case 82:
-#line 1073 "src/parser.y"
+#line 1075 "src/parser.y"
     {
         t_cast_expression* exp = zero_allocate(t_cast_expression);
         exp->left = (yyvsp[0].c_postfix_expression);
@@ -2879,11 +2881,11 @@ yyreduce:
         exp->type_info = (yyvsp[0].c_postfix_expression)->type_info;
         (yyval.c_cast_expression) = exp;
     }
-#line 2883 "src/parser.c"
+#line 2885 "src/parser.c"
     break;
 
   case 83:
-#line 1083 "src/parser.y"
+#line 1085 "src/parser.y"
     {
         if ((yyvsp[-1].c_expression)->type_info.data_structure != PRIMITIVE || (yyvsp[-1].c_expression)->type_info.primitive_type == VOID_TYPE || (yyvsp[-1].c_expression)->type_info.primitive_type == STRING_TYPE) {
             printf("Location %d:%d - Index expression must return a primitive and integer type\n", line, column);
@@ -2906,11 +2908,11 @@ yyreduce:
         exp->type_info.data_structure = PRIMITIVE;
         (yyval.c_postfix_expression) = exp;
     }
-#line 2910 "src/parser.c"
+#line 2912 "src/parser.c"
     break;
 
   case 84:
-#line 1105 "src/parser.y"
+#line 1107 "src/parser.y"
     {
         t_postfix_expression* exp = zero_allocate(t_postfix_expression);
         exp->type = FUNCTION_CALL;
@@ -2933,11 +2935,11 @@ yyreduce:
         exp->type_info.data_structure = PRIMITIVE;
         (yyval.c_postfix_expression) = exp;
     }
-#line 2937 "src/parser.c"
+#line 2939 "src/parser.c"
     break;
 
   case 85:
-#line 1127 "src/parser.y"
+#line 1129 "src/parser.y"
     {
         t_postfix_expression* exp = zero_allocate(t_postfix_expression);
         exp->primary = (yyvsp[0].c_primary_expression);
@@ -2945,40 +2947,40 @@ yyreduce:
         exp->type_info = (yyvsp[0].c_primary_expression)->type_info;
         (yyval.c_postfix_expression) = exp;
     }
-#line 2949 "src/parser.c"
+#line 2951 "src/parser.c"
     break;
 
   case 86:
-#line 1137 "src/parser.y"
+#line 1139 "src/parser.y"
     {
         t_param_vals* pv = zero_allocate(t_param_vals);
         pv->prev = (yyvsp[-2].c_param_vals);
         pv->cur = (yyvsp[0].c_expression);
         (yyval.c_param_vals) = pv;
     }
-#line 2960 "src/parser.c"
+#line 2962 "src/parser.c"
     break;
 
   case 87:
-#line 1143 "src/parser.y"
+#line 1145 "src/parser.y"
     {
         t_param_vals* pv = zero_allocate(t_param_vals);
         pv->cur = (yyvsp[0].c_expression);
         (yyval.c_param_vals) = pv;
     }
-#line 2970 "src/parser.c"
+#line 2972 "src/parser.c"
     break;
 
   case 88:
-#line 1148 "src/parser.y"
+#line 1150 "src/parser.y"
     {
         (yyval.c_param_vals) = NULL;
     }
-#line 2978 "src/parser.c"
+#line 2980 "src/parser.c"
     break;
 
   case 89:
-#line 1154 "src/parser.y"
+#line 1156 "src/parser.y"
     {
         st_element_t* element = scope_find(current_scope, (yyvsp[0].string_val));
         if (element == NULL) {
@@ -2987,11 +2989,11 @@ yyreduce:
         free((yyvsp[0].string_val));
         (yyval.c_st_element) = element;
     }
-#line 2991 "src/parser.c"
+#line 2993 "src/parser.c"
     break;
 
   case 90:
-#line 1164 "src/parser.y"
+#line 1166 "src/parser.y"
     {
         t_primary_expression* exp = zero_allocate(t_primary_expression);
         exp->type = IDENTIFIER_PRIMARY_EXPRESSION;
@@ -3006,11 +3008,11 @@ yyreduce:
         }
         (yyval.c_primary_expression) = exp;
     }
-#line 3010 "src/parser.c"
+#line 3012 "src/parser.c"
     break;
 
   case 91:
-#line 1178 "src/parser.y"
+#line 1180 "src/parser.y"
     {
         t_primary_expression* exp = zero_allocate(t_primary_expression);
         exp->type = CONSTANT_PRIMARY_EXPRESSION;
@@ -3018,11 +3020,11 @@ yyreduce:
         exp->type_info = (yyvsp[0].c_constant)->type_info;
         (yyval.c_primary_expression) = exp;
     }
-#line 3022 "src/parser.c"
+#line 3024 "src/parser.c"
     break;
 
   case 92:
-#line 1185 "src/parser.y"
+#line 1187 "src/parser.y"
     {
         t_primary_expression* exp = zero_allocate(t_primary_expression);
         exp->type = STRING_PRIMARY_EXPRESSION;
@@ -3031,11 +3033,11 @@ yyreduce:
         exp->type_info.data_structure = PRIMITIVE;
         (yyval.c_primary_expression) = exp;
     }
-#line 3035 "src/parser.c"
+#line 3037 "src/parser.c"
     break;
 
   case 93:
-#line 1193 "src/parser.y"
+#line 1195 "src/parser.y"
     {
         t_primary_expression* exp = zero_allocate(t_primary_expression);
         exp->type = NESTED_PRIMARY_EXPRESSION;
@@ -3043,11 +3045,11 @@ yyreduce:
         exp->type_info = (yyvsp[-1].c_expression)->type_info;
         (yyval.c_primary_expression) = exp;
     }
-#line 3047 "src/parser.c"
+#line 3049 "src/parser.c"
     break;
 
   case 94:
-#line 1203 "src/parser.y"
+#line 1205 "src/parser.y"
     {
         t_constant* c = zero_allocate(t_constant);
         c->type_info.primitive_type = LONG_TYPE;
@@ -3055,11 +3057,11 @@ yyreduce:
         c->member.integer_val = (yyvsp[0].integer_val);
         (yyval.c_constant) = c;
     }
-#line 3059 "src/parser.c"
+#line 3061 "src/parser.c"
     break;
 
   case 95:
-#line 1210 "src/parser.y"
+#line 1212 "src/parser.y"
     {
         t_constant* c = zero_allocate(t_constant);
         c->type_info.primitive_type = CHAR_TYPE;
@@ -3067,11 +3069,11 @@ yyreduce:
         c->member.char_val = (yyvsp[0].char_val);
         (yyval.c_constant) = c;
     }
-#line 3071 "src/parser.c"
+#line 3073 "src/parser.c"
     break;
 
   case 96:
-#line 1217 "src/parser.y"
+#line 1219 "src/parser.y"
     {
         t_constant* c = zero_allocate(t_constant);
         c->type_info.primitive_type = DOUBLE_TYPE;
@@ -3079,191 +3081,191 @@ yyreduce:
         c->member.float_val = (yyvsp[0].float_val);
         (yyval.c_constant) = c;
     }
-#line 3083 "src/parser.c"
+#line 3085 "src/parser.c"
     break;
 
   case 97:
-#line 1227 "src/parser.y"
+#line 1229 "src/parser.y"
     { (yyval.c_assignment_operator) = EQUAL_OPERATOR; }
-#line 3089 "src/parser.c"
+#line 3091 "src/parser.c"
     break;
 
   case 98:
-#line 1228 "src/parser.y"
+#line 1230 "src/parser.y"
     { (yyval.c_assignment_operator) = PLUS_EQUAL_OPERATOR; }
-#line 3095 "src/parser.c"
+#line 3097 "src/parser.c"
     break;
 
   case 99:
-#line 1229 "src/parser.y"
+#line 1231 "src/parser.y"
     { (yyval.c_assignment_operator) = MINUS_EQUAL_OPERATOR; }
-#line 3101 "src/parser.c"
+#line 3103 "src/parser.c"
     break;
 
   case 100:
-#line 1230 "src/parser.y"
+#line 1232 "src/parser.y"
     { (yyval.c_assignment_operator) = ASTERISK_EQUAL_OPERATOR; }
-#line 3107 "src/parser.c"
+#line 3109 "src/parser.c"
     break;
 
   case 101:
-#line 1231 "src/parser.y"
+#line 1233 "src/parser.y"
     { (yyval.c_assignment_operator) = SLASH_EQUAL_OPERATOR; }
-#line 3113 "src/parser.c"
+#line 3115 "src/parser.c"
     break;
 
   case 102:
-#line 1232 "src/parser.y"
+#line 1234 "src/parser.y"
     { (yyval.c_assignment_operator) = PERCENT_EQUAL_OPERATOR; }
-#line 3119 "src/parser.c"
+#line 3121 "src/parser.c"
     break;
 
   case 103:
-#line 1236 "src/parser.y"
+#line 1238 "src/parser.y"
     { (yyval.c_expression_type) = UNARY_PLUS; }
-#line 3125 "src/parser.c"
+#line 3127 "src/parser.c"
     break;
 
   case 104:
-#line 1237 "src/parser.y"
+#line 1239 "src/parser.y"
     { (yyval.c_expression_type) = UNARY_MINUS; }
-#line 3131 "src/parser.c"
+#line 3133 "src/parser.c"
     break;
 
   case 105:
-#line 1238 "src/parser.y"
+#line 1240 "src/parser.y"
     { (yyval.c_expression_type) = UNARY_EXCL; }
-#line 3137 "src/parser.c"
+#line 3139 "src/parser.c"
     break;
 
   case 106:
-#line 1239 "src/parser.y"
+#line 1241 "src/parser.y"
     { (yyval.c_expression_type) = UNARY_SIZEOF; }
-#line 3143 "src/parser.c"
+#line 3145 "src/parser.c"
     break;
 
   case 107:
-#line 1243 "src/parser.y"
+#line 1245 "src/parser.y"
     { (yyval.c_expression_type) = LESS_THAN; }
-#line 3149 "src/parser.c"
+#line 3151 "src/parser.c"
     break;
 
   case 108:
-#line 1244 "src/parser.y"
+#line 1246 "src/parser.y"
     { (yyval.c_expression_type) = GREATER_THAN; }
-#line 3155 "src/parser.c"
+#line 3157 "src/parser.c"
     break;
 
   case 109:
-#line 1245 "src/parser.y"
+#line 1247 "src/parser.y"
     { (yyval.c_expression_type) = LESS_THAN_OR_EQUAL; }
-#line 3161 "src/parser.c"
+#line 3163 "src/parser.c"
     break;
 
   case 110:
-#line 1246 "src/parser.y"
+#line 1248 "src/parser.y"
     { (yyval.c_expression_type) = GREATER_THAN_OR_EQUAL; }
-#line 3167 "src/parser.c"
+#line 3169 "src/parser.c"
     break;
 
   case 111:
-#line 1247 "src/parser.y"
+#line 1249 "src/parser.y"
     { (yyval.c_expression_type) = IS_IN; }
-#line 3173 "src/parser.c"
+#line 3175 "src/parser.c"
     break;
 
   case 112:
-#line 1251 "src/parser.y"
+#line 1253 "src/parser.y"
     { (yyval.c_expression_type) = ASTERISK_OPERATOR; }
-#line 3179 "src/parser.c"
+#line 3181 "src/parser.c"
     break;
 
   case 113:
-#line 1252 "src/parser.y"
+#line 1254 "src/parser.y"
     { (yyval.c_expression_type) = SLASH_OPERATOR; }
-#line 3185 "src/parser.c"
+#line 3187 "src/parser.c"
     break;
 
   case 114:
-#line 1253 "src/parser.y"
+#line 1255 "src/parser.y"
     { (yyval.c_expression_type) = PERCENT_OPERATOR; }
-#line 3191 "src/parser.c"
+#line 3193 "src/parser.c"
     break;
 
   case 115:
-#line 1257 "src/parser.y"
+#line 1259 "src/parser.y"
     {
         (yyval.c_primitive_type) = VOID_TYPE;
     }
-#line 3199 "src/parser.c"
+#line 3201 "src/parser.c"
     break;
 
   case 116:
-#line 1260 "src/parser.y"
+#line 1262 "src/parser.y"
     {
         (yyval.c_primitive_type) = BYTE_TYPE;
     }
-#line 3207 "src/parser.c"
+#line 3209 "src/parser.c"
     break;
 
   case 117:
-#line 1263 "src/parser.y"
+#line 1265 "src/parser.y"
     {
         (yyval.c_primitive_type) = BYTE_TYPE;
     }
-#line 3215 "src/parser.c"
+#line 3217 "src/parser.c"
     break;
 
   case 118:
-#line 1266 "src/parser.y"
+#line 1268 "src/parser.y"
     {
         (yyval.c_primitive_type) = BYTE_TYPE;
     }
-#line 3223 "src/parser.c"
+#line 3225 "src/parser.c"
     break;
 
   case 119:
-#line 1269 "src/parser.y"
+#line 1271 "src/parser.y"
     {
         (yyval.c_primitive_type) = SHORT_TYPE;
     }
-#line 3231 "src/parser.c"
+#line 3233 "src/parser.c"
     break;
 
   case 120:
-#line 1272 "src/parser.y"
+#line 1274 "src/parser.y"
     {
         (yyval.c_primitive_type) = INT_TYPE;
     }
-#line 3239 "src/parser.c"
+#line 3241 "src/parser.c"
     break;
 
   case 121:
-#line 1275 "src/parser.y"
+#line 1277 "src/parser.y"
     {
         (yyval.c_primitive_type) = LONG_TYPE;
     }
-#line 3247 "src/parser.c"
+#line 3249 "src/parser.c"
     break;
 
   case 122:
-#line 1278 "src/parser.y"
+#line 1280 "src/parser.y"
     {
         (yyval.c_primitive_type) = FLOAT_TYPE;
     }
-#line 3255 "src/parser.c"
+#line 3257 "src/parser.c"
     break;
 
   case 123:
-#line 1281 "src/parser.y"
+#line 1283 "src/parser.y"
     {
         (yyval.c_primitive_type) = DOUBLE_TYPE;
     }
-#line 3263 "src/parser.c"
+#line 3265 "src/parser.c"
     break;
 
 
-#line 3267 "src/parser.c"
+#line 3269 "src/parser.c"
 
       default: break;
     }
@@ -3495,5 +3497,5 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 1285 "src/parser.y"
+#line 1287 "src/parser.y"
 

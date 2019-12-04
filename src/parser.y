@@ -7,6 +7,7 @@
 #include <stdio.h>
 #include <assert.h>
 #include "scope.h"
+#include "code_generator.h"
 #include <string.h>
 
 #define zero_allocate(type) ((type*)calloc(1, sizeof(type)))
@@ -19,6 +20,7 @@ extern scope_error_t LAST_ERROR;
 scope_t* root_scope;
 scope_t* current_scope;
 t_program* program;
+tac_program_t tac_program;
 
 void yyerror (char const *s)
 {

@@ -15,24 +15,25 @@ typedef enum tac_instr_t tac_instr_t;
 typedef enum tac_operand_type_t tac_operand_type_t;
 
 tac_program_t* tac_program_create();
-void tac_program_free(tac_program_t* program);
+void tac_program_initialize(tac_program_t* program);
+void tac_program_clean(tac_program_t* program);
 void tac_program_add_label(tac_program_t* program, char* name);
 void tac_program_print(tac_program_t* program);
 
-tac_table_t* tac_table_create();
-void tac_table_free(tac_table_t* table);
+void tac_table_initialize(tac_table_t* table);
+void tac_table_clean(tac_table_t* table);
 void tac_table_print(tac_table_t* table);
 
-tac_code_t* tac_code_create();
-void tac_code_free(tac_code_t* code);
+void tac_code_initialize(tac_code_t* code);
+void tac_code_clean(tac_code_t* code);
 void tac_code_print(tac_code_t* code);
 
-void tac_line_print(tac_line_t* line);
+void tac_label_free_members(tac_label_t* label);
 
-struct tac_program_t {
-  tac_table_t* table;
-  tac_code_t* code;
-};
+void tac_line_print(tac_line_t* line);
+void tac_line_free_members(tac_line_t* line);
+
+void tac_operand_free(tac_operand_t* operand);
 
 struct tac_table_t {};
 
@@ -44,6 +45,11 @@ struct tac_code_t {
   int label_count;
   int label_capacity;
   tac_label_t* labels;
+};
+
+struct tac_program_t {
+  tac_table_t table;
+  tac_code_t code;
 };
 
 void gen_condition();
@@ -123,8 +129,8 @@ struct tac_operand_t {
   union {
     int fun_param;
     int temp_var;
-    tac_label_t label;
-    tac_symbol_t symbol;
+    char* label_name;
+    char* symbol_name;
   } value;
 };
 
