@@ -7,6 +7,10 @@
 #include "my_string.h"
 #include "scope.h"
 
+tac_label_t* exit_label;
+
+tac_label_t* get_exit_label() { return exit_label; }
+
 tac_program_t* tac_program_create() {
   tac_program_t* program = (tac_program_t*)calloc(1, sizeof(tac_program_t));
   tac_program_initialize(program);
@@ -14,6 +18,11 @@ tac_program_t* tac_program_create() {
 }
 
 void tac_program_initialize(tac_program_t* program) {
+  exit_label = (tac_label_t*)calloc(1, sizeof(tac_label_t));
+  exit_label->name = duplicate("exit");
+  exit_label->id = 999999;
+  exit_label->position = 9999999;
+
   tac_table_initialize(&program->table);
   tac_code_initialize(&program->code);
   program->stack_head = 0;
@@ -24,6 +33,9 @@ void tac_program_clean(tac_program_t* program) {
 
   tac_table_clean(&program->table);
   tac_code_clean(&program->code);
+
+  tac_label_free_members(exit_label);
+  free(exit_label);
 }
 
 int tac_program_add_label(tac_program_t* program, char* name) {
@@ -68,6 +80,20 @@ tac_label_t* tac_program_get_label(tac_program_t* program, int label_id) {
   return &code->labels[label_id];
 }
 
+tac_label_t* tac_program_get_label_name(tac_program_t* program, char* name) {
+  if (program == NULL) {
+    printf("Trying to add label to NULL program");
+    abort();
+  }
+  tac_code_t* code = &program->code;
+
+  for (int i = 0; i < code->label_count; i++) {
+    printf("%s\n", code->labels[i].name);
+    if (strcmp(code->labels[i].name, name) == 0) return &code->labels[i];
+  }
+  return NULL;
+}
+
 int tac_program_add_line(tac_program_t* program, tac_instr_t instr,
                          tac_operand_t* operands[3]) {
   if (program == NULL) {
@@ -101,6 +127,8 @@ void tac_program_print(tac_program_t* program) {
 
   tac_table_print(&program->table);
   tac_code_print(&program->code);
+  printf("exit:\n");
+  printf("mov $0, $0\n");
 }
 
 void tac_table_initialize(tac_table_t* table) {}
@@ -244,6 +272,12 @@ void tac_line_print(tac_line_t* line) {
     case PRINT_INSTR:
       printf("print");
       break;
+    case JUMP_INSTR:
+      printf("jump");
+      break;
+    case MEMF_INSTR:
+      printf("memf");
+      break;
     default:
       printf("MISSING CASE %d\n", line->instruction);
   }
@@ -308,8 +342,10 @@ void tac_operand_print(tac_operand_t* operand) {
       printf("%lf", operand->value.float_constant);
       break;
     case ACCESS:
-      printf("*");
-      tac_operand_print(operand->value.access);
+      tac_operand_print(operand->access1);
+      printf("[");
+      tac_operand_print(operand->access2);
+      printf("]");
       break;
     case STACK:
       printf("#%d", operand->value.int_constant);
@@ -321,6 +357,13 @@ tac_operand_t* tac_operand_int_constant(int value) {
   tac_operand_t* op = (tac_operand_t*)calloc(1, sizeof(tac_operand_t));
   op->type = INT_CONSTANT;
   op->value.int_constant = value;
+  return op;
+}
+
+tac_operand_t* tac_operand_label(tac_label_t* label) {
+  tac_operand_t* op = (tac_operand_t*)calloc(1, sizeof(tac_operand_t));
+  op->type = LABEL;
+  op->value.label = label;
   return op;
 }
 
@@ -352,10 +395,12 @@ tac_operand_t* tac_operand_temp(int id) {
   return op;
 }
 
-tac_operand_t* tac_operand_access(tac_operand_t* access) {
+tac_operand_t* tac_operand_access(tac_operand_t* access1,
+                                  tac_operand_t* access2) {
   tac_operand_t* op = (tac_operand_t*)calloc(1, sizeof(tac_operand_t));
   op->type = ACCESS;
-  op->value.access = access;
+  op->access1 = access1;
+  op->access2 = access2;
   return op;
 }
 

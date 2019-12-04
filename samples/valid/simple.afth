@@ -1,3 +1,7 @@
+int a(int b) {
+  return 3;
+}
+
 int main() {
   int x;
   x = 3;

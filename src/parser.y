@@ -20,6 +20,7 @@ extern uint32_t column;
 extern scope_error_t LAST_ERROR;
 t_program* program;
 tac_program_t tac_program;
+t_function* cur_function = NULL;
 
 void yyerror (char const *s)
 {
@@ -239,19 +240,15 @@ fun-declaration:
         fun->identifier = $2;
         fun->params = NULL;
         fun->body = NULL;
-        
+
         t_declaration* dec = zero_allocate(t_declaration);
         dec->type = FUN_DECLARATION;
         dec->member.function = fun;
+        cur_function = fun;
         scope_add(dec);
         scope_new();
     } param-decs {
-        st_element_t* fun = scope_find($2);
-        if (fun == NULL) {
-            printf("Location %d:%d - Should not happen, fun is null!\n", line, column);
-            exit(55);
-        }
-        fun->declaration->member.function->params = $5;
+        cur_function->params = $5;
     } RIGHT_PAREN scope {
         scope_exit();
 
@@ -263,8 +260,9 @@ fun-declaration:
         fun->declaration->member.function->body = $8;
 
         // in case we do not have a return yet
-        gen_return(NULL);
+        gen_return(cur_function, NULL);
         $$ = fun;
+        cur_function = NULL;
     }
 |   type IDENTIFIER LEFT_PAREN {
         gen_fun_label($2);
@@ -278,6 +276,7 @@ fun-declaration:
         dec->type = FUN_DECLARATION;
         dec->member.function = fun;
         scope_add(dec);
+        cur_function = fun;
     } RIGHT_PAREN scope {
         st_element_t* fun = scope_find($2);
         if (fun == NULL) {
@@ -287,8 +286,9 @@ fun-declaration:
         fun->declaration->member.function->body = $6;
 
         // in case we do not have a return yet
-        gen_return(NULL);
+        gen_return(cur_function, NULL);
         $$ = fun;
+        cur_function = NULL;
     }
 ;
 
@@ -649,7 +649,7 @@ return:
         t_return* ret = zero_allocate(t_return);
         ret->expression = $2;
         $$ = ret;
-        gen_return($$);
+        gen_return(cur_function, $$);
     }
 ;
 
@@ -1247,6 +1247,7 @@ identifier:
         st_element_t* element = scope_find($1);
         if (element == NULL) {
             printf("Location %d:%d - Identifier %s not previously declared\n", line, column, $1);
+            
         }
         free($1);
         $$ = element;
@@ -1265,7 +1266,11 @@ primary-expression:
             exp->type_info.primitive_type = LONG_TYPE;
             exp->type_info.data_structure = PRIMITIVE;
         }
-        exp->operand = tac_operand_stack_at(exp->member.identifier->declaration->member.variable->addr);
+        if ($1 != NULL) {
+            exp->operand = tac_operand_stack_at(exp->member.identifier->declaration->member.variable->addr);
+        } else {
+            exp->operand = tac_operand_int_constant(0);
+        }
         $$ = exp;
     }
 |   constant {

@@ -14,12 +14,14 @@ typedef enum tac_instr_t tac_instr_t;
 typedef enum tac_operand_type_t tac_operand_type_t;
 
 tac_program_t* tac_program_create();
+tac_label_t* get_exit_label();
 void tac_program_initialize(tac_program_t* program);
 void tac_program_clean(tac_program_t* program);
 void tac_program_print(tac_program_t* program);
 int tac_program_add_label(tac_program_t* program, char* name);
 int tac_program_add_line(tac_program_t* program, tac_instr_t instr,
                          tac_operand_t* operands[3]);
+tac_label_t* tac_program_get_label_name(tac_program_t* program, char* name);
 tac_label_t* tac_program_get_label(tac_program_t* program, int label_id);
 
 void tac_program_if_start_label(tac_program_t* program);
@@ -43,8 +45,9 @@ tac_operand_t* tac_operand_stack_at(int idx);
 tac_operand_t* tac_operand_int_constant(int value);
 tac_operand_t* tac_operand_char_constant(char value);
 tac_operand_t* tac_operand_float_constant(double value);
+tac_operand_t* tac_operand_label(tac_label_t* label);
 tac_operand_t* tac_operand_temp(int id);
-tac_operand_t* tac_operand_access(tac_operand_t* op);
+tac_operand_t* tac_operand_access(tac_operand_t* op, tac_operand_t* op2);
 tac_operand_t* tac_operand_dup(tac_operand_t* op);
 void tac_operand_free(tac_operand_t* operand);
 void tac_operand_print(tac_operand_t* operand);
@@ -146,6 +149,8 @@ struct tac_line_t {
 struct tac_operand_t {
   tac_operand_type_t type;
 
+  tac_operand_t* access1;
+  tac_operand_t* access2;
   union {
     int fun_param;
     int temp_var;

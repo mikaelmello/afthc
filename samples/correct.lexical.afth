@@ -1,4 +1,4 @@
-int first_global_variable;
+//int first_global_variable;
 
 int top(int x) {
     int x;
@@ -11,18 +11,18 @@ int main(int argc, char argv) {
     int answer;
     int x;
 
-    x = kkk[x+3];
+    x = kkk[2];
 
-    first_global_variable = 3;
+    //first_global_variable = 3;
     answer = 2;
 
     if (loopCounter) {
         loopCounter += 1;
     }
 
-    for (loopCounter; loopCounter < first_global_variable; loopCounter += 1) {
-        answer *= (loopCounter + 1);
-    }
+    //for (loopCounter; loopCounter < first_global_variable; loopCounter += 1) {
+    //    answer *= (loopCounter + 1);
+    //}
     print x;
     print answer;
     return 0;

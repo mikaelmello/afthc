@@ -22,13 +22,20 @@ int gen_fun_label(char* name) {
 }
 int get_stack_head() { return tac_program.stack_head; }
 
-void gen_return(t_return* ret) {
-  tac_operand_t* operands[3] = {
-      (ret == NULL || ret->expression == NULL ? NULL
-                                              : ret->expression->operand),
-      NULL, NULL};
+void gen_return(t_function* fun, t_return* ret) {
+  int jumpra = 1;
+  if (strcmp("main", fun->identifier) == 0) {
+    jumpra = 0;
+  }
 
-  tac_program_add_line(&tac_program, RETURN_INSTR, operands);
+  if (jumpra == 1) {
+    tac_operand_t* operands[3] = {
+        (ret == NULL || ret->expression == NULL ? NULL
+                                                : ret->expression->operand),
+        NULL, NULL};
+
+    tac_program_add_line(&tac_program, RETURN_INSTR, operands);
+  }
 }
 
 int gen_push(int value) {
@@ -85,6 +92,7 @@ int gen_array_declaration(int size) {
 }
 
 tac_operand_t* gen_assignment(t_assignment* assignment) {
+  if (assignment == NULL || assignment->identifier == NULL) return NULL;
   int varpos = assignment->identifier->declaration->member.variable->addr;
 
   if (assignment->operator== EQUAL_OPERATOR) {
@@ -358,21 +366,10 @@ tac_operand_t* gen_array_access(t_postfix_expression* exp) {
   tac_operand_t* addr_pos =
       tac_operand_stack_at(exp->left->declaration->member.variable->addr);
 
-  tac_operand_t* operands[3] = {tac_operand_dup(newt),
-                                tac_operand_dup(addr_pos), NULL};
-
-  tac_program_add_line(&tac_program, MOV_INSTR, operands);
-  // newt now contains the address of the array!
-
+  tac_operand_t* operands[3];
   operands[0] = tac_operand_dup(newt);
-  operands[1] = tac_operand_dup(newt);
-  operands[2] = exp->member.array_index->operand;
-
-  // newt now points to our element
-  tac_program_add_line(&tac_program, ADD_INSTR, operands);
-
-  operands[0] = tac_operand_dup(newt);
-  operands[1] = tac_operand_access(tac_operand_dup(newt));
+  operands[1] = tac_operand_access(tac_operand_dup(addr_pos),
+                                   exp->member.array_index->operand);
   operands[2] = NULL;
 
   // newt now points to our element
@@ -403,4 +400,16 @@ void gen_scan(t_scan* s) {
 
   // newt now points to our element
   tac_program_add_line(&tac_program, instr, operands);
+}
+
+void gen_pop_array(t_variable* var) {
+  tac_operand_t* addr_pos = tac_operand_stack_at(var->addr);
+  gen_memf(addr_pos);
+
+  gen_pop();
+}
+
+void gen_memf(tac_operand_t* operand) {
+  tac_operand_t* operands[3] = {operand, NULL, NULL};
+  tac_program_add_line(&tac_program, MEMF_INSTR, operands);
 }

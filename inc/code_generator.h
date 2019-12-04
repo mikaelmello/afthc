@@ -6,7 +6,6 @@
 int get_stack_head();
 
 int gen_fun_label(char* name);
-void gen_return(t_return* ret);
 int gen_push(int value);
 int gen_pop();
 int gen_primitive_declaration();
@@ -14,6 +13,7 @@ int gen_array_declaration(int size);
 void gen_print(t_print* p);
 void gen_scan(t_scan* s);
 
+void gen_return(t_function* fun, t_return* ret);
 tac_operand_t* gen_mult(t_expression* exp);
 tac_operand_t* gen_add(t_expression* exp);
 tac_operand_t* gen_unary(t_expression* exp);
@@ -25,5 +25,8 @@ tac_operand_t* gen_cast(t_cast_expression* exp);
 tac_operand_t* gen_assignment(t_assignment* assignment);
 tac_operand_t* gen_array_access(t_postfix_expression* exp);
 tac_operand_t* gen_mema(int size);
+
+void gen_pop_array(t_variable* var);
+void gen_memf(tac_operand_t* operand);
 
 #endif
