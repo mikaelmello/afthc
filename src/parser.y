@@ -224,6 +224,7 @@ var-declaration:
 
 fun-declaration:
     type IDENTIFIER LEFT_PAREN {
+        gen_fun_label(&tac_program, $2);
         t_function* fun = zero_allocate(t_function);
         fun->type_info.primitive_type = $1;
         fun->type_info.data_structure = FUNCTION;
@@ -255,6 +256,7 @@ fun-declaration:
         $$ = fun;
     }
 |   type IDENTIFIER LEFT_PAREN {
+        gen_fun_label(&tac_program, $2);
         t_function* fun = zero_allocate(t_function);
         fun->type_info.primitive_type = $1;
         fun->type_info.data_structure = FUNCTION;
@@ -523,7 +525,6 @@ scan-type:
 condition:
     IF_RW LEFT_PAREN expression RIGHT_PAREN statement %prec REDUCE {
         assert($3 != NULL);
-
         if ($3->type_info.data_structure != PRIMITIVE || !is_type_equivalent(LONG_TYPE, $3->type_info.primitive_type)) {
             printf("Location %d:%d - Condition expression must return a primitive and integer type\n", line, column);
         };
@@ -615,6 +616,7 @@ return:
     RETURN_RW optional-expression SEMICOLON {
         t_return* ret = zero_allocate(t_return);
         ret->expression = $2;
+        gen_return(&tac_program, $2);
         $$ = ret;
     }
 ;

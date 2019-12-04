@@ -17,6 +17,7 @@
         "unordered_map": "c",
         "typeinfo": "c",
         "string": "c",
-        "string_view": "c"
+        "string_view": "c",
+        "thread": "c"
     }
 }

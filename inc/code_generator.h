@@ -1,6 +1,8 @@
 #ifndef CODE_GENERATOR_H
 #define CODE_GENERATOR_H
 
+#include "abstract_syntax_tree.h"
+
 int condition_counter;
 int iteration_counter;
 
@@ -17,8 +19,15 @@ typedef enum tac_operand_type_t tac_operand_type_t;
 tac_program_t* tac_program_create();
 void tac_program_initialize(tac_program_t* program);
 void tac_program_clean(tac_program_t* program);
-void tac_program_add_label(tac_program_t* program, char* name);
 void tac_program_print(tac_program_t* program);
+int tac_program_add_label(tac_program_t* program, char* name);
+tac_label_t* tac_program_get_label(tac_program_t* program, int label_id);
+
+int gen_fun_label(tac_program_t* program, char* name);
+void gen_return(tac_program_t* program, t_expression* expression);
+
+void tac_program_if_start_label(tac_program_t* program);
+void tac_program_if_end_label(tac_program_t* program);
 
 void tac_table_initialize(tac_table_t* table);
 void tac_table_clean(tac_table_t* table);
@@ -29,11 +38,13 @@ void tac_code_clean(tac_code_t* code);
 void tac_code_print(tac_code_t* code);
 
 void tac_label_free_members(tac_label_t* label);
+void tac_label_print(tac_label_t* print);
 
 void tac_line_print(tac_line_t* line);
 void tac_line_free_members(tac_line_t* line);
 
 void tac_operand_free(tac_operand_t* operand);
+void tac_operand_print(tac_operand_t* operand);
 
 struct tac_table_t {};
 
@@ -116,6 +127,7 @@ enum tac_operand_type_t {
 struct tac_label_t {
   char* name;
   int position;
+  int id;
 };
 
 struct tac_line_t {
@@ -129,8 +141,9 @@ struct tac_operand_t {
   union {
     int fun_param;
     int temp_var;
-    char* label_name;
+    tac_label_t* label;
     char* symbol_name;
+    int constant;
   } value;
 };
 

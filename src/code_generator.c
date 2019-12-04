@@ -3,6 +3,8 @@
 #include <stddef.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include "abstract_syntax_tree.h"
+#include "my_string.h"
 
 int condition_counter = 0;
 int iteration_counter = 0;
@@ -25,7 +27,7 @@ void tac_program_clean(tac_program_t* program) {
   tac_code_clean(&program->code);
 }
 
-void tac_program_add_label(tac_program_t* program, char* name) {
+int tac_program_add_label(tac_program_t* program, char* name) {
   if (program == NULL) {
     printf("Trying to add label to NULL program");
     abort();
@@ -36,14 +38,71 @@ void tac_program_add_label(tac_program_t* program, char* name) {
 
   int cap = code->label_capacity;
   int count = code->label_count;
+  int id = count;
 
   if (count >= cap) {
     code->labels = realloc(code->labels, (cap * 2) * sizeof(tac_label_t));
     code->label_capacity *= 2;
   }
 
-  code->labels[count].name = name;
+  code->labels[count].name = duplicate(name);
+  code->labels[count].id = id;
   code->labels[count].position = current_position;
+  code->label_count += 1;
+
+  return id;
+}
+
+tac_label_t* tac_program_get_label(tac_program_t* program, int label_id) {
+  if (program == NULL) {
+    printf("Trying to add label to NULL program");
+    abort();
+  }
+  tac_code_t* code = &program->code;
+
+  if (label_id >= code->label_count) {
+    printf("Can not find label with invalid id %d when count is %d\n", label_id,
+           code->label_count);
+    abort();
+  }
+
+  return &code->labels[label_id];
+}
+
+int tac_program_add_line(tac_program_t* program, tac_instr_t instr,
+                         tac_operand_t* operands[3]) {
+  if (program == NULL) {
+    printf("Trying to add line to NULL program");
+    abort();
+  }
+
+  tac_code_t* code = &program->code;
+
+  int cap = code->line_capacity;
+  int count = code->line_count;
+
+  if (count >= cap) {
+    code->lines = realloc(code->lines, (cap * 2) * sizeof(tac_line_t));
+    code->line_capacity *= 2;
+  }
+
+  code->lines[count].instruction = instr;
+  code->lines[count].operands[0] = operands[0];
+  code->lines[count].operands[1] = operands[1];
+  code->lines[count].operands[2] = operands[2];
+  code->line_count += 1;
+  return 1;
+}
+
+int gen_fun_label(tac_program_t* program, char* name) {
+  return tac_program_add_label(program, name);
+}
+
+void gen_return(tac_program_t* program, t_expression* expression) {
+  tac_operand_t* operands[3] =
+      /* get operand from expression */ {NULL, NULL, NULL};
+
+  tac_program_add_line(program, RETURN_INSTR, operands);
 }
 
 void tac_program_print(tac_program_t* program) {
@@ -111,7 +170,7 @@ void tac_code_print(tac_code_t* code) {
     while (label_pos < code->label_count) {
       tac_label_t cur_label = code->labels[label_pos];
       if (cur_label.position <= line_pos) {
-        printf("%s:\n", cur_label.name);
+        tac_label_print(&cur_label);
         label_pos++;
       } else {
         break;
@@ -121,6 +180,30 @@ void tac_code_print(tac_code_t* code) {
     tac_line_t* line = &code->lines[line_pos];
     tac_line_print(line);
     line_pos++;
+  }
+
+  // print remaining labels
+  while (label_pos < code->label_count) {
+    tac_label_t cur_label = code->labels[label_pos];
+    if (cur_label.position <= line_pos) {
+      tac_label_print(&cur_label);
+      label_pos++;
+    } else {
+      break;
+    }
+  }
+}
+
+void tac_label_print(tac_label_t* label) {
+  if (label == NULL) {
+    printf("Warning: Trying to print null label");
+    return;
+  }
+
+  if (label->name != NULL) {
+    printf("%s:\n", label->name);
+  } else {
+    printf("label_%d:\n", label->id);
   }
 }
 
@@ -132,7 +215,17 @@ void tac_label_free_members(tac_label_t* label) {
   }
 }
 
-void tac_line_print(tac_line_t* line) { printf("line\n"); }
+void tac_line_print(tac_line_t* line) {
+  switch (line->instruction) {
+    case RETURN_INSTR:
+      printf("return ");
+      tac_operand_print(line->operands[0]);
+      printf("\n");
+      break;
+    default:
+      printf("MISSING CASE %d\n", line->instruction);
+  }
+}
 
 void tac_line_free_members(tac_line_t* line) {
   if (line == NULL) return;
@@ -146,9 +239,6 @@ void tac_operand_free(tac_operand_t* operand) {
   if (operand == NULL) return;
 
   switch (operand->type) {
-    case LABEL:
-      free(operand->value.label_name);
-      break;
     case SYMBOL:
       free(operand->value.symbol_name);
       break;
@@ -157,4 +247,29 @@ void tac_operand_free(tac_operand_t* operand) {
   }
 
   free(operand);
+}
+
+void tac_operand_print(tac_operand_t* operand) {
+  if (operand == NULL) return;
+
+  switch (operand->type) {
+    case FUN_PARAM:
+      printf("#%d\n", operand->value.fun_param);
+      break;
+    case TEMP_VAR:
+      printf("$%d\n", operand->value.temp_var);
+      break;
+    case LABEL:
+      if (operand->value.label->name != NULL) {
+        printf("%s", operand->value.label->name);
+      } else {
+        printf("label_%d", operand->value.label->id);
+      }
+      break;
+    case SYMBOL:
+      printf("%s\n", operand->value.symbol_name);
+      break;
+    case CONSTANT:
+      printf("%d\n", operand->value.constant);
+  }
 }

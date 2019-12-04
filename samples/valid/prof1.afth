@@ -8,6 +8,8 @@ int x(int x, int y) {
 
 int y(int x) { x = 0; }
 
-int k() {}
+int k() {
+  return 3;
+}
 
 int main(int x) { int ll; x = y(3); }

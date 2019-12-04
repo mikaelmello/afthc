@@ -48,6 +48,8 @@ void m_string_free(t_string* s) {
 }
 
 char* duplicate(char* source) {
+  if (source == NULL) return NULL;
+
   int size = strlen(source);
   char* new = (char*)malloc(size + 1);
   sprintf(new, "%s", source);
