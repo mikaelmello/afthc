@@ -164,6 +164,7 @@ struct t_assignment {
 };
 
 struct t_expression {
+  int addr;
   t_expression_type type;
   t_type_info type_info;
   t_expression* left;

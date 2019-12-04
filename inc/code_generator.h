@@ -10,5 +10,6 @@ void gen_return(t_expression* expression);
 int gen_push(int value);
 int gen_pop();
 int gen_primitive_declaration();
+void gen_assignment(t_assignment* assignment);
 
 #endif

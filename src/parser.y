@@ -665,6 +665,7 @@ assignment:
         exp->expression = $3;
         exp->type_info = info;
         $$ = exp;
+        gen_assignment($$);
     }
 ;
 
