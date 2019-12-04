@@ -1,10 +1,54 @@
 #ifndef CODE_GENERATOR_H
 #define CODE_GENERATOR_H
 
-typedef struct taddr_line_t taddr_line_t;
-typedef enum taddr_instr_t taddr_instr_t;
+int condition_counter;
+int iteration_counter;
 
-enum taddr_instr_t {
+typedef char* tac_symbol_t;
+typedef struct tac_line_t tac_line_t;
+typedef struct tac_operand_t tac_operand_t;
+typedef struct tac_program_t tac_program_t;
+typedef struct tac_table_t tac_table_t;
+typedef struct tac_code_t tac_code_t;
+typedef struct tac_label_t tac_label_t;
+typedef enum tac_instr_t tac_instr_t;
+typedef enum tac_operand_type_t tac_operand_type_t;
+
+tac_program_t* tac_program_create();
+void tac_program_free(tac_program_t* program);
+void tac_program_add_label(tac_program_t* program, char* name);
+void tac_program_print(tac_program_t* program);
+
+tac_table_t* tac_table_create();
+void tac_table_free(tac_table_t* table);
+void tac_table_print(tac_table_t* table);
+
+tac_code_t* tac_code_create();
+void tac_code_free(tac_code_t* code);
+void tac_code_print(tac_code_t* code);
+
+void tac_line_print(tac_line_t* line);
+
+struct tac_program_t {
+  tac_table_t* table;
+  tac_code_t* code;
+};
+
+struct tac_table_t {};
+
+struct tac_code_t {
+  int line_count;
+  int line_capacity;
+  tac_line_t* lines;
+
+  int label_count;
+  int label_capacity;
+  tac_label_t* labels;
+};
+
+void gen_condition();
+
+enum tac_instr_t {
   // logic/arithmetic
   ADD_INSTR,
   SUB_INSTR,
@@ -55,6 +99,33 @@ enum taddr_instr_t {
   RAND_INSTR,
 };
 
-struct taddr_line_t {};
+enum tac_operand_type_t {
+  FUN_PARAM,
+  TEMP_VAR,
+  LABEL,
+  SYMBOL,
+  CONSTANT,
+};
+
+struct tac_label_t {
+  char* name;
+  int position;
+};
+
+struct tac_line_t {
+  tac_instr_t instruction;
+  tac_operand_t* operands[3];
+};
+
+struct tac_operand_t {
+  tac_operand_type_t type;
+
+  union {
+    int fun_param;
+    int temp_var;
+    tac_label_t label;
+    tac_symbol_t symbol;
+  } value;
+};
 
 #endif
