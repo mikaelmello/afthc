@@ -14,8 +14,6 @@ extern uint32_t column;
 extern uint32_t line;
 extern int yyleng;
 extern char* yytext;
-extern scope_t* root_scope;
-extern scope_t* current_scope;
 extern t_program* program;
 extern tac_program_t tac_program;
 
@@ -28,9 +26,8 @@ int main(int argc, char* argv[]) {
   } else {
     yyin = stdin;
   }
-  root_scope = scope_create(NULL);
-  current_scope = root_scope;
   tac_program_initialize(&tac_program);
+  scope_initialize();
 
   yyparse();
   lexical_eror_handler_finalize();

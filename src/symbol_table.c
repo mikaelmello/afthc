@@ -99,6 +99,8 @@ int st_total_size(st_t* symbol_table) {
     }
     cur = next;
   }
+
+  return size;
 }
 
 st_element_t* st_add(st_t* st, t_declaration* declaration) {

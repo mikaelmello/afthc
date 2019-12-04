@@ -18,6 +18,8 @@ void tac_program_initialize(tac_program_t* program);
 void tac_program_clean(tac_program_t* program);
 void tac_program_print(tac_program_t* program);
 int tac_program_add_label(tac_program_t* program, char* name);
+int tac_program_add_line(tac_program_t* program, tac_instr_t instr,
+                         tac_operand_t* operands[3]);
 tac_label_t* tac_program_get_label(tac_program_t* program, int label_id);
 
 void tac_program_if_start_label(tac_program_t* program);
