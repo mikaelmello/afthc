@@ -40,8 +40,11 @@ void tac_line_print(tac_line_t* line);
 void tac_line_free_members(tac_line_t* line);
 
 tac_operand_t* tac_operand_stack_at(int idx);
-tac_operand_t* tac_operand_constant(int value);
+tac_operand_t* tac_operand_int_constant(int value);
+tac_operand_t* tac_operand_char_constant(char value);
+tac_operand_t* tac_operand_float_constant(double value);
 tac_operand_t* tac_operand_temp(int id);
+tac_operand_t* tac_operand_dup(tac_operand_t* op);
 void tac_operand_free(tac_operand_t* operand);
 void tac_operand_print(tac_operand_t* operand);
 
@@ -90,6 +93,7 @@ enum tac_instr_t {
   CHTOINT_INSTR,
   CHTOFL_INSTR,
   INTTOFL_INSTR,
+  INTTOCH_INSTR,
   FLTOCH_INSTR,
   FLTOINT_INSTR,
   // attr
@@ -120,8 +124,9 @@ enum tac_operand_type_t {
   FUN_PARAM,
   TEMP_VAR,
   LABEL,
-  SYMBOL,
-  CONSTANT,
+  INT_CONSTANT,
+  CCHAR_CONSTANT,
+  FLOAT_CONSTANT,
   STACK,
 };
 
@@ -143,8 +148,9 @@ struct tac_operand_t {
     int fun_param;
     int temp_var;
     tac_label_t* label;
-    char* symbol_name;
-    int constant;
+    int int_constant;
+    char char_constant;
+    double float_constant;
   } value;
 };
 

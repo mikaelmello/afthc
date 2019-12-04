@@ -207,38 +207,42 @@ void tac_line_print(tac_line_t* line) {
   switch (line->instruction) {
     case RETURN_INSTR:
       printf("return ");
-      tac_operand_print(line->operands[0]);
-      printf("\n");
       break;
     case MOV_INSTR:
       printf("mov ");
-      tac_operand_print(line->operands[0]);
-      printf(", ");
-      tac_operand_print(line->operands[1]);
-      printf("\n");
       break;
     case ADD_INSTR:
       printf("add ");
-      tac_operand_print(line->operands[0]);
-      printf(", ");
-      tac_operand_print(line->operands[1]);
-      printf(", ");
-      tac_operand_print(line->operands[2]);
-      printf("\n");
       break;
     case PUSH_INSTR:
       printf("push ");
-      tac_operand_print(line->operands[0]);
-      printf("\n");
       break;
     case POP_INSTR:
       printf("pop ");
-      tac_operand_print(line->operands[0]);
-      printf("\n");
+      break;
+    case MUL_INSTR:
+      printf("mul ");
+      break;
+    case SLT_INSTR:
+      printf("slt ");
       break;
     default:
       printf("MISSING CASE %d\n", line->instruction);
   }
+
+  if (line->operands[0] != NULL) {
+    printf(" ");
+    tac_operand_print(line->operands[0]);
+  }
+  if (line->operands[1] != NULL) {
+    printf(", ");
+    tac_operand_print(line->operands[1]);
+  }
+  if (line->operands[1] != NULL) {
+    printf(", ");
+    tac_operand_print(line->operands[2]);
+  }
+  printf("\n");
 }
 
 void tac_line_free_members(tac_line_t* line) {
@@ -251,15 +255,6 @@ void tac_line_free_members(tac_line_t* line) {
 
 void tac_operand_free(tac_operand_t* operand) {
   if (operand == NULL) return;
-
-  switch (operand->type) {
-    case SYMBOL:
-      free(operand->value.symbol_name);
-      break;
-    default:
-      break;
-  }
-
   free(operand);
 }
 
@@ -280,29 +275,46 @@ void tac_operand_print(tac_operand_t* operand) {
         printf("label_%d", operand->value.label->id);
       }
       break;
-    case SYMBOL:
-      printf("%s", operand->value.symbol_name);
+    case INT_CONSTANT:
+      printf("%d", operand->value.int_constant);
       break;
-    case CONSTANT:
-      printf("%d", operand->value.constant);
+    case CCHAR_CONSTANT:
+      printf("'%c'", operand->value.char_constant);
+      break;
+    case FLOAT_CONSTANT:
+      printf("%lf", operand->value.float_constant);
       break;
     case STACK:
-      printf("$s[%d]", operand->value.constant);
+      printf("$s[%d]", operand->value.int_constant);
       break;
   }
 }
 
-tac_operand_t* tac_operand_constant(int value) {
+tac_operand_t* tac_operand_int_constant(int value) {
   tac_operand_t* op = (tac_operand_t*)calloc(1, sizeof(tac_operand_t));
-  op->type = CONSTANT;
-  op->value.constant = value;
+  op->type = INT_CONSTANT;
+  op->value.int_constant = value;
+  return op;
+}
+
+tac_operand_t* tac_operand_char_constant(char value) {
+  tac_operand_t* op = (tac_operand_t*)calloc(1, sizeof(tac_operand_t));
+  op->type = CCHAR_CONSTANT;
+  op->value.char_constant = value;
+  return op;
+}
+
+tac_operand_t* tac_operand_float_constant(double value) {
+  tac_operand_t* op = (tac_operand_t*)calloc(1, sizeof(tac_operand_t));
+  op->type = FLOAT_CONSTANT;
+  op->value.float_constant = value;
   return op;
 }
 
 tac_operand_t* tac_operand_stack_at(int idx) {
   tac_operand_t* op = (tac_operand_t*)calloc(1, sizeof(tac_operand_t));
   op->type = STACK;
-  op->value.constant = idx;
+  op->value.int_constant = idx;
   return op;
 }
 
@@ -311,4 +323,10 @@ tac_operand_t* tac_operand_temp(int id) {
   op->type = TEMP_VAR;
   op->value.temp_var = id;
   return op;
+}
+
+tac_operand_t* tac_operand_dup(tac_operand_t* op) {
+  tac_operand_t* op2 = (tac_operand_t*)calloc(1, sizeof(tac_operand_t));
+  memcpy(op2, op, sizeof(tac_operand_t));
+  return op2;
 }

@@ -109,6 +109,7 @@ enum t_constant_type {
 
 struct t_constant {
   t_type_info type_info;
+  tac_operand_t* operand;
 
   union {
     char* string_val;
@@ -121,6 +122,7 @@ struct t_constant {
 struct t_primary_expression {
   t_expression_type type;
   t_type_info type_info;
+  tac_operand_t* operand;
 
   union {
     t_assignment* assignment;
@@ -139,6 +141,7 @@ struct t_param_vals {
 struct t_postfix_expression {
   t_expression_type type;
   t_type_info type_info;
+  tac_operand_t* operand;
 
   union {
     t_expression* array_index;
@@ -159,6 +162,7 @@ enum t_assignment_operator {
 };
 
 struct t_assignment {
+  tac_operand_t* operand;
   st_element_t* identifier;
   t_type_info type_info;
   t_assignment_operator operator;
@@ -178,6 +182,7 @@ struct t_expression {
 };
 
 struct t_cast_expression {
+  tac_operand_t* operand;
   t_expression_type type;
   t_type_info type_info;
   t_primitive_type cast_type;

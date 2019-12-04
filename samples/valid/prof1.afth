@@ -1,7 +1,8 @@
 int x(int x, int y) {
   if (1) {
     int y;
-    y = 0;
+    y = y;
+    y = 3+1;
   }
   return 1;
 }

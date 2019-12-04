@@ -364,6 +364,7 @@ statement:
         t_statement* stmt = zero_allocate(t_statement);
         stmt->type = EXPRESSION_STATEMENT;
         stmt->member.expression = $1;
+        tac_operand_free($1->operand);
         $$ = stmt;
     }
 |   expression error {
@@ -371,6 +372,7 @@ statement:
         t_statement* stmt = zero_allocate(t_statement);
         stmt->type = EXPRESSION_STATEMENT;
         stmt->member.expression = $1;
+        tac_operand_free($1->operand);
         $$ = stmt;
     }
 |   condition {
@@ -665,7 +667,7 @@ assignment:
         exp->expression = $3;
         exp->type_info = info;
         $$ = exp;
-        gen_assignment($$);
+        $$->operand = gen_assignment($$);
     }
 ;
 
@@ -675,6 +677,7 @@ expression:
         exp->type = ASSIGNMENT_EXPRESSION;
         exp->assignment = $1;
         exp->type_info = $1->type_info;
+        exp->operand = $1->operand;
         $$ = exp;
     }
 |   and-expression {
@@ -697,6 +700,7 @@ and-expression:
         exp->type = AND_EXPRESSION;
         exp->right = $3;
         $$ = exp;
+        $$->operand = gen_logical($$);
     }
 |   or-expression {
         $$ = $1;
@@ -718,6 +722,7 @@ or-expression:
         exp->type = OR_EXPRESSION;
         exp->right = $3;
         $$ = exp;
+        $$->operand = gen_logical($$);
     }
 |   bw-and-expression {
         $$ = $1;
@@ -739,6 +744,7 @@ bw-and-expression:
         exp->type = BW_AND_EXPRESSION;
         exp->right = $3;
         $$ = exp;
+        $$->operand = gen_bw($$);
     }
 |   bw-or-expression {
         $$ = $1;
@@ -760,6 +766,7 @@ bw-or-expression:
         exp->type = BW_OR_EXPRESSION;
         exp->right = $3;
         $$ = exp;
+        $$->operand = gen_bw($$);
     }
 |   bw-xor-expression {
         $$ = $1;
@@ -781,6 +788,7 @@ bw-xor-expression:
         exp->type = BW_XOR_EXPRESSION;
         exp->right = $3;
         $$ = exp;
+        $$->operand = gen_bw($$);
     }
 |   eq-expression {
         $$ = $1;
@@ -805,6 +813,7 @@ eq-expression:
         exp->right = $3;
         exp->type_info = info;
         $$ = exp;
+        $$->operand = gen_rel($$);
     }
 |   eq-expression EXCL_EQUAL rel-expression {
         t_type_info info;
@@ -823,6 +832,7 @@ eq-expression:
         exp->right = $3;
         exp->type_info = info;
         $$ = exp;
+        $$->operand = gen_rel($$);
     }
 |   rel-expression {
         $$ = $1;
@@ -860,6 +870,7 @@ rel-expression:
         exp->right = $3;
         exp->type_info = info;
         $$ = exp;
+        $$->operand = gen_rel($$);
     }
 |   shift-expression {
         $$ = $1;
@@ -893,6 +904,7 @@ shift-expression:
         exp->type = LEFT_SHIFT_EXPRESSION;
         exp->right = $3;
         $$ = exp;
+        $$->operand = gen_shift($$);
     }
 |   shift-expression DOUBLE_RANGLE set-rm-expression {
         t_structure_type e1 = $1->type_info.data_structure;
@@ -919,6 +931,7 @@ shift-expression:
         exp->type = RIGHT_SHIFT_EXPRESSION;
         exp->right = $3;
         $$ = exp;
+        $$->operand = gen_shift($$);
     }
 |   set-rm-expression {
         $$ = $1;
@@ -973,6 +986,7 @@ add-expression:
         exp->type = ADD_PLUS;
         exp->right = $3;
         $$ = exp;
+        $$->operand = gen_add($$);
     }
 |   add-expression MINUS mult-expression {
         if ($1->type_info.data_structure != PRIMITIVE || $1->type_info.primitive_type == VOID_TYPE || $1->type_info.primitive_type == STRING_TYPE) {
@@ -997,6 +1011,7 @@ add-expression:
         exp->type = ADD_MINUS;
         exp->right = $3;
         $$ = exp;
+        $$->operand = gen_add($$);
     }
 |   mult-expression {
         $$ = $1;
@@ -1027,6 +1042,7 @@ mult-expression:
         exp->type = $2;
         exp->right = $3;
         $$ = exp;
+        $$->operand = gen_mult($$);
     }
 |   unary-expression {
         $$ = $1;
@@ -1058,12 +1074,14 @@ unary-expression:
         exp->type = $1;
         exp->right = $2;
         $$ = exp;
+        $$->operand = gen_unary($$);
     }
 |   cast-expression {
         t_expression* exp = zero_allocate(t_expression);
         exp->type = $1->type;
         exp->value = $1;
         exp->type_info = $1->type_info;
+        exp->operand = $1->operand;
         $$ = exp;
     }
 ;
@@ -1082,12 +1100,14 @@ cast-expression:
         exp->type_info.primitive_type = $2;
         exp->type_info.data_structure = PRIMITIVE;
         $$ = exp;
+        $$->operand = gen_cast($$);
     }
 |   postfix-expression {
         t_cast_expression* exp = zero_allocate(t_cast_expression);
         exp->left = $1;
         exp->type = $1->type;
         exp->type_info = $1->type_info;
+        exp->operand = $1->operand;
         $$ = exp;
     }
 ;
@@ -1142,6 +1162,7 @@ postfix-expression:
         exp->primary = $1;
         exp->type = $1->type;
         exp->type_info = $1->type_info;
+        exp->operand = $1->operand;
         $$ = exp;
     }
 ;
@@ -1186,6 +1207,7 @@ primary-expression:
             exp->type_info.primitive_type = LONG_TYPE;
             exp->type_info.data_structure = PRIMITIVE;
         }
+        exp->operand = tac_operand_stack_at(exp->member.identifier->declaration->member.variable->addr);
         $$ = exp;
     }
 |   constant {
@@ -1193,14 +1215,7 @@ primary-expression:
         exp->type = CONSTANT_PRIMARY_EXPRESSION;
         exp->member.constant = $1;
         exp->type_info = $1->type_info;
-        $$ = exp;
-    }
-|   STRING {
-        t_primary_expression* exp = zero_allocate(t_primary_expression);
-        exp->type = STRING_PRIMARY_EXPRESSION;
-        exp->member.string = $1;
-        exp->type_info.primitive_type = STRING_TYPE;
-        exp->type_info.data_structure = PRIMITIVE;
+        exp->operand = $1->operand;
         $$ = exp;
     }
 |   LEFT_PAREN expression RIGHT_PAREN {
@@ -1208,6 +1223,7 @@ primary-expression:
         exp->type = NESTED_PRIMARY_EXPRESSION;
         exp->member.expression = $2;
         exp->type_info = $2->type_info;
+        exp->operand = $2->operand;
         $$ = exp;
     }
 ;
@@ -1218,6 +1234,7 @@ constant:
         c->type_info.primitive_type = LONG_TYPE;
         c->type_info.data_structure = PRIMITIVE;
         c->member.integer_val = $1;
+        c->operand = tac_operand_int_constant($1);
         $$ = c;
     }
 |   CHAR {
@@ -1225,6 +1242,7 @@ constant:
         c->type_info.primitive_type = CHAR_TYPE;
         c->type_info.data_structure = PRIMITIVE;
         c->member.char_val = $1;
+        c->operand = tac_operand_char_constant($1);
         $$ = c;
     }
 |   REAL {
@@ -1232,6 +1250,7 @@ constant:
         c->type_info.primitive_type = DOUBLE_TYPE;
         c->type_info.data_structure = PRIMITIVE;
         c->member.float_val = $1;
+        c->operand = tac_operand_float_constant($1);
         $$ = c;
     }
 ;
@@ -1271,25 +1290,25 @@ type:
         $$ = VOID_TYPE;
     }
 |   BOOL_RW {
-        $$ = BYTE_TYPE;
+        $$ = LONG_TYPE;
     }
 |   BYTE_RW {
-        $$ = BYTE_TYPE;
+        $$ = LONG_TYPE;
     }
 |   CHAR_RW {
-        $$ = BYTE_TYPE;
+        $$ = CHAR_TYPE;
     }
 |   SHORT_RW {
-        $$ = SHORT_TYPE;
+        $$ = LONG_TYPE;
     }
 |   INT_RW {
-        $$ = INT_TYPE;
+        $$ = LONG_TYPE;
     }
 |   LONG_RW {
         $$ = LONG_TYPE;
     }
 |   FLOAT_RW {
-        $$ = FLOAT_TYPE;
+        $$ = DOUBLE_TYPE;
     }
 |   DOUBLE_RW {
         $$ = DOUBLE_TYPE;
