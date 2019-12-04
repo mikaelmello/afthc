@@ -11,7 +11,7 @@ RM      = rm -f
 
 all: all-before $(LEXICAL) all-after
 
-debug: CFLAGS = -DDEBUG $(CINCS) -std=c11 -lfl -g3 -ggdb3 -Wall -Wextra -D_GLIBCXX_DEBUG -D_GLIBCXX_DEBUG_PEDANTIC -D_FORTIFY_SOURCE=2 -fsanitize=address -fsanitize=undefined -fno-sanitize-recover -Wno-unused-parameter 
+debug: CFLAGS = -DDEBUG $(CINCS) -std=c11 -lfl -g3 -ggdb3 -Wall -Wextra -D_GLIBCXX_DEBUG -D_GLIBCXX_DEBUG_PEDANTIC -fsanitize=address -fsanitize=undefined -fno-sanitize-recover -Wno-unused-parameter 
 debug: all
 
 clean: clean-custom
