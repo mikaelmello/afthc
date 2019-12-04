@@ -206,25 +206,28 @@ void tac_label_free_members(tac_label_t* label) {
 void tac_line_print(tac_line_t* line) {
   switch (line->instruction) {
     case RETURN_INSTR:
-      printf("return ");
+      printf("return");
       break;
     case MOV_INSTR:
-      printf("mov ");
+      printf("mov");
       break;
     case ADD_INSTR:
-      printf("add ");
+      printf("add");
       break;
     case PUSH_INSTR:
-      printf("push ");
+      printf("push");
       break;
     case POP_INSTR:
-      printf("pop ");
+      printf("pop");
       break;
     case MUL_INSTR:
-      printf("mul ");
+      printf("mul");
       break;
     case SLT_INSTR:
-      printf("slt ");
+      printf("slt");
+      break;
+    case MEMA_INSTR:
+      printf("mema");
       break;
     default:
       printf("MISSING CASE %d\n", line->instruction);
@@ -238,7 +241,7 @@ void tac_line_print(tac_line_t* line) {
     printf(", ");
     tac_operand_print(line->operands[1]);
   }
-  if (line->operands[1] != NULL) {
+  if (line->operands[2] != NULL) {
     printf(", ");
     tac_operand_print(line->operands[2]);
   }
@@ -255,6 +258,11 @@ void tac_line_free_members(tac_line_t* line) {
 
 void tac_operand_free(tac_operand_t* operand) {
   if (operand == NULL) return;
+
+  if (operand->type == ACCESS) {
+    tac_operand_free(operand->value.access);
+  }
+
   free(operand);
 }
 
@@ -283,6 +291,10 @@ void tac_operand_print(tac_operand_t* operand) {
       break;
     case FLOAT_CONSTANT:
       printf("%lf", operand->value.float_constant);
+      break;
+    case ACCESS:
+      printf("*");
+      tac_operand_print(operand->value.access);
       break;
     case STACK:
       printf("$s[%d]", operand->value.int_constant);
@@ -322,6 +334,13 @@ tac_operand_t* tac_operand_temp(int id) {
   tac_operand_t* op = (tac_operand_t*)calloc(1, sizeof(tac_operand_t));
   op->type = TEMP_VAR;
   op->value.temp_var = id;
+  return op;
+}
+
+tac_operand_t* tac_operand_access(tac_operand_t* access) {
+  tac_operand_t* op = (tac_operand_t*)calloc(1, sizeof(tac_operand_t));
+  op->type = ACCESS;
+  op->value.access = access;
   return op;
 }
 

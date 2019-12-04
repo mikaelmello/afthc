@@ -205,7 +205,7 @@ var-declaration:
             LAST_ERROR = 0;
             printf("Location %d:%d - Multiple declaration of identifier %s\n", line, column, $2);
         } else {
-            // var->addr = gen_var_declaration($4);
+            var->addr = gen_array_declaration($4);
         }
         $$ = add;
     }
@@ -1134,6 +1134,7 @@ postfix-expression:
         exp->type_info.primitive_type = id.primitive_type;
         exp->type_info.data_structure = PRIMITIVE;
         $$ = exp;
+        $$->operand = gen_array_access($$);
     }
 |   identifier LEFT_PAREN param-vals RIGHT_PAREN {
         t_postfix_expression* exp = zero_allocate(t_postfix_expression);

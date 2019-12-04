@@ -58,6 +58,32 @@ int gen_pop() {
 
 int gen_primitive_declaration() { return gen_push(0); }
 
+tac_operand_t* gen_mema(int size) {
+  tac_operand_t* newt = new_temp();
+  tac_operand_t* operands[3] = {
+      tac_operand_dup(newt),
+      tac_operand_int_constant(size),
+      NULL,
+  };
+
+  tac_program_add_line(&tac_program, MEMA_INSTR, operands);
+  return newt;
+}
+
+int gen_array_declaration(int size) {
+  tac_operand_t* mema = gen_mema(size);
+  tac_operand_t* operands[3] = {
+      mema,
+      NULL,
+      NULL,
+  };
+
+  int addr = tac_program.stack_head;
+  tac_program_add_line(&tac_program, PUSH_INSTR, operands);
+  tac_program.stack_head++;
+  return addr;
+}
+
 tac_operand_t* gen_assignment(t_assignment* assignment) {
   int varpos = assignment->identifier->declaration->member.variable->addr;
 
@@ -324,5 +350,32 @@ tac_operand_t* gen_logical(t_expression* exp) {
 
   tac_program_add_line(&tac_program, instr, operands);
 
+  return newt;
+}
+
+tac_operand_t* gen_array_access(t_postfix_expression* exp) {
+  tac_operand_t* newt = new_temp();
+  tac_operand_t* addr_pos =
+      tac_operand_stack_at(exp->left->declaration->member.variable->addr);
+
+  tac_operand_t* operands[3] = {tac_operand_dup(newt),
+                                tac_operand_dup(addr_pos), NULL};
+
+  tac_program_add_line(&tac_program, MOV_INSTR, operands);
+  // newt now contains the address of the array!
+
+  operands[0] = tac_operand_dup(newt);
+  operands[1] = tac_operand_dup(newt);
+  operands[2] = exp->member.array_index->operand;
+
+  // newt now points to our element
+  tac_program_add_line(&tac_program, ADD_INSTR, operands);
+
+  operands[0] = tac_operand_dup(newt);
+  operands[1] = tac_operand_access(tac_operand_dup(newt));
+  operands[2] = NULL;
+
+  // newt now points to our element
+  tac_program_add_line(&tac_program, MOV_INSTR, operands);
   return newt;
 }

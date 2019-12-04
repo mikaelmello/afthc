@@ -44,6 +44,7 @@ tac_operand_t* tac_operand_int_constant(int value);
 tac_operand_t* tac_operand_char_constant(char value);
 tac_operand_t* tac_operand_float_constant(double value);
 tac_operand_t* tac_operand_temp(int id);
+tac_operand_t* tac_operand_access(tac_operand_t* op);
 tac_operand_t* tac_operand_dup(tac_operand_t* op);
 void tac_operand_free(tac_operand_t* operand);
 void tac_operand_print(tac_operand_t* operand);
@@ -128,6 +129,7 @@ enum tac_operand_type_t {
   CCHAR_CONSTANT,
   FLOAT_CONSTANT,
   STACK,
+  ACCESS,
 };
 
 struct tac_label_t {
@@ -148,6 +150,7 @@ struct tac_operand_t {
     int fun_param;
     int temp_var;
     tac_label_t* label;
+    tac_operand_t* access;
     int int_constant;
     char char_constant;
     double float_constant;

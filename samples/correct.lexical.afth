@@ -11,6 +11,8 @@ int main(int argc, char argv) {
     int answer;
     int x;
 
+    x = kkk[x+3];
+
     first_global_variable = 3;
     answer = 2;
 
