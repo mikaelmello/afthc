@@ -1,6 +1,6 @@
 int first_global_variable;
 
-int top() {
+int top(int x) {
     int x;
     top(3);
 }

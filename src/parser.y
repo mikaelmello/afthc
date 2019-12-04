@@ -245,7 +245,14 @@ fun-declaration:
         dec->member.function = fun;
         scope_add(dec);
         scope_new();
-    } param-decs RIGHT_PAREN scope {
+    } param-decs {
+        st_element_t* fun = scope_find($2);
+        if (fun == NULL) {
+            printf("Location %d:%d - Should not happen, fun is null!\n", line, column);
+            exit(55);
+        }
+        fun->declaration->member.function->params = $5;
+    } RIGHT_PAREN scope {
         scope_exit();
 
         st_element_t* fun = scope_find($2);
@@ -253,8 +260,7 @@ fun-declaration:
             printf("Location %d:%d - Should not happen, fun is null!\n", line, column);
             exit(55);
         }
-        fun->declaration->member.function->params = $5;
-        fun->declaration->member.function->body = $7;
+        fun->declaration->member.function->body = $8;
 
         // in case we do not have a return yet
         gen_return(NULL);
@@ -1169,6 +1175,23 @@ postfix-expression:
                 column,
                 call_param_count,
                 fun_param_count);
+        } else {
+            t_function_params* cur = params;
+            t_param_vals* cur2 = $3;
+            while (cur != NULL && cur2 != NULL) {
+                t_type_info tcur = get_type_info(cur->cur);
+                t_type_info tcur2 = cur2->cur->type_info;
+
+                if (!is_type_equivalent(tcur.primitive_type, tcur2.primitive_type) ||
+                    tcur.data_structure != tcur2.data_structure) {
+                    printf("Location %d:%d - Type mismatch on function call!\n",
+                        line,
+                        column);
+                }
+
+                cur = cur->prev;
+                cur2 = cur2->prev;
+            }
         }
         
         // TODO: assert param-vals
