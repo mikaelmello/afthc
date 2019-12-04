@@ -312,7 +312,7 @@ void tac_operand_print(tac_operand_t* operand) {
       tac_operand_print(operand->value.access);
       break;
     case STACK:
-      printf("$s[%d]", operand->value.int_constant);
+      printf("#%d", operand->value.int_constant);
       break;
   }
 }

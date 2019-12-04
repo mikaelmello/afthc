@@ -292,6 +292,10 @@ param-decs:
         assert($3->declaration->type == VAR_DECLARATION);
         fp->cur = $3;
         fp->prev = $1;
+        fp->size = 1;
+        if (fp->prev != NULL) {
+            fp->size += fp->prev->size;
+        }
         $$ = fp; 
     }
 |   var-declaration {
@@ -299,6 +303,7 @@ param-decs:
 
         fp->cur = $1;
         fp->prev = NULL;
+        fp->size = 1;
         $$ = fp; 
     }
 ;
@@ -1152,6 +1157,19 @@ postfix-expression:
         exp->type = FUNCTION_CALL;
         exp->left = $1;
         exp->member.function_params = $3;
+
+        t_function_params* params = $1->declaration->member.function->params; 
+
+        int call_param_count = ($3 == NULL ? 0 : $3->size);
+        int fun_param_count = (params == NULL ? 0 : params->size);
+
+        if (call_param_count != fun_param_count) {
+            printf("Location %d:%d - Found %d param(s), but %d are required!\n",
+                line,
+                column,
+                call_param_count,
+                fun_param_count);
+        }
         
         // TODO: assert param-vals
 
@@ -1184,11 +1202,16 @@ param-vals:
         t_param_vals* pv = zero_allocate(t_param_vals);
         pv->prev = $1;
         pv->cur = $3;
+        pv->size = 1;
+        if (pv->prev != NULL) {
+            pv->size += pv->prev->size;
+        }
         $$ = pv;
     }
 |   expression {
         t_param_vals* pv = zero_allocate(t_param_vals);
         pv->cur = $1;
+        pv->size = 1;
         $$ = pv;
     }
 |   %empty {

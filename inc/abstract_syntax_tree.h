@@ -134,6 +134,7 @@ struct t_primary_expression {
 };
 
 struct t_param_vals {
+  int size;
   t_expression* cur;
   t_param_vals* prev;
 };
@@ -301,6 +302,7 @@ struct t_function {
 };
 
 struct t_function_params {
+  int size;
   st_element_t* cur;
   t_function_params* prev;
 };

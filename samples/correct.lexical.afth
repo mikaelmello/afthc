@@ -2,7 +2,7 @@ int first_global_variable;
 
 int top() {
     int x;
-    top();
+    top(3);
 }
 
 int main(int argc, char argv) {
