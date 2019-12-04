@@ -169,7 +169,7 @@ IDENTIFIER      {LETTER}({DIGIT}|{LETTER}|{UNDERSCORE})*
 {REAL}              { column += yyleng; yylval.float_val = atof(yytext); return REAL; }
 {IDENTIFIER}        { column += yyleng; yylval.string_val = duplicate(yytext); return IDENTIFIER; }
 {STRING}            { column += yyleng; yylval.string_val = duplicate(yytext); return STRING; }
-{CHAR}              { column += yyleng; yylval.char_val = *yytext; return CHAR; }
+{CHAR}              { column += yyleng; yylval.char_val = *(yytext+1); return CHAR; }
 {WHITESPACE}        { column += yyleng; BEGIN(INITIAL); }
 {NEWLINE}           { column = 0; line++; BEGIN(INITIAL); }
 .                   { column += yyleng; add_error(*yytext, line, column); }
