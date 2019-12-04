@@ -20,6 +20,7 @@
         "string_view": "c",
         "thread": "c",
         "hash_map": "c",
-        "initializer_list": "c"
+        "initializer_list": "c",
+        "optional": "c"
     }
 }

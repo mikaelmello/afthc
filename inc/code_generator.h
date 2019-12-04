@@ -3,6 +3,7 @@
 
 #include "abstract_syntax_tree.h"
 
+int reset_stack_head();
 int get_stack_head();
 
 int gen_fun_label(char* name);

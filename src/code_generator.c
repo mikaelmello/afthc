@@ -20,6 +20,8 @@ tac_operand_t* new_temp() {
 int gen_fun_label(char* name) {
   return tac_program_add_label(&tac_program, name);
 }
+
+int reset_stack_head() { return tac_program.stack_head = 0; }
 int get_stack_head() { return tac_program.stack_head; }
 
 void gen_return(t_function* fun, t_return* ret) {
@@ -34,6 +36,9 @@ void gen_return(t_function* fun, t_return* ret) {
                                                 : ret->expression->operand),
         NULL, NULL};
 
+    if (fun->type_info.primitive_type != VOID_TYPE && operands[0] == NULL) {
+      operands[0] = tac_operand_int_constant(0);
+    }
     tac_program_add_line(&tac_program, RETURN_INSTR, operands);
   }
 }

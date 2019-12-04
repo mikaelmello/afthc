@@ -233,6 +233,7 @@ var-declaration:
 
 fun-declaration:
     type IDENTIFIER LEFT_PAREN {
+        reset_stack_head();
         gen_fun_label($2);
         t_function* fun = zero_allocate(t_function);
         fun->type_info.primitive_type = $1;
@@ -265,6 +266,7 @@ fun-declaration:
         cur_function = NULL;
     }
 |   type IDENTIFIER LEFT_PAREN {
+        reset_stack_head();
         gen_fun_label($2);
         t_function* fun = zero_allocate(t_function);
         fun->type_info.primitive_type = $1;
