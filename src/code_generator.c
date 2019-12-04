@@ -379,3 +379,28 @@ tac_operand_t* gen_array_access(t_postfix_expression* exp) {
   tac_program_add_line(&tac_program, MOV_INSTR, operands);
   return newt;
 }
+
+void gen_print(t_print* p) {
+  tac_operand_t* operands[3] = {p->expression->operand, NULL, NULL};
+
+  // newt now points to our element
+  tac_program_add_line(&tac_program, PRINTLN_INSTR, operands);
+}
+
+void gen_scan(t_scan* s) {
+  tac_operand_t* addr_pos =
+      tac_operand_stack_at(s->destiny->declaration->member.variable->addr);
+  tac_operand_t* operands[3] = {addr_pos, NULL, NULL};
+
+  tac_instr_t instr;
+  if (s->type == SCAN_DEC_TYPE) {
+    instr = SCANI_INSTR;
+  } else if (s->type == SCAN_CHAR_TYPE) {
+    instr = SCANC_INSTR;
+  } else {
+    instr = SCANF_INSTR;
+  }
+
+  // newt now points to our element
+  tac_program_add_line(&tac_program, instr, operands);
+}

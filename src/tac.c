@@ -229,6 +229,21 @@ void tac_line_print(tac_line_t* line) {
     case MEMA_INSTR:
       printf("mema");
       break;
+    case SCANC_INSTR:
+      printf("scanc");
+      break;
+    case SCANI_INSTR:
+      printf("scani");
+      break;
+    case SCANF_INSTR:
+      printf("scanf");
+      break;
+    case PRINTLN_INSTR:
+      printf("println");
+      break;
+    case PRINT_INSTR:
+      printf("print");
+      break;
     default:
       printf("MISSING CASE %d\n", line->instruction);
   }

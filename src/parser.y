@@ -411,11 +411,12 @@ print:
 
         if ($1 == PRINT_CHAR_TYPE) {
             assert(is_type_equivalent(
-                LONG_TYPE, 
+                CHAR_TYPE, 
                 $2->type_info.primitive_type
                 )
             );
         }
+        gen_print($$);
     }
 |   print-type expression error {
         yyerrok;
@@ -435,6 +436,7 @@ print:
                 )
             );
         }
+        gen_print($$);
     }
 ;
 
@@ -452,12 +454,19 @@ scan:
                 printf("Location %d:%d - Variable %s is not primitive.\n", line, column, label);
             }
 
-            if ($1 == SCAN_DEC_TYPE || $1 == SCAN_CHAR_TYPE) {
+            if ($1 == SCAN_DEC_TYPE) {
                 if (!is_type_equivalent(
                     LONG_TYPE, 
                     $2->declaration->member.variable->type_info.primitive_type
                 )) {
-                    printf("Location %d:%d - Variable %s is not an integer or char.\n", line, column, label);
+                    printf("Location %d:%d - Variable %s is not an integer.\n", line, column, label);
+                }
+            } else if ($1 == SCAN_CHAR_TYPE) {
+                if (!is_type_equivalent(
+                    CHAR_TYPE, 
+                    $2->declaration->member.variable->type_info.primitive_type
+                )) {
+                    printf("Location %d:%d - Variable %s is not a char.\n", line, column, label);
                 }
             } else {
                 if (!is_type_equivalent(
@@ -471,6 +480,7 @@ scan:
         
         scan->destiny = $2;
         $$ = scan;
+        gen_scan($$);
     }
 |   scan-type identifier error {
         yyerrok;
@@ -505,6 +515,7 @@ scan:
         
         scan->destiny = $2;
         $$ = scan;
+        gen_scan($$);
     }
 ;
 

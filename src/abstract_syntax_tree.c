@@ -16,10 +16,10 @@ char* declaration_get_label(t_declaration* declaration) {
 }
 
 int is_type_equivalent(t_primitive_type type1, t_primitive_type type2) {
-  if ((type1 == BYTE_TYPE || type1 == CHAR_TYPE || type1 == SHORT_TYPE ||
-       type1 == INT_TYPE || type1 == LONG_TYPE) &&
-      (type2 == BYTE_TYPE || type2 == CHAR_TYPE || type2 == SHORT_TYPE ||
-       type2 == INT_TYPE || type2 == LONG_TYPE)) {
+  if ((type1 == BYTE_TYPE || type1 == SHORT_TYPE || type1 == INT_TYPE ||
+       type1 == LONG_TYPE) &&
+      (type2 == BYTE_TYPE || type2 == SHORT_TYPE || type2 == INT_TYPE ||
+       type2 == LONG_TYPE)) {
     return 1;
   }
   if ((type1 == FLOAT_TYPE || type1 == DOUBLE_TYPE) &&
