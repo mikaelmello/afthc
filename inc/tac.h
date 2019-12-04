@@ -39,8 +39,9 @@ void tac_label_print(tac_label_t* print);
 void tac_line_print(tac_line_t* line);
 void tac_line_free_members(tac_line_t* line);
 
-tac_operand_t* tac_operand_stack();
+tac_operand_t* tac_operand_stack_at(int idx);
 tac_operand_t* tac_operand_constant(int value);
+tac_operand_t* tac_operand_temp(int id);
 void tac_operand_free(tac_operand_t* operand);
 void tac_operand_print(tac_operand_t* operand);
 

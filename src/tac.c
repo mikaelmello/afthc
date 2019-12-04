@@ -217,6 +217,25 @@ void tac_line_print(tac_line_t* line) {
       tac_operand_print(line->operands[1]);
       printf("\n");
       break;
+    case ADD_INSTR:
+      printf("add ");
+      tac_operand_print(line->operands[0]);
+      printf(", ");
+      tac_operand_print(line->operands[1]);
+      printf(", ");
+      tac_operand_print(line->operands[2]);
+      printf("\n");
+      break;
+    case PUSH_INSTR:
+      printf("push ");
+      tac_operand_print(line->operands[0]);
+      printf("\n");
+      break;
+    case POP_INSTR:
+      printf("pop ");
+      tac_operand_print(line->operands[0]);
+      printf("\n");
+      break;
     default:
       printf("MISSING CASE %d\n", line->instruction);
   }
@@ -268,7 +287,7 @@ void tac_operand_print(tac_operand_t* operand) {
       printf("%d", operand->value.constant);
       break;
     case STACK:
-      printf("$s");
+      printf("$s[%d]", operand->value.constant);
       break;
   }
 }
@@ -280,8 +299,16 @@ tac_operand_t* tac_operand_constant(int value) {
   return op;
 }
 
-tac_operand_t* tac_operand_stack() {
+tac_operand_t* tac_operand_stack_at(int idx) {
   tac_operand_t* op = (tac_operand_t*)calloc(1, sizeof(tac_operand_t));
   op->type = STACK;
+  op->value.constant = idx;
+  return op;
+}
+
+tac_operand_t* tac_operand_temp(int id) {
+  tac_operand_t* op = (tac_operand_t*)calloc(1, sizeof(tac_operand_t));
+  op->type = TEMP_VAR;
+  op->value.temp_var = id;
   return op;
 }

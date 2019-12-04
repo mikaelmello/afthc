@@ -185,6 +185,8 @@ var-declaration:
                 printf("Location %d:%d - Previous identifier was declared as function and not variable!\n", line, column);
                 add = NULL;
             }
+        } else {
+            var->addr = gen_primitive_declaration(1);
         }
         $$ = add;
     }
@@ -202,6 +204,8 @@ var-declaration:
         if (LAST_ERROR == EXISTING_DECLARATION) {
             LAST_ERROR = 0;
             printf("Location %d:%d - Multiple declaration of identifier %s\n", line, column, $2);
+        } else {
+            // var->addr = gen_var_declaration($4);
         }
         $$ = add;
     }
@@ -219,6 +223,8 @@ var-declaration:
         if (LAST_ERROR == EXISTING_DECLARATION) {
             LAST_ERROR = 0;
             printf("Location %d:%d - Multiple declaration of identifier %s\n", line, column, $2);
+        } else {
+            // var->addr = gen_var_declaration(1);
         }
         $$ = add;
     }
@@ -249,6 +255,9 @@ fun-declaration:
         }
         fun->declaration->member.function->params = $5;
         fun->declaration->member.function->body = $7;
+
+        // in case we do not have a return yet
+        gen_return(NULL);
         $$ = fun;
     }
 |   type IDENTIFIER LEFT_PAREN {

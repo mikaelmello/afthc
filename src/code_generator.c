@@ -12,6 +12,7 @@ extern tac_program_t tac_program;
 int gen_fun_label(char* name) {
   return tac_program_add_label(&tac_program, name);
 }
+int get_stack_head() { return tac_program.stack_head; }
 
 void gen_return(t_expression* expression) {
   tac_operand_t* operands[3] =
@@ -20,12 +21,29 @@ void gen_return(t_expression* expression) {
   tac_program_add_line(&tac_program, RETURN_INSTR, operands);
 }
 
-void gen_stack_set(int position) {
+int gen_push(int value) {
   tac_operand_t* operands[3] = {
-      tac_operand_stack(),
-      tac_operand_constant(position),
+      tac_operand_constant(value),
+      NULL,
       NULL,
   };
 
-  tac_program_add_line(&tac_program, MOV_INSTR, operands);
+  int addr = tac_program.stack_head;
+  tac_program_add_line(&tac_program, PUSH_INSTR, operands);
+  tac_program.stack_head++;
+  return addr;
 }
+
+int gen_pop() {
+  tac_operand_t* operands[3] = {
+      tac_operand_temp(1023),
+      NULL,
+      NULL,
+  };
+
+  tac_program_add_line(&tac_program, POP_INSTR, operands);
+  tac_program.stack_head--;
+  return tac_program.stack_head;
+}
+
+int gen_primitive_declaration() { return gen_push(0); }

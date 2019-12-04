@@ -38,7 +38,9 @@ void scope_exit() {
     abort();
   }
 
-  gen_stack_set(current_scope->stack_head);
+  while (get_stack_head() > current_scope->stack_head) {
+    gen_pop();
+  }
 
   current_scope = current_scope->parent;
 }
