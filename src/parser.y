@@ -8,6 +8,7 @@
 #include <assert.h>
 #include "scope.h"
 #include "code_generator.h"
+#include "tac.h"
 #include <string.h>
 
 #define zero_allocate(type) ((type*)calloc(1, sizeof(type)))
@@ -224,7 +225,7 @@ var-declaration:
 
 fun-declaration:
     type IDENTIFIER LEFT_PAREN {
-        gen_fun_label(&tac_program, $2);
+        gen_fun_label($2);
         t_function* fun = zero_allocate(t_function);
         fun->type_info.primitive_type = $1;
         fun->type_info.data_structure = FUNCTION;
@@ -256,7 +257,7 @@ fun-declaration:
         $$ = fun;
     }
 |   type IDENTIFIER LEFT_PAREN {
-        gen_fun_label(&tac_program, $2);
+        gen_fun_label($2);
         t_function* fun = zero_allocate(t_function);
         fun->type_info.primitive_type = $1;
         fun->type_info.data_structure = FUNCTION;
@@ -616,7 +617,7 @@ return:
     RETURN_RW optional-expression SEMICOLON {
         t_return* ret = zero_allocate(t_return);
         ret->expression = $2;
-        gen_return(&tac_program, $2);
+        gen_return($2);
         $$ = ret;
     }
 ;
