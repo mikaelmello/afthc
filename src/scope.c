@@ -3,8 +3,25 @@
 #include <stdlib.h>
 #include <string.h>
 #include "symbol_table.h"
+#include "tac.h"
 
 scope_error_t LAST_ERROR = 0;
+extern tac_program_t tac_program;
+extern scope_t* current_scope;
+
+void scope_enter() { current_scope = scope_create(current_scope); }
+
+void scope_exit() {
+  if (current_scope == NULL) {
+    printf("Trying to exit from null scope!");
+    abort();
+  }
+
+  int size = st_total_size(current_scope->symbol_table);
+  // decrease stack by size
+
+  current_scope = current_scope->parent;
+}
 
 scope_list_t* scope_list_create() {
   scope_list_t* list = (scope_list_t*)calloc(1, sizeof(scope_list_t));
@@ -40,6 +57,7 @@ scope_t* scope_create(scope_t* parent) {
   scope->children = scope_list_create();
   scope->parent = parent;
   scope->next_sibling = NULL;
+  scope->stack_head = tac_program.stack_head;
 
   if (parent != NULL) {
     scope_list_add(parent->children, scope);

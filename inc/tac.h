@@ -3,9 +3,6 @@
 
 #include "abstract_syntax_tree.h"
 
-int condition_counter;
-int iteration_counter;
-
 typedef char* tac_symbol_t;
 typedef struct tac_line_t tac_line_t;
 typedef struct tac_operand_t tac_operand_t;
@@ -58,6 +55,7 @@ struct tac_code_t {
 struct tac_program_t {
   tac_table_t table;
   tac_code_t code;
+  int stack_head;
 };
 
 void gen_condition();

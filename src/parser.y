@@ -173,6 +173,7 @@ var-declaration:
         var->type_info.primitive_type = $1;
         var->type_info.data_structure = PRIMITIVE;
         var->identifier = $2;
+        var->size = 1;
         
         t_declaration* dec = zero_allocate(t_declaration);
         dec->type = VAR_DECLARATION;
@@ -194,6 +195,7 @@ var-declaration:
         var->type_info.primitive_type = $1;
         var->type_info.data_structure = ARRAY;
         var->identifier = $2;
+        var->size = $4;
         
         t_declaration* dec = zero_allocate(t_declaration);
         dec->type = VAR_DECLARATION;
@@ -210,6 +212,7 @@ var-declaration:
         var->type_info.primitive_type = $1;
         var->type_info.data_structure = SET;
         var->identifier = $2;
+        var->size = 1;
         
         t_declaration* dec = zero_allocate(t_declaration);
         dec->type = VAR_DECLARATION;
@@ -237,7 +240,7 @@ fun-declaration:
         dec->type = FUN_DECLARATION;
         dec->member.function = fun;
         scope_add(current_scope, dec);
-        current_scope = scope_create(current_scope);
+        scope_enter();
     } param-decs RIGHT_PAREN {
         st_element_t* fun = scope_find(current_scope->parent, $2);
         if (fun == NULL) {
@@ -246,7 +249,7 @@ fun-declaration:
         }
         fun->declaration->member.function->params = $5;
     } scope {
-        current_scope = current_scope->parent;
+        scope_exit();
 
         st_element_t* fun = scope_find(current_scope, $2);
         if (fun == NULL) {
@@ -298,12 +301,12 @@ param-decs:
 
 scope:
     LEFT_BRACE {
-        current_scope = scope_create(current_scope);
+        scope_enter();
     } statement-list RIGHT_BRACE {
         t_brace_enclosed_scope* scope = zero_allocate(t_brace_enclosed_scope);
         scope->statements = $3;
         $$ = scope;
-        current_scope = current_scope->parent;
+        scope_exit();
     }
 ;
 

@@ -5,6 +5,7 @@
 #include "my_string.h"
 #include "scope.h"
 #include "symbol_table.h"
+#include "tac.h"
 #include "token_types.h"
 
 extern FILE* yyin;

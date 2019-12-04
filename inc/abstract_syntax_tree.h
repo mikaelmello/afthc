@@ -305,6 +305,7 @@ struct t_function_param {
 
 struct t_variable {
   t_type_info type_info;
+  int size;
   char* identifier;
 };
 

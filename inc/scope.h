@@ -13,6 +13,7 @@ enum scope_error_t {
 };
 
 struct scope_t {
+  int stack_head;
   scope_t* parent;
   scope_t* next_sibling;
   scope_list_t* children;
@@ -26,6 +27,9 @@ struct scope_list_t {
 };
 
 scope_error_t LAST_ERROR;
+
+void scope_enter();
+void scope_exit();
 
 scope_t* scope_create(scope_t* parent);
 void scope_free(scope_t* scope);

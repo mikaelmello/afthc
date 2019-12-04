@@ -85,6 +85,22 @@ void st_free(st_t* st) {
   free(st);
 }
 
+int st_total_size(st_t* symbol_table) {
+  int size = 0;
+
+  st_element_list_t* list = symbol_table->list;
+  if (list == NULL) return size;
+
+  st_element_t* cur = list->head;
+  while (cur != NULL) {
+    st_element_t* next = cur->next;
+    if (cur->declaration->type == VAR_DECLARATION) {
+      size += cur->declaration->member.variable->size;
+    }
+    cur = next;
+  }
+}
+
 st_element_t* st_add(st_t* st, t_declaration* declaration) {
   return st_element_list_add(st->list, declaration);
 }

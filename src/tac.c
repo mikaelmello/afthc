@@ -5,9 +5,7 @@
 #include <stdlib.h>
 #include "abstract_syntax_tree.h"
 #include "my_string.h"
-
-int condition_counter = 0;
-int iteration_counter = 0;
+#include "scope.h"
 
 tac_program_t* tac_program_create() {
   tac_program_t* program = (tac_program_t*)calloc(1, sizeof(tac_program_t));
@@ -18,6 +16,7 @@ tac_program_t* tac_program_create() {
 void tac_program_initialize(tac_program_t* program) {
   tac_table_initialize(&program->table);
   tac_code_initialize(&program->code);
+  program->stack_head = 0;
 }
 
 void tac_program_clean(tac_program_t* program) {

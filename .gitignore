@@ -281,3 +281,6 @@ TSWLatexianTemp*
 *.output
 vgcore*
 afthc
+parser.c
+parser.h
+lex.yy.c
