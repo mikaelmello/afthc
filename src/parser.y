@@ -18,8 +18,6 @@ extern int yylex();
 extern uint32_t line;
 extern uint32_t column;
 extern scope_error_t LAST_ERROR;
-scope_t* root_scope;
-scope_t* current_scope;
 t_program* program;
 tac_program_t tac_program;
 
@@ -178,7 +176,7 @@ var-declaration:
         t_declaration* dec = zero_allocate(t_declaration);
         dec->type = VAR_DECLARATION;
         dec->member.variable = var;
-        scope_element_t* add = scope_add(current_scope, dec);
+        scope_element_t* add = scope_add(dec);
         if (LAST_ERROR == EXISTING_DECLARATION) {
             LAST_ERROR = 0;
             printf("Location %d:%d - Multiple declaration of identifier %s\n", line, column, $2);
@@ -200,7 +198,7 @@ var-declaration:
         t_declaration* dec = zero_allocate(t_declaration);
         dec->type = VAR_DECLARATION;
         dec->member.variable = var;
-        scope_element_t* add = scope_add(current_scope, dec);
+        scope_element_t* add = scope_add(dec);
         if (LAST_ERROR == EXISTING_DECLARATION) {
             LAST_ERROR = 0;
             printf("Location %d:%d - Multiple declaration of identifier %s\n", line, column, $2);
@@ -217,7 +215,7 @@ var-declaration:
         t_declaration* dec = zero_allocate(t_declaration);
         dec->type = VAR_DECLARATION;
         dec->member.variable = var;
-        scope_element_t* add = scope_add(current_scope, dec);
+        scope_element_t* add = scope_add(dec);
         if (LAST_ERROR == EXISTING_DECLARATION) {
             LAST_ERROR = 0;
             printf("Location %d:%d - Multiple declaration of identifier %s\n", line, column, $2);
@@ -239,24 +237,18 @@ fun-declaration:
         t_declaration* dec = zero_allocate(t_declaration);
         dec->type = FUN_DECLARATION;
         dec->member.function = fun;
-        scope_add(current_scope, dec);
-        scope_enter();
-    } param-decs RIGHT_PAREN {
-        st_element_t* fun = scope_find(current_scope->parent, $2);
+        scope_add(dec);
+        scope_new();
+    } param-decs RIGHT_PAREN scope {
+        scope_exit();
+
+        st_element_t* fun = scope_find($2);
         if (fun == NULL) {
             printf("Location %d:%d - Should not happen, fun is null!\n", line, column);
             exit(55);
         }
         fun->declaration->member.function->params = $5;
-    } scope {
-        scope_exit();
-
-        st_element_t* fun = scope_find(current_scope, $2);
-        if (fun == NULL) {
-            printf("Location %d:%d - Should not happen, fun is null!\n", line, column);
-            exit(55);
-        }
-        fun->declaration->member.function->body = $8;
+        fun->declaration->member.function->body = $7;
         $$ = fun;
     }
 |   type IDENTIFIER LEFT_PAREN {
@@ -270,9 +262,9 @@ fun-declaration:
         t_declaration* dec = zero_allocate(t_declaration);
         dec->type = FUN_DECLARATION;
         dec->member.function = fun;
-        scope_add(current_scope, dec);
+        scope_add(dec);
     } RIGHT_PAREN scope {
-        st_element_t* fun = scope_find(current_scope, $2);
+        st_element_t* fun = scope_find($2);
         if (fun == NULL) {
             printf("Location %d:%d - Should not happen, fun is null!\n", line, column);
             exit(55);
@@ -301,7 +293,7 @@ param-decs:
 
 scope:
     LEFT_BRACE {
-        scope_enter();
+        scope_new();
     } statement-list RIGHT_BRACE {
         t_brace_enclosed_scope* scope = zero_allocate(t_brace_enclosed_scope);
         scope->statements = $3;
@@ -1160,7 +1152,7 @@ param-vals:
 
 identifier:
     IDENTIFIER {
-        st_element_t* element = scope_find(current_scope, $1);
+        st_element_t* element = scope_find($1);
         if (element == NULL) {
             printf("Location %d:%d - Identifier %s not previously declared\n", line, column, $1);
         }

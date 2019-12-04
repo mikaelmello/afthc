@@ -7,9 +7,20 @@
 
 scope_error_t LAST_ERROR = 0;
 extern tac_program_t tac_program;
-extern scope_t* current_scope;
 
-void scope_enter() { current_scope = scope_create(current_scope); }
+scope_t* root_scope;
+scope_t* current_scope;
+
+void scope_initialize() {
+  root_scope = scope_create(NULL);
+  current_scope = root_scope;
+}
+
+void scope_clean() { scope_free(current_scope); }
+
+void scope_print() { scope_print_level(current_scope, 0); }
+
+void scope_new() { current_scope = scope_create(current_scope); }
 
 void scope_exit() {
   if (current_scope == NULL) {
@@ -73,20 +84,20 @@ void scope_free(scope_t* scope) {
   free(scope);
 }
 
-scope_element_t* scope_add(scope_t* scope, t_declaration* declaration) {
+scope_element_t* scope_add(t_declaration* declaration) {
   char* dec_label = declaration_get_label(declaration);
-  scope_element_t* find = st_find(scope->symbol_table, dec_label);
+  scope_element_t* find = st_find(current_scope->symbol_table, dec_label);
 
   if (find != NULL) {
     LAST_ERROR = EXISTING_DECLARATION;
     return find;
   }
 
-  return st_add(scope->symbol_table, declaration);
+  return st_add(current_scope->symbol_table, declaration);
 }
 
-scope_element_t* scope_find(scope_t* scope, char* label) {
-  scope_t* cur = scope;
+scope_element_t* scope_find(char* label) {
+  scope_t* cur = current_scope;
 
   while (cur != NULL) {
     scope_element_t* find = st_find(cur->symbol_table, label);
@@ -98,7 +109,7 @@ scope_element_t* scope_find(scope_t* scope, char* label) {
   return NULL;
 }
 
-void scope_print(scope_t* scope, int cur_level) {
+void scope_print_level(scope_t* scope, int cur_level) {
   if (scope == NULL) return;
 
   spaces(cur_level);
@@ -116,7 +127,7 @@ void scope_list_print(scope_list_t* list, int cur_level) {
   printf("List of scopes\n");
   scope_t* cur = list->head;
   while (cur != NULL) {
-    scope_print(cur, cur_level + 1);
+    scope_print_level(cur, cur_level + 1);
     cur = cur->next_sibling;
   }
 }
