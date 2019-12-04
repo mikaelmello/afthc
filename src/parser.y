@@ -91,6 +91,7 @@ void yyerror (char const *s)
 %type <c_declaration_list> declaration-list;
 %type <c_st_element> declaration;
 %type <c_st_element> var-declaration;
+%type <c_st_element> param-declaration;
 %type <c_st_element> fun-declaration;
 %type <c_function_params> param-decs;
 %type <c_brace_enclosed_scope> scope;
@@ -295,7 +296,7 @@ fun-declaration:
 ;
 
 param-decs:
-    param-decs COMMA var-declaration {
+    param-decs COMMA param-declaration {
         t_function_params* fp = zero_allocate(t_function_params);
         assert($3->declaration->type == VAR_DECLARATION);
         fp->cur = $3;
@@ -304,15 +305,79 @@ param-decs:
         if (fp->prev != NULL) {
             fp->size += fp->prev->size;
         }
+        fp->cur->declaration->member.variable->addr = fp->size-1;
         $$ = fp; 
     }
-|   var-declaration {
+|   param-declaration {
         t_function_params* fp = zero_allocate(t_function_params);
 
         fp->cur = $1;
         fp->prev = NULL;
         fp->size = 1;
+        fp->cur->declaration->member.variable->addr = 0;
         $$ = fp; 
+    }
+;
+
+param-declaration:
+    type IDENTIFIER {
+        t_variable* var = zero_allocate(t_variable);
+        var->type_info.primitive_type = $1;
+        var->type_info.data_structure = PRIMITIVE;
+        var->identifier = $2;
+        var->size = 1;
+        
+        t_declaration* dec = zero_allocate(t_declaration);
+        dec->type = VAR_DECLARATION;
+        dec->member.variable = var;
+        scope_element_t* add = scope_add(dec);
+        if (LAST_ERROR == EXISTING_DECLARATION) {
+            LAST_ERROR = 0;
+            printf("Location %d:%d - Multiple declaration of identifier %s\n", line, column, $2);
+            free_declaration(dec);
+            if (add->declaration->type != VAR_DECLARATION) {
+                printf("Location %d:%d - Previous identifier was declared as function and not variable!\n", line, column);
+                add = NULL;
+            }
+            var->addr = -1;
+        }
+        $$ = add;
+    }
+|   type IDENTIFIER LEFT_BRACKET INTEGER RIGHT_BRACKET {
+        t_variable* var = zero_allocate(t_variable);
+        var->type_info.primitive_type = $1;
+        var->type_info.data_structure = ARRAY;
+        var->identifier = $2;
+        var->size = $4;
+        
+        t_declaration* dec = zero_allocate(t_declaration);
+        dec->type = VAR_DECLARATION;
+        dec->member.variable = var;
+        scope_element_t* add = scope_add(dec);
+        if (LAST_ERROR == EXISTING_DECLARATION) {
+            LAST_ERROR = 0;
+            printf("Location %d:%d - Multiple declaration of identifier %s\n", line, column, $2);
+            var->addr = -1;
+        }
+        $$ = add;
+    }
+|   type IDENTIFIER LEFT_BRACE RIGHT_BRACE {
+        t_variable* var = zero_allocate(t_variable);
+        var->type_info.primitive_type = $1;
+        var->type_info.data_structure = SET;
+        var->identifier = $2;
+        var->size = 1;
+        
+        t_declaration* dec = zero_allocate(t_declaration);
+        dec->type = VAR_DECLARATION;
+        dec->member.variable = var;
+        scope_element_t* add = scope_add(dec);
+        if (LAST_ERROR == EXISTING_DECLARATION) {
+            LAST_ERROR = 0;
+            printf("Location %d:%d - Multiple declaration of identifier %s\n", line, column, $2);
+            var->addr = -1;
+        }
+        $$ = add;
     }
 ;
 
@@ -1165,39 +1230,7 @@ postfix-expression:
         exp->type = FUNCTION_CALL;
         exp->left = $1;
         exp->member.function_params = $3;
-
-        t_function_params* params = $1->declaration->member.function->params; 
-
-        int call_param_count = ($3 == NULL ? 0 : $3->size);
-        int fun_param_count = (params == NULL ? 0 : params->size);
-
-        if (call_param_count != fun_param_count) {
-            printf("Location %d:%d - Found %d param(s), but %d are required!\n",
-                line,
-                column,
-                call_param_count,
-                fun_param_count);
-        } else {
-            t_function_params* cur = params;
-            t_param_vals* cur2 = $3;
-            while (cur != NULL && cur2 != NULL) {
-                t_type_info tcur = get_type_info(cur->cur);
-                t_type_info tcur2 = cur2->cur->type_info;
-
-                if (!is_type_equivalent(tcur.primitive_type, tcur2.primitive_type) ||
-                    tcur.data_structure != tcur2.data_structure) {
-                    printf("Location %d:%d - Type mismatch on function call!\n",
-                        line,
-                        column);
-                }
-
-                cur = cur->prev;
-                cur2 = cur2->prev;
-            }
-        }
         
-        // TODO: assert param-vals
-
         t_type_info id;
         id.primitive_type = LONG_TYPE; // default
 
@@ -1206,11 +1239,41 @@ postfix-expression:
             if (id.data_structure != FUNCTION) {
                 printf("Location %d:%d - Identifier must be function\n", line, column);
             };
+
+            t_function_params* params = $1->declaration->member.function->params; 
+            int call_param_count = ($3 == NULL ? 0 : $3->size);
+            int fun_param_count = (params == NULL ? 0 : params->size);
+
+            if (call_param_count != fun_param_count) {
+                printf("Location %d:%d - Found %d param(s), but %d are required!\n",
+                    line,
+                    column,
+                    call_param_count,
+                    fun_param_count);
+            } else {
+                t_function_params* cur = params;
+                t_param_vals* cur2 = $3;
+                while (cur != NULL && cur2 != NULL) {
+                    t_type_info tcur = get_type_info(cur->cur);
+                    t_type_info tcur2 = cur2->cur->type_info;
+
+                    if (!is_type_equivalent(tcur.primitive_type, tcur2.primitive_type) ||
+                        tcur.data_structure != tcur2.data_structure) {
+                        printf("Location %d:%d - Type mismatch on function call!\n",
+                            line,
+                            column);
+                    }
+
+                    cur = cur->prev;
+                    cur2 = cur2->prev;
+                }
+            }
         }
 
         exp->type_info.primitive_type = id.primitive_type;
         exp->type_info.data_structure = PRIMITIVE;
         $$ = exp;
+        $$->operand = gen_fun_call($1->declaration->member.function, $3);
     }
 |   primary-expression {
         t_postfix_expression* exp = zero_allocate(t_postfix_expression);

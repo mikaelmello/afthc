@@ -20,6 +20,8 @@ int main(int argc, char argv) {
         loopCounter += 1;
     }
 
+    top(33);
+
     //for (loopCounter; loopCounter < first_global_variable; loopCounter += 1) {
     //    answer *= (loopCounter + 1);
     //}

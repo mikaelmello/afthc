@@ -21,6 +21,7 @@
         "thread": "c",
         "hash_map": "c",
         "initializer_list": "c",
-        "optional": "c"
+        "optional": "c",
+        "random": "c"
     }
 }

@@ -414,7 +414,41 @@ void gen_pop_array(t_variable* var) {
   gen_pop();
 }
 
+void gen_param_push(t_param_vals* param) {
+  if (param == NULL) return;
+
+  gen_param_push(param->prev);
+
+  tac_operand_t* operands[3] = {
+      param->cur->operand,
+      NULL,
+      NULL,
+  };
+
+  tac_program_add_line(&tac_program, PUSH_INSTR, operands);
+}
+
 void gen_memf(tac_operand_t* operand) {
   tac_operand_t* operands[3] = {operand, NULL, NULL};
   tac_program_add_line(&tac_program, MEMF_INSTR, operands);
+}
+
+tac_operand_t* gen_fun_call(t_function* fun, t_param_vals* params) {
+  gen_param_push(params);
+
+  tac_label_t* fun_label =
+      tac_program_get_label_name(&tac_program, fun->identifier);
+  tac_operand_t* operands[3] = {
+      tac_operand_label(fun_label),
+      tac_operand_int_constant(params->size),
+      NULL,
+  };
+
+  tac_program_add_line(&tac_program, CALL_INSTR, operands);
+
+  tac_operand_t* newt = new_temp();
+  operands[0] = tac_operand_dup(newt);
+  operands[1] = NULL;
+  tac_program_add_line(&tac_program, POP_INSTR, operands);
+  return newt;
 }

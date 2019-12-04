@@ -127,7 +127,8 @@ enum tac_instr_t {
 enum tac_operand_type_t {
   FUN_PARAM,
   TEMP_VAR,
-  LABEL,
+  LABEL_ID,
+  LABEL_NAME,
   INT_CONSTANT,
   CCHAR_CONSTANT,
   FLOAT_CONSTANT,
@@ -158,6 +159,7 @@ struct tac_operand_t {
     tac_operand_t* access;
     int int_constant;
     char char_constant;
+    char* name;
     double float_constant;
   } value;
 };

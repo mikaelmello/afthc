@@ -88,7 +88,6 @@ tac_label_t* tac_program_get_label_name(tac_program_t* program, char* name) {
   tac_code_t* code = &program->code;
 
   for (int i = 0; i < code->label_count; i++) {
-    printf("%s\n", code->labels[i].name);
     if (strcmp(code->labels[i].name, name) == 0) return &code->labels[i];
   }
   return NULL;
@@ -278,6 +277,9 @@ void tac_line_print(tac_line_t* line) {
     case MEMF_INSTR:
       printf("memf");
       break;
+    case CALL_INSTR:
+      printf("call");
+      break;
     default:
       printf("MISSING CASE %d\n", line->instruction);
   }
@@ -310,6 +312,8 @@ void tac_operand_free(tac_operand_t* operand) {
 
   if (operand->type == ACCESS) {
     tac_operand_free(operand->value.access);
+  } else if (operand->type == LABEL_NAME) {
+    free(operand->value.name);
   }
 
   free(operand);
@@ -325,12 +329,11 @@ void tac_operand_print(tac_operand_t* operand) {
     case TEMP_VAR:
       printf("$%d", operand->value.temp_var);
       break;
-    case LABEL:
-      if (operand->value.label->name != NULL) {
-        printf("%s", operand->value.label->name);
-      } else {
-        printf("label_%d", operand->value.label->id);
-      }
+    case LABEL_ID:
+      printf("label_%d", operand->value.int_constant);
+      break;
+    case LABEL_NAME:
+      printf("%s", operand->value.name);
       break;
     case INT_CONSTANT:
       printf("%d", operand->value.int_constant);
@@ -362,8 +365,13 @@ tac_operand_t* tac_operand_int_constant(int value) {
 
 tac_operand_t* tac_operand_label(tac_label_t* label) {
   tac_operand_t* op = (tac_operand_t*)calloc(1, sizeof(tac_operand_t));
-  op->type = LABEL;
-  op->value.label = label;
+  if (label->name == NULL) {
+    op->type = LABEL_ID;
+    op->value.int_constant = label->id;
+  } else {
+    op->type = LABEL_NAME;
+    op->value.name = duplicate(label->name);
+  }
   return op;
 }
 
