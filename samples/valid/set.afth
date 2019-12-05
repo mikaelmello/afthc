@@ -1,7 +1,16 @@
+int legal(int x{}) {
+  print 7 in x;
+  x rm 7;
+}
+
 int main() {
   int a{};
   3 >> a;
+  7 >> a;
   print 3 in a;
   a rm 3;
   print 3 in a;
+  print 7 in a;
+  legal(a);
+  print 7 in a;
 }

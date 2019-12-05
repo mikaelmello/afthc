@@ -3,10 +3,21 @@
 #include "abstract_syntax_tree.h"
 #include "symbol_table.h"
 
+typedef struct if_context_t if_context_t;
 typedef struct scope_t scope_t;
 typedef struct scope_list_t scope_list_t;
 typedef st_element_t scope_element_t;
 typedef enum scope_error_t scope_error_t;
+
+t_condition* if_context_pop();
+void if_context_add(t_condition* top);
+t_condition* if_context_top();
+
+struct if_context_t {
+  int count;
+  int capacity;
+  t_condition** ifs;
+};
 
 enum scope_error_t {
   EXISTING_DECLARATION = 1,

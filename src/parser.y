@@ -105,6 +105,7 @@ void yyerror (char const *s)
 %type <c_return> return;
 %type <c_expression> optional-expression;
 %type <c_condition> condition;
+%type <c_condition> notif-rule;
 %type <c_iteration> iteration;
 %type <c_assignment> assignment;
 %type <c_expression> expression;
@@ -623,41 +624,41 @@ scan-type:
     }
 ;
 
-condition:
-    IF_RW LEFT_PAREN expression RIGHT_PAREN statement %prec REDUCE {
-        assert($3 != NULL);
-        if ($3->type_info.data_structure != PRIMITIVE || !is_type_equivalent(LONG_TYPE, $3->type_info.primitive_type)) {
-            printf("Location %d:%d - Condition expression must return a primitive and integer type\n", line, column);
-        };
-        
-        t_condition* cond = zero_allocate(t_condition);
-        cond->condition = $3;
-        cond->body = $5;
-        cond->else_body = NULL;
+notif-rule:
+    ELSE_RW statement {
+        t_condition* cond = if_context_pop();
+        gen_if_endlabel(cond);
+        cond->else_body = $2;
 
         $$ = cond;  
     }
-|   IF_RW LEFT_PAREN expression RIGHT_PAREN statement ELSE_RW statement {   
+|   %empty %prec REDUCE {
+        t_condition* cond = if_context_pop();
+        gen_if_endlabel(cond);
+        cond->else_body = NULL;
+        $$ = cond;  
+    }
+
+condition:
+    IF_RW LEFT_PAREN expression {
         assert($3 != NULL);
-        
         if ($3->type_info.data_structure != PRIMITIVE || !is_type_equivalent(LONG_TYPE, $3->type_info.primitive_type)) {
             printf("Location %d:%d - Condition expression must return a primitive and integer type\n", line, column);
         };
 
         t_condition* cond = zero_allocate(t_condition);
         cond->condition = $3;
-        cond->body = $5;
-        cond->else_body = $7;
+        if_context_add(cond);
+        gen_condition(cond);
 
-        $$ = cond;
-    }
-|   IF_RW LEFT_PAREN error RIGHT_PAREN statement %prec REDUCE {
-        yyerrok;
+    } RIGHT_PAREN statement {
 
-        t_condition* cond = zero_allocate(t_condition);
-        cond->body = $5;
+        t_condition* cond = if_context_top();
+        gen_if_midlabel(cond);
+        cond->body = $6;
 
-        $$ = cond;
+    } notif-rule {
+        $$ = $8;  
     }
 ;
 

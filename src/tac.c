@@ -511,6 +511,12 @@ tac_operand_t* tac_operand_label(tac_label_t* label) {
   }
   return op;
 }
+tac_operand_t* tac_operand_label2(char* label) {
+  tac_operand_t* op = (tac_operand_t*)calloc(1, sizeof(tac_operand_t));
+  op->type = LABEL_NAME;
+  op->value.name = duplicate(label);
+  return op;
+}
 
 tac_operand_t* tac_operand_char_constant(char value) {
   tac_operand_t* op = (tac_operand_t*)calloc(1, sizeof(tac_operand_t));

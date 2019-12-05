@@ -50,6 +50,7 @@ tac_operand_t* tac_operand_temp(int id);
 tac_operand_t* tac_operand_access(tac_operand_t* op, tac_operand_t* op2);
 tac_operand_t* tac_operand_dup(tac_operand_t* op);
 tac_label_t* get_create_set_label();
+tac_operand_t* tac_operand_label2(char* label);
 tac_label_t* get_find_in_set_label();
 tac_label_t* get_insert_in_set_label();
 tac_label_t* get_remove_from_set_label();

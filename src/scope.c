@@ -6,6 +6,31 @@
 #include "symbol_table.h"
 #include "tac.h"
 
+if_context_t ifs;
+int if_id = 1;
+
+void if_context_add(t_condition* top) {
+  int cap = ifs.capacity;
+  int count = ifs.count;
+
+  top->if_id = if_id++;
+
+  if (count >= cap) {
+    ifs.ifs = realloc(ifs.ifs, (cap * 2) * sizeof(t_condition*));
+    ifs.capacity *= 2;
+  }
+
+  ifs.ifs[count] = top;
+  ifs.count += 1;
+}
+
+t_condition* if_context_pop() {
+  ifs.count--;
+  return ifs.ifs[ifs.count];
+}
+
+t_condition* if_context_top() { return ifs.ifs[ifs.count - 1]; }
+
 scope_t* scope_create(scope_t* parent);
 void scope_free(scope_t* scope);
 void scope_print_level(scope_t* scope, int cur_level);
@@ -22,6 +47,10 @@ scope_t* root_scope;
 scope_t* current_scope;
 
 void scope_initialize() {
+  ifs.capacity = 1;
+  ifs.count = 0;
+  ifs.ifs = (t_condition**)calloc(1, sizeof(t_condition*));
+
   root_scope = scope_create(NULL);
   current_scope = root_scope;
 }

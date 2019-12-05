@@ -201,6 +201,7 @@ struct t_iteration {
 
 struct t_condition {
   t_expression* condition;
+  int if_id;
 
   t_statement* body;
   t_statement* else_body;

@@ -547,3 +547,40 @@ tac_operand_t* gen_fun_call(t_function* fun, t_param_vals* params) {
   tac_program_add_line(&tac_program, POP_INSTR, operands);
   return newt;
 }
+
+void gen_condition(t_condition* exp) {
+  int someInt = exp->if_id;
+  char str[25];
+  sprintf(str, "if_mid_%d", someInt);
+
+  tac_operand_t* operands[3];
+  operands[0] = tac_operand_label2(str);
+  operands[1] = (exp->condition == NULL ? tac_operand_int_constant(0)
+                                        : exp->condition->operand);
+  operands[2] = NULL;
+  tac_program_add_line(&tac_program, BRZ_INSTR, operands);
+}
+
+void gen_if_endlabel(t_condition* exp) {
+  int someInt = exp->if_id;
+  char str[25];
+  sprintf(str, "if_end_%d", someInt);
+  tac_program_add_label(&tac_program, str);
+}
+
+void gen_if_midlabel(t_condition* exp) {
+  int someInt = exp->if_id;
+  char str[25];
+  sprintf(str, "if_mid_%d", someInt);
+
+  char str2[25];
+  sprintf(str2, "if_end_%d", someInt);
+
+  tac_operand_t* operands[3];
+  operands[0] = tac_operand_label2(str2);
+  operands[1] = NULL;
+  operands[2] = NULL;
+
+  tac_program_add_line(&tac_program, JUMP_INSTR, operands);
+  tac_program_add_label(&tac_program, str);
+}
