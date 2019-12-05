@@ -195,6 +195,7 @@ struct t_iteration {
   t_expression* initialization;
   t_expression* condition;
   t_expression* step;
+  int cond_id;
 
   t_statement* body;
 };

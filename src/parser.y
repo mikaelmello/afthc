@@ -663,55 +663,65 @@ condition:
 ;
 
 iteration:
-    WHILE_RW LEFT_PAREN expression RIGHT_PAREN statement {
-        assert($3 != NULL);
+    WHILE_RW {
+        t_iteration* w = zero_allocate(t_iteration);
+        w->initialization = NULL;
+        it_context_add(w);
+
+        gen_it_strlabel(w);
+
+    } LEFT_PAREN expression RIGHT_PAREN {
+        assert($4 != NULL);
         
-        if ($3->type_info.data_structure != PRIMITIVE || !is_type_equivalent(LONG_TYPE, $3->type_info.primitive_type)) {
+        if ($4->type_info.data_structure != PRIMITIVE || !is_type_equivalent(LONG_TYPE, $4->type_info.primitive_type)) {
             printf("Location %d:%d - Condition expression must return a primitive and integer type\n", line, column);
         };
 
-        t_iteration* w = zero_allocate(t_iteration);
-        w->initialization = NULL;
-        w->condition = $3;
+        t_iteration* w = it_context_top();
+        w->condition = $4;
         w->step = NULL;
-        w->body = $5;
+        gen_iteration(w);
+    } statement {
+        t_iteration* w = it_context_pop();
+        w->body = $7;
         $$ = w;
+        gen_it_endlabel(w);
     }
-|   FOR_RW LEFT_PAREN optional-expression SEMICOLON optional-expression SEMICOLON optional-expression RIGHT_PAREN statement {
+// |   FOR_RW LEFT_PAREN optional-expression SEMICOLON optional-expression SEMICOLON optional-expression RIGHT_PAREN statement {
         
 
-        if ($3 != NULL) {
-            if ($3->type_info.data_structure != PRIMITIVE) {
-                printf("Location %d:%d - Condition expression must return a primitive type\n", line, column);
-            };
-        }
-        if ($5 != NULL) {
-            if ($5->type_info.data_structure != PRIMITIVE) {
-                printf("Location %d:%d - Condition expression must return a primitive type\n", line, column);
-            };
-        }
-        if ($7 != NULL) {
-            if ($7->type_info.data_structure != PRIMITIVE) {
-                printf("Location %d:%d - Condition expression must return a primitive type\n", line, column);
-            };
-        }
+//         if ($3 != NULL) {
+//             if ($3->type_info.data_structure != PRIMITIVE) {
+//                 printf("Location %d:%d - Condition expression must return a primitive type\n", line, column);
+//             };
+//         }
+//         if ($5 != NULL) {
+//             if ($5->type_info.data_structure != PRIMITIVE) {
+//                 printf("Location %d:%d - Condition expression must return a primitive type\n", line, column);
+//             };
+//         }
+//         if ($7 != NULL) {
+//             if ($7->type_info.data_structure != PRIMITIVE) {
+//                 printf("Location %d:%d - Condition expression must return a primitive type\n", line, column);
+//             };
+//         }
         
-        t_iteration* f = zero_allocate(t_iteration);
-        f->initialization = $3;
-        f->condition = $5;
-        f->step = $7;
-        f->body = $9;
-        $$ = f;
-    }
-|   FOR_RW LEFT_PAREN error RIGHT_PAREN statement {
-        t_iteration* f = zero_allocate(t_iteration);
-        f->initialization = NULL;
-        f->condition = NULL;
-        f->step = NULL;
-        f->body = $5;
-        $$ = f;
-        yyerrok;   
-    }
+//         t_iteration* f = zero_allocate(t_iteration);
+//         f->initialization = $3;
+//         f->condition = $5;
+//         f->step = $7;
+//         f->body = $9;
+//         $$ = f;
+//     }
+// |   FOR_RW LEFT_PAREN error RIGHT_PAREN statement {
+//         t_iteration* f = zero_allocate(t_iteration);
+//         f->initialization = NULL;
+//         f->condition = NULL;
+//         f->step = NULL;
+//         f->body = $5;
+//         $$ = f;
+//         yyerrok;   
+//     }
 ;
 
 return:

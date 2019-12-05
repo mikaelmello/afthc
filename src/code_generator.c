@@ -529,13 +529,15 @@ void gen_memf(tac_operand_t* operand) {
 }
 
 tac_operand_t* gen_fun_call(t_function* fun, t_param_vals* params) {
+  int param_size = 0;
+  if (params != NULL) param_size = params->size;
   gen_param_push(params);
 
   tac_label_t* fun_label =
       tac_program_get_label_name(&tac_program, fun->identifier);
   tac_operand_t* operands[3] = {
       tac_operand_label(fun_label),
-      tac_operand_int_constant(params->size),
+      tac_operand_int_constant(param_size),
       NULL,
   };
 
@@ -575,6 +577,43 @@ void gen_if_midlabel(t_condition* exp) {
 
   char str2[25];
   sprintf(str2, "if_end_%d", someInt);
+
+  tac_operand_t* operands[3];
+  operands[0] = tac_operand_label2(str2);
+  operands[1] = NULL;
+  operands[2] = NULL;
+
+  tac_program_add_line(&tac_program, JUMP_INSTR, operands);
+  tac_program_add_label(&tac_program, str);
+}
+
+void gen_iteration(t_iteration* exp) {
+  int someInt = exp->cond_id;
+  char str[25];
+  sprintf(str, "it_end_%d", someInt);
+
+  tac_operand_t* operands[3];
+  operands[0] = tac_operand_label2(str);
+  operands[1] = (exp->condition == NULL ? tac_operand_int_constant(0)
+                                        : exp->condition->operand);
+  operands[2] = NULL;
+  tac_program_add_line(&tac_program, BRZ_INSTR, operands);
+}
+
+void gen_it_strlabel(t_iteration* exp) {
+  int someInt = exp->cond_id;
+  char str[25];
+  sprintf(str, "it_str_%d", someInt);
+  tac_program_add_label(&tac_program, str);
+}
+
+void gen_it_endlabel(t_iteration* exp) {
+  int someInt = exp->cond_id;
+  char str[25];
+  sprintf(str, "it_end_%d", someInt);
+
+  char str2[25];
+  sprintf(str2, "it_str_%d", someInt);
 
   tac_operand_t* operands[3];
   operands[0] = tac_operand_label2(str2);

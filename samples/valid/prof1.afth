@@ -16,7 +16,14 @@ int x(int x, int y) {
 int y(int x) { x = 0; }
 
 int k() {
+  int k;
+  k = 3;
+  while (k > 0) {
+    k -= 1;
+    print 9;
+  }
+  print 9;
   return 3;
 }
 
-int main(int x) { int ll; x = y(3); }
+int main(int x) { int ll; x = y(3); k(); }
