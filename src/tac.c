@@ -169,7 +169,7 @@ void tac_program_print(tac_program_t* program) {
   tac_table_print(&program->table);
   tac_code_print(&program->code);
   printf("exit:\n");
-  printf("mov $0, $0\n");
+  printf("nop\n");
 }
 
 void tac_table_initialize(tac_table_t* table) {}
