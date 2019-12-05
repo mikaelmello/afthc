@@ -226,7 +226,7 @@ var-declaration:
             LAST_ERROR = 0;
             printf("Location %d:%d - Multiple declaration of identifier %s\n", line, column, $2);
         } else {
-            // var->addr = gen_var_declaration(1);
+            var->addr = gen_set_declaration();
         }
         $$ = add;
     }
@@ -590,7 +590,7 @@ scan:
                     printf("Location %d:%d - scanf can't scan to variable that is not a float or double.\n", line, column);
                 }
             }
-            
+
             scan->destiny = $2;
             gen_scan($$);
         }
@@ -937,10 +937,10 @@ rel-expression:
         info.data_structure = PRIMITIVE;
 
         if ($2 == IS_IN) {
-            if ($1->type_info.data_structure != SET) {
-                printf("Location %d:%d - Can only use 'in' operator with sets on the left side.\n", line, column);
+            if ($3->type_info.data_structure != SET) {
+                printf("Location %d:%d - Can only use 'in' operator with sets on the right side.\n", line, column);
             }
-            if ($3->type_info.data_structure != PRIMITIVE) {
+            if ($1->type_info.data_structure != PRIMITIVE) {
                 printf("Location %d:%d - Can only check if primitive values are in a set.\n", line, column);
             }
             if (!is_type_equivalent($1->type_info.primitive_type, $3->type_info.primitive_type)) {
@@ -974,6 +974,7 @@ shift-expression:
         t_structure_type e2 = $3->type_info.data_structure;
         t_primitive_type t1 = $1->type_info.primitive_type;
         t_primitive_type t2 = $3->type_info.primitive_type;
+        int is_set = 0;
 
         if (e1 != SET && e1 != PRIMITIVE) {
             printf("Location %d:%d - Can only use >> with sets or primitives\n", line, column);
@@ -985,6 +986,7 @@ shift-expression:
             if (!is_type_equivalent(t1, t2)) {
                 printf("Location %d:%d - Trying to insert element of different type in set.\n", line, column);
             }
+            is_set = 1;
         } else if (!is_type_equivalent(t1, LONG_TYPE) || !is_type_equivalent(t2, LONG_TYPE)) {
             printf("Location %d:%d - Can only use << with integers.\n", line, column);
         }
@@ -995,13 +997,14 @@ shift-expression:
         exp->type = LEFT_SHIFT_EXPRESSION;
         exp->right = $3;
         $$ = exp;
-        $$->operand = gen_shift($$);
+        $$->operand = gen_shift($$, is_set);
     }
 |   shift-expression DOUBLE_RANGLE set-rm-expression {
         t_structure_type e1 = $1->type_info.data_structure;
         t_structure_type e2 = $3->type_info.data_structure;
         t_primitive_type t1 = $1->type_info.primitive_type;
         t_primitive_type t2 = $3->type_info.primitive_type;
+        int is_set = 0;
         if (e1 == SET) {
             printf("Location %d:%d - To remove elements from a set use the rm operator, not opposite angle brackets..\n", line, column);
         } else if (e1 != PRIMITIVE) {
@@ -1010,6 +1013,7 @@ shift-expression:
             if (!is_type_equivalent(t1, t2)) {
                 printf("Location %d:%d - Trying to insert element of different type in set.\n", line, column);
             }
+            is_set = 1;
         } else if (e2 != PRIMITIVE) {
             printf("Location %d:%d - Can only use << with sets or primitives.\n", line, column);
         } else if (!is_type_equivalent(t1, LONG_TYPE) || !is_type_equivalent(t2, LONG_TYPE)) {
@@ -1022,7 +1026,7 @@ shift-expression:
         exp->type = RIGHT_SHIFT_EXPRESSION;
         exp->right = $3;
         $$ = exp;
-        $$->operand = gen_shift($$);
+        $$->operand = gen_shift($$, is_set);
     }
 |   set-rm-expression {
         $$ = $1;
@@ -1047,6 +1051,7 @@ set-rm-expression:
         exp->type = RM_EXPRESSION;
         exp->right = $3;
         $$ = exp;
+        $$->operand = gen_rm($$);
     }
 |   add-expression  {
         $$ = $1;

@@ -99,19 +99,20 @@ int gen_array_declaration(int size) {
   return addr;
 }
 
-// int gen_set_declaration() {
-//   tac_operand_t* mema = gen_mema(size);
-//   tac_operand_t* operands[3] = {
-//       mema,
-//       NULL,
-//       NULL,
-//   };
+int gen_set_declaration() {
+  tac_label_t* lab = get_create_set_label();
+  tac_operand_t* operands[3] = {
+      tac_operand_label(lab),
+      tac_operand_int_constant(0),
+      NULL,
+  };
 
-//   int addr = tac_program.stack_head;
-//   tac_program_add_line(&tac_program, PUSH_INSTR, operands);
-//   tac_program.stack_head++;
-//   return addr;
-// }
+  tac_program_add_line(&tac_program, CALL_INSTR, operands);
+
+  int addr = tac_program.stack_head;
+  tac_program.stack_head++;
+  return addr;
+}
 
 tac_operand_t* gen_assignment(t_assignment* assignment) {
   if (assignment == NULL || assignment->identifier == NULL) return NULL;
@@ -286,20 +287,79 @@ tac_operand_t* gen_add(t_expression* exp) {
   return newt;
 }
 
-tac_operand_t* gen_shift(t_expression* exp) {
-  tac_operand_t* newt = new_temp();
-  tac_operand_t* operands[3] = {
-      tac_operand_dup(newt),
-      exp->left->operand,
-      exp->right->operand,
-  };
+tac_operand_t* gen_shift(t_expression* exp, int is_set) {
+  if (!is_set) {
+    tac_operand_t* newt = new_temp();
+    tac_operand_t* operands[3] = {
+        tac_operand_dup(newt),
+        exp->left->operand,
+        exp->right->operand,
+    };
 
-  tac_instr_t instr;
-  if (exp->type == RIGHT_SHIFT_EXPRESSION)
-    instr = SHR_INSTR;
-  else
-    instr = SHL_INSTR;
-  tac_program_add_line(&tac_program, instr, operands);
+    tac_instr_t instr;
+    if (exp->type == RIGHT_SHIFT_EXPRESSION) {
+      instr = SHR_INSTR;
+    } else {
+      instr = SHL_INSTR;
+    }
+
+    tac_program_add_line(&tac_program, instr, operands);
+    return newt;
+  }
+  t_expression* set = NULL;
+  t_expression* element = NULL;
+
+  if (exp->type == RIGHT_SHIFT_EXPRESSION) {
+    set = exp->right;
+    element = exp->left;
+  } else {
+    set = exp->left;
+    element = exp->right;
+  }
+
+  tac_label_t* insert = get_insert_in_set_label();
+  tac_operand_t* operands[3] = {NULL, NULL, NULL};
+
+  operands[0] = set->operand;
+  tac_program_add_line(&tac_program, PARAM_INSTR, operands);
+
+  operands[0] = element->operand;
+  tac_program_add_line(&tac_program, PARAM_INSTR, operands);
+
+  operands[0] = tac_operand_label(insert);
+  operands[1] = tac_operand_int_constant(2);
+  tac_program_add_line(&tac_program, CALL_INSTR, operands);
+
+  tac_operand_t* newt = new_temp();
+  operands[0] = tac_operand_dup(newt);
+  operands[1] = NULL;
+  operands[2] = NULL;
+  tac_program_add_line(&tac_program, POP_INSTR, operands);
+  return newt;
+}
+
+tac_operand_t* gen_rm(t_expression* exp) {
+  t_expression* set = exp->left;
+  t_expression* element = exp->right;
+
+  tac_label_t* rm = get_remove_from_set_label();
+  tac_operand_t* operands[3] = {NULL, NULL, NULL};
+
+  operands[0] = set->operand;
+  tac_program_add_line(&tac_program, PARAM_INSTR, operands);
+
+  operands[0] = element->operand;
+  tac_program_add_line(&tac_program, PARAM_INSTR, operands);
+
+  operands[0] = tac_operand_label(rm);
+  operands[1] = tac_operand_int_constant(2);
+  tac_program_add_line(&tac_program, CALL_INSTR, operands);
+
+  tac_operand_t* newt = new_temp();
+  operands[0] = tac_operand_dup(newt);
+  operands[1] = NULL;
+  operands[2] = NULL;
+  tac_program_add_line(&tac_program, POP_INSTR, operands);
   return newt;
 }
 
@@ -328,6 +388,24 @@ tac_operand_t* gen_rel(t_expression* exp) {
     instr = SLEQ_INSTR;
   } else if (exp->type == EQ_EQ_EXPRESSION || exp->type == NOT_EQ_EXPRESSION) {
     instr = SEQ_INSTR;
+  } else if (exp->type == IS_IN) {
+    tac_label_t* find = get_find_in_set_label();
+    tac_operand_t* operands2[3] = {NULL, NULL, NULL};
+
+    operands2[0] = exp->right->operand;
+    tac_program_add_line(&tac_program, PARAM_INSTR, operands2);
+
+    operands2[0] = exp->left->operand;
+    tac_program_add_line(&tac_program, PARAM_INSTR, operands2);
+
+    operands2[0] = tac_operand_label(find);
+    operands2[1] = tac_operand_int_constant(2);
+    tac_program_add_line(&tac_program, CALL_INSTR, operands2);
+
+    operands[1] = NULL;
+    operands[2] = NULL;
+    tac_program_add_line(&tac_program, POP_INSTR, operands);
+    return newt;
   }
 
   tac_program_add_line(&tac_program, instr, operands);

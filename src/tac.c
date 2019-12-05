@@ -40,7 +40,7 @@ void tac_program_initialize_builtin_labels() {
   insert_in_set_label->position = 9999999;
 
   remove_from_set_label = (tac_label_t*)calloc(1, sizeof(tac_label_t));
-  remove_from_set_label->name = duplicate("builtin_insert_set");
+  remove_from_set_label->name = duplicate("builtin_remove_set");
   remove_from_set_label->id = 999999;
   remove_from_set_label->position = 9999999;
 }
