@@ -169,6 +169,16 @@ void tac_code_clean(tac_code_t* code) {
   free(code->lines);
 }
 
+void tac_code_print_set_functions() {
+  int c;
+  FILE* file;
+  file = fopen("src/set_functions.tac", "r");
+  if (file) {
+    while ((c = getc(file)) != EOF) putchar(c);
+    fclose(file);
+  }
+}
+
 void tac_code_print(tac_code_t* code) {
   if (code == NULL) {
     printf("Trying to print NULL code");
@@ -176,6 +186,7 @@ void tac_code_print(tac_code_t* code) {
   }
 
   printf(".code\n");
+  tac_code_print_set_functions();
 
   int line_pos = 0;
   int label_pos = 0;
@@ -216,9 +227,9 @@ void tac_label_print(tac_label_t* label) {
   }
 
   if (label->name != NULL) {
-    printf("%s:\n", label->name);
+    printf("\n%s:\n", label->name);
   } else {
-    printf("label_%d:\n", label->id);
+    printf("\nlabel_%d:\n", label->id);
   }
 }
 
@@ -231,6 +242,7 @@ void tac_label_free_members(tac_label_t* label) {
 }
 
 void tac_line_print(tac_line_t* line) {
+  printf("  ");
   switch (line->instruction) {
     case RETURN_INSTR:
       printf("return");
