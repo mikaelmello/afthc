@@ -11,6 +11,7 @@ int gen_push(int value);
 int gen_pop();
 int gen_primitive_declaration();
 int gen_array_declaration(int size);
+int gen_set_declaration();
 void gen_print(t_print* p);
 void gen_scan(t_scan* s);
 

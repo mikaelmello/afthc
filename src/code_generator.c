@@ -99,6 +99,20 @@ int gen_array_declaration(int size) {
   return addr;
 }
 
+// int gen_set_declaration() {
+//   tac_operand_t* mema = gen_mema(size);
+//   tac_operand_t* operands[3] = {
+//       mema,
+//       NULL,
+//       NULL,
+//   };
+
+//   int addr = tac_program.stack_head;
+//   tac_program_add_line(&tac_program, PUSH_INSTR, operands);
+//   tac_program.stack_head++;
+//   return addr;
+// }
+
 tac_operand_t* gen_assignment(t_assignment* assignment) {
   if (assignment == NULL || assignment->identifier == NULL) return NULL;
   int varpos = assignment->identifier->declaration->member.variable->addr;

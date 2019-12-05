@@ -554,11 +554,12 @@ scan:
                     printf("Location %d:%d - scanf can't scan to variable that is not a float or double.\n", line, column);
                 }
             }
+
+            scan->destiny = $2;
+            gen_scan(scan);
         }
         
-        scan->destiny = $2;
         $$ = scan;
-        gen_scan($$);
     }
 |   scan-type identifier error {
         yyerrok;
@@ -589,11 +590,12 @@ scan:
                     printf("Location %d:%d - scanf can't scan to variable that is not a float or double.\n", line, column);
                 }
             }
+            
+            scan->destiny = $2;
+            gen_scan($$);
         }
         
-        scan->destiny = $2;
         $$ = scan;
-        gen_scan($$);
     }
 ;
 
@@ -1268,12 +1270,13 @@ postfix-expression:
                     cur2 = cur2->prev;
                 }
             }
+    
+            $$->operand = gen_fun_call($1->declaration->member.function, $3);
         }
 
         exp->type_info.primitive_type = id.primitive_type;
         exp->type_info.data_structure = PRIMITIVE;
         $$ = exp;
-        $$->operand = gen_fun_call($1->declaration->member.function, $3);
     }
 |   primary-expression {
         t_postfix_expression* exp = zero_allocate(t_postfix_expression);

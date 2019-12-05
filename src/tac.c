@@ -8,8 +8,56 @@
 #include "scope.h"
 
 tac_label_t* exit_label;
-
+tac_label_t* create_set_label;
+tac_label_t* find_in_set_label;
+tac_label_t* insert_in_set_label;
+tac_label_t* remove_from_set_label;
 tac_label_t* get_exit_label() { return exit_label; }
+tac_label_t* get_create_set_label() { return create_set_label; }
+tac_label_t* get_find_in_set_label() { return find_in_set_label; }
+tac_label_t* get_insert_in_set_label() { return insert_in_set_label; }
+tac_label_t* get_remove_from_set_label() { return remove_from_set_label; }
+
+void tac_program_initialize_builtin_labels() {
+  exit_label = (tac_label_t*)calloc(1, sizeof(tac_label_t));
+  exit_label->name = duplicate("exit");
+  exit_label->id = 999999;
+  exit_label->position = 9999999;
+
+  create_set_label = (tac_label_t*)calloc(1, sizeof(tac_label_t));
+  create_set_label->name = duplicate("builtin_create_set");
+  create_set_label->id = 999999;
+  create_set_label->position = 9999999;
+
+  find_in_set_label = (tac_label_t*)calloc(1, sizeof(tac_label_t));
+  find_in_set_label->name = duplicate("builtin_find_set");
+  find_in_set_label->id = 999999;
+  find_in_set_label->position = 9999999;
+
+  insert_in_set_label = (tac_label_t*)calloc(1, sizeof(tac_label_t));
+  insert_in_set_label->name = duplicate("builtin_insert_set");
+  insert_in_set_label->id = 999999;
+  insert_in_set_label->position = 9999999;
+
+  remove_from_set_label = (tac_label_t*)calloc(1, sizeof(tac_label_t));
+  remove_from_set_label->name = duplicate("builtin_insert_set");
+  remove_from_set_label->id = 999999;
+  remove_from_set_label->position = 9999999;
+}
+
+void tac_program_free_builtin_labels() {
+  tac_label_free_members(exit_label);
+  tac_label_free_members(create_set_label);
+  tac_label_free_members(find_in_set_label);
+  tac_label_free_members(insert_in_set_label);
+  tac_label_free_members(remove_from_set_label);
+
+  free(exit_label);
+  free(create_set_label);
+  free(find_in_set_label);
+  free(insert_in_set_label);
+  free(remove_from_set_label);
+}
 
 tac_program_t* tac_program_create() {
   tac_program_t* program = (tac_program_t*)calloc(1, sizeof(tac_program_t));
@@ -18,11 +66,7 @@ tac_program_t* tac_program_create() {
 }
 
 void tac_program_initialize(tac_program_t* program) {
-  exit_label = (tac_label_t*)calloc(1, sizeof(tac_label_t));
-  exit_label->name = duplicate("exit");
-  exit_label->id = 999999;
-  exit_label->position = 9999999;
-
+  tac_program_initialize_builtin_labels();
   tac_table_initialize(&program->table);
   tac_code_initialize(&program->code);
   program->stack_head = 0;
@@ -33,9 +77,7 @@ void tac_program_clean(tac_program_t* program) {
 
   tac_table_clean(&program->table);
   tac_code_clean(&program->code);
-
-  tac_label_free_members(exit_label);
-  free(exit_label);
+  tac_program_free_builtin_labels();
 }
 
 int tac_program_add_label(tac_program_t* program, char* name) {
@@ -244,29 +286,117 @@ void tac_label_free_members(tac_label_t* label) {
 void tac_line_print(tac_line_t* line) {
   printf("  ");
   switch (line->instruction) {
-    case RETURN_INSTR:
-      printf("return");
-      break;
-    case MOV_INSTR:
-      printf("mov");
-      break;
     case ADD_INSTR:
       printf("add");
       break;
+    case SUB_INSTR:
+      printf("sub");
+      break;
+    case MUL_INSTR:
+      printf("mul");
+      break;
+    case DIV_INSTR:
+      printf("div");
+      break;
+    case AND_INSTR:
+      printf("and");
+      break;
+    case OR_INSTR:
+      printf("or");
+      break;
+    case MINUS_INSTR:
+      printf("minus");
+      break;
+    case NOT_INSTR:
+      printf("not");
+      break;
+    case BAND_INSTR:
+      printf("band");
+      break;
+    case BOR_INSTR:
+      printf("bor");
+      break;
+    case BXOR_INSTR:
+      printf("bxor");
+      break;
+    case BNOT_INSTR:
+      printf("bnot");
+      break;
+    case SHL_INSTR:
+      printf("shl");
+      break;
+    case SHR_INSTR:
+      printf("shr");
+      break;
+    case MOD_INSTR:
+      printf("mod");
+      break;
+
+    case SEQ_INSTR:
+      printf("seq");
+      break;
+    case SLT_INSTR:
+      printf("slt");
+      break;
+    case SLEQ_INSTR:
+      printf("sleq");
+      break;
+
+    case CHTOINT_INSTR:
+      printf("chtoint");
+      break;
+    case CHTOFL_INSTR:
+      printf("chtofl");
+      break;
+    case INTTOFL_INSTR:
+      printf("inttofl");
+      break;
+    case INTTOCH_INSTR:
+      printf("inttoch");
+      break;
+    case FLTOCH_INSTR:
+      printf("fltoch");
+      break;
+    case FLTOINT_INSTR:
+      printf("fltoint");
+      break;
+
+    case MOV_INSTR:
+      printf("mov");
+      break;
+
+    case BRZ_INSTR:
+      printf("brz");
+      break;
+    case BRNZ_INSTR:
+      printf("brnz");
+      break;
+    case JUMP_INSTR:
+      printf("jump");
+      break;
+
     case PUSH_INSTR:
       printf("push");
       break;
     case POP_INSTR:
       printf("pop");
       break;
-    case MUL_INSTR:
-      printf("mul");
+
+    case CALL_INSTR:
+      printf("call");
       break;
-    case SLT_INSTR:
-      printf("slt");
+    case RETURN_INSTR:
+      printf("return");
       break;
-    case MEMA_INSTR:
-      printf("mema");
+    case PARAM_INSTR:
+      printf("param");
+      break;
+
+    case PRINT_INSTR:
+      printf("print");
+      break;
+    case PRINTLN_INSTR:
+      printf("println");
       break;
     case SCANC_INSTR:
       printf("scanc");
@@ -277,20 +407,15 @@ void tac_line_print(tac_line_t* line) {
     case SCANF_INSTR:
       printf("scanf");
       break;
-    case PRINTLN_INSTR:
-      printf("println");
-      break;
-    case PRINT_INSTR:
-      printf("print");
-      break;
-    case JUMP_INSTR:
-      printf("jump");
+
+    case MEMA_INSTR:
+      printf("mema");
       break;
     case MEMF_INSTR:
       printf("memf");
       break;
-    case CALL_INSTR:
-      printf("call");
+    case RAND_INSTR:
+      printf("rand");
       break;
     default:
       printf("MISSING CASE %d\n", line->instruction);
