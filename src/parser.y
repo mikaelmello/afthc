@@ -591,10 +591,10 @@ scan:
                 }
             }
 
-            scan->destiny = $2;
-            gen_scan($$);
         }
         
+        scan->destiny = $2;
+        gen_scan($$);
         $$ = scan;
     }
 ;
@@ -1276,12 +1276,12 @@ postfix-expression:
                 }
             }
     
-            $$->operand = gen_fun_call($1->declaration->member.function, $3);
         }
 
         exp->type_info.primitive_type = id.primitive_type;
         exp->type_info.data_structure = PRIMITIVE;
         $$ = exp;
+        $$->operand = gen_fun_call($1->declaration->member.function, $3);
     }
 |   primary-expression {
         t_postfix_expression* exp = zero_allocate(t_postfix_expression);
